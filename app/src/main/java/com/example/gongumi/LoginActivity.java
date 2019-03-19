@@ -3,13 +3,13 @@ package com.example.gongumi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // TODO : 피드
+        setContentView(R.layout.activity_login);
 
+        // TODO : 로그인 Activity
     }
 }
