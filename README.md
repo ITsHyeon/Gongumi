@@ -29,3 +29,6 @@
 
 >	**옵션 선택**
 - 드로어 레이아웃을 통해 소비자가 공구글에 사고자 하는 물건의 옵션을 선택할 수 있다.
+
+## Screenshot
+<img src="https://user-images.githubusercontent.com/39714036/54962707-36dc8600-4fa9-11e9-9d22-c4e04db6d182.png" width=25% alt="splash"/><img src="https://user-images.githubusercontent.com/39714036/54962583-bddd2e80-4fa8-11e9-9492-49e52be05283.png" width=25% alt="login"/><img src="https://user-images.githubusercontent.com/39714036/54962679-16143080-4fa9-11e9-9eab-92d2f167e923.png" width=25% alt="signup"/><img src="https://user-images.githubusercontent.com/39714036/54962723-4e1b7380-4fa9-11e9-8c8a-2beebc39cade.png" width=25% alt="signup2"/>
