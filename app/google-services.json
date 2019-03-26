@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "304643240952",
+    "firebase_url": "https://gongumi-6995f.firebaseio.com",
+    "project_id": "gongumi-6995f",
+    "storage_bucket": "gongumi-6995f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304643240952:android:82bba562256277ba",
+        "android_client_info": {
+          "package_name": "com.example.gongumi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "304643240952-1tpijh0tulpibhkh6sr5e4mt1026ugqb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gongumi",
+            "certificate_hash": "a48f19dc5b62c9a2dd1a3cc169fb806388af9495"
+          }
+        },
+        {
+          "client_id": "304643240952-aft2evplc07i0qp3ietrr52j26rq0ha2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAHtOAZ7CBXc4dII-S4ZDDzxWlqAElhoQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "304643240952-aft2evplc07i0qp3ietrr52j26rq0ha2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
