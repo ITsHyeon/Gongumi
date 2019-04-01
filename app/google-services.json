@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "304643240952-97ncd2sc29304mpml7a6us95naerg903.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gongumi",
+            "certificate_hash": "c21a8b3e4f78a793e89c0f0e149a2e2969721318"
+          }
+        },
+        {
+          "client_id": "304643240952-nutgagelg58qflfq4trmh6iuebfb9sob.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gongumi",
+            "certificate_hash": "0915c10877fd0193ac1da2f24a3e71f3eaea2beb"
+          }
+        },
+        {
           "client_id": "304643240952-aft2evplc07i0qp3ietrr52j26rq0ha2.apps.googleusercontent.com",
           "client_type": 3
         }

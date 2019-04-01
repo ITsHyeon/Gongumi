@@ -17,5 +17,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // TODO : 로그인 Activity, splash 효과, 상단바 없애기
+
+
     }
 }
