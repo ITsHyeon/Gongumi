@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.PostCategoryFragment"
+    android:background="@color/backgroundColor"
+    >
+
+    <!-- TODO: category fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/text_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="공구하기"
+            android:textSize="20sp"
+            android:textColor="#000"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+
+            />
+
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/btn_cancle"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="25dp"
+            />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="14dp"
+            android:layout_height="26dp"
+            android:background="@drawable/btn_next"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="카테고리를\n선택해주세요"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="#010101"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/text_post"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="70dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text"
+            android:layout_centerHorizontal="true"
+            >
+
+            <Button
+                android:id="@+id/btn_category_fashion"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:text="패션"
+                android:textSize="18sp"
+                android:background="@drawable/custom_category_button"
+                />
+
+            <Button
+                android:id="@+id/btn_category_beauty"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:text="뷰티"
+                android:textSize="18sp"
+                android:background="@drawable/custom_category_button"
+                android:layout_toEndOf="@+id/btn_category_fashion"
+                android:layout_marginStart="30dp"
+                />
+
+            <Button
+                android:id="@+id/btn_category_food"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:text="푸드"
+                android:textSize="18sp"
+                android:background="@drawable/custom_category_button"
+                android:layout_below="@id/btn_category_fashion"
+                android:layout_marginTop="30dp"
+                />
+
+            <Button
+                android:id="@+id/btn_category_etc"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:text="기타"
+                android:textSize="18sp"
+                android:background="@drawable/custom_category_button"
+                android:layout_below="@id/btn_category_beauty"
+                android:layout_toEndOf="@+id/btn_category_food"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="30dp"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>
