@@ -29,7 +29,7 @@
             android:layout_marginTop="61.3dp">
 
             <EditText
-                android:id="@+id/editId"
+                android:id="@+id/etUserId"
                 android:layout_width="335dp"
                 android:layout_height="60dp"
                 android:background="@drawable/custom_input_button_gray"
@@ -37,25 +37,29 @@
                 android:padding="20dp"
                 android:textColor="#010101"
                 android:textSize="20sp"
+                android:singleLine="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/editPw"
+                android:id="@+id/etUserPw"
                 android:layout_width="335dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/custom_input_button_gray"
                 android:hint="PW"
+                android:inputType="textPassword"
                 android:padding="20dp"
                 android:textColor="#010101"
                 android:textSize="20sp"
+                android:singleLine="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editId" />
+                app:layout_constraintTop_toBottomOf="@+id/etUserId" />
 
             <Button
+                android:id="@+id/btnLogin"
                 android:layout_width="335dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="34.7dp"
@@ -65,7 +69,24 @@
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editPw" />
+                app:layout_constraintTop_toBottomOf="@id/etUserPw" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnLogin"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="24.7dp">
+                <TextView
+                    android:id="@+id/textSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14.7sp"
+                    android:textColor="#000000"
+                    android:text="회원이 아니신가요?"
+                    />
+            </LinearLayout>
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 
