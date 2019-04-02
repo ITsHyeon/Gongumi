@@ -1,14 +1,15 @@
-package com.example.gongumi;
+package com.example.gongumi.activity;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.gongumi.Fragment.CategoryFragment;
-import com.example.gongumi.Fragment.HomeFragment;
-import com.example.gongumi.Fragment.PostFragment;
-import com.example.gongumi.Fragment.SettingFragment;
+import com.example.gongumi.R;
+import com.example.gongumi.fragment.CategoryFragment;
+import com.example.gongumi.fragment.HomeFragment;
+import com.example.gongumi.fragment.PostFragment;
+import com.example.gongumi.fragment.SettingFragment;
 import com.example.gongumi.adapter.PagerAdapter;
 
 public class MainActivity extends AppCompatActivity {

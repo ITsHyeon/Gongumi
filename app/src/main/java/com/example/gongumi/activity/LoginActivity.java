@@ -1,8 +1,10 @@
-package com.example.gongumi;
+package com.example.gongumi.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
+
+import com.example.gongumi.R;
 
 public class LoginActivity extends AppCompatActivity {
 
