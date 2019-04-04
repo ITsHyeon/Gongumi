@@ -70,7 +70,7 @@
                 android:layout_height="120dp"
                 android:text="패션"
                 android:textSize="18sp"
-                android:background="@drawable/custom_category_button"
+                android:background="@drawable/custom_category_selector"
                 />
 
             <Button
@@ -79,7 +79,7 @@
                 android:layout_height="120dp"
                 android:text="뷰티"
                 android:textSize="18sp"
-                android:background="@drawable/custom_category_button"
+                android:background="@drawable/custom_category_selector"
                 android:layout_toEndOf="@+id/btn_category_fashion"
                 android:layout_marginStart="30dp"
                 />
@@ -90,7 +90,7 @@
                 android:layout_height="120dp"
                 android:text="푸드"
                 android:textSize="18sp"
-                android:background="@drawable/custom_category_button"
+                android:background="@drawable/custom_category_selector"
                 android:layout_below="@id/btn_category_fashion"
                 android:layout_marginTop="30dp"
                 />
@@ -101,7 +101,7 @@
                 android:layout_height="120dp"
                 android:text="기타"
                 android:textSize="18sp"
-                android:background="@drawable/custom_category_button"
+                android:background="@drawable/custom_category_selector"
                 android:layout_below="@id/btn_category_beauty"
                 android:layout_toEndOf="@+id/btn_category_food"
                 android:layout_marginTop="30dp"

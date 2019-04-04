@@ -1,8 +1,9 @@
 package com.example.gongumi.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Post {
+public class Post implements Serializable {
     private User user;
     private String category;
     private Date startDay, endDay;
