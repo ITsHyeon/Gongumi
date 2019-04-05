@@ -16,8 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.gongumi.R;
+import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.model.Post;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,13 +30,17 @@ import static com.example.gongumi.fragment.PostFragment.post_pos;
 public class PostTermFragment extends Fragment {
 
     private Post post;
-    private Button btn_previous, btn_next;
     private TextView textView_start_year, textView_start_month, textView_start_day;
     private Spinner spinner_end_year, spinner_end_month, spinner_end_day;
     private ArrayAdapter<Integer> spinnerAdapter_Year, spinnerAdapter_Month, spinnerAdapter_Day;
     private ArrayList<Integer> spinner_item_year, spinner_item_month, spinner_item_day;
     private Calendar calendar = Calendar.getInstance();
-    private int select = 0;
+    private int month_select = 0;
+    public int[] select = new int[3];
+
+    private String end = "";
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Date endDay;
 
     public PostTermFragment() {
         // Required empty public constructor
@@ -55,6 +61,8 @@ public class PostTermFragment extends Fragment {
         post_pos = 2;
         if(getArguments() != null) {
             post = (Post) getArguments().getSerializable("post");
+            ((MainActivity)getActivity()).post = post;
+            post.setStartDay(new Date());
             Log.d("test", post.getCategory());
         }
     }
@@ -71,8 +79,6 @@ public class PostTermFragment extends Fragment {
         spinnerAdapter_Day = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, spinner_item_day);
         setSpinnerItems();
 
-        btn_previous = view.findViewById(R.id.btn_previous);
-        btn_next = view.findViewById(R.id.btn_next);
         textView_start_year = view.findViewById(R.id.text_startYear);
         textView_start_month = view.findViewById(R.id.text_startMonth);
         textView_start_day = view.findViewById(R.id.text_startDay);
@@ -88,38 +94,38 @@ public class PostTermFragment extends Fragment {
         spinner_end_month.setAdapter(spinnerAdapter_Month);
         spinner_end_day.setAdapter(spinnerAdapter_Day);
 
-        spinner_end_month.setOnItemSelectedListener(spinnerItemSelectedListener);
-
-        btn_previous.setOnClickListener(ChangeFragmentClickListener);
-        btn_next.setOnClickListener(ChangeFragmentClickListener);
+        spinner_end_month.setOnItemSelectedListener(spinnerMonthSelectedListener);
+        spinner_end_year.setOnItemSelectedListener(spinnerListener);
+        spinner_end_day.setOnItemSelectedListener(spinnerListener);
 
         return view;
     }
 
-    View.OnClickListener ChangeFragmentClickListener = new View.OnClickListener() {
+    AdapterView.OnItemSelectedListener spinnerMonthSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.btn_previous:
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
-                    transaction.commit();
-                    break;
-                case R.id.btn_next:
-                    transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
-                    transaction.addToBackStack("post_term");
-                    transaction.commit();
-                    break;
-            }
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            month_select =  (int) parent.getItemAtPosition(position);
+            setSpinnerItemDay(month_select);
+            end = select[0] + "-" + (select[1] < 10 ? "0" + select[1] : select[1]) + "-" + select[2] + " 11:59:59";
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
         }
     };
 
-    AdapterView.OnItemSelectedListener spinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+    AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            select =  (int) parent.getItemAtPosition(position);
-            setSpinnerItemDay(select);
+            if(parent.getId() == R.id.spinner_EndYear) {
+                select[0] = (int) parent.getItemAtPosition(position);
+            }
+            else {
+                select[2] = (int) parent.getItemAtPosition(position);
+            }
+
+            end = select[0] + "-" + select[1] + "-" + select[2] + " 11:59:59";
         }
 
         @Override
@@ -142,23 +148,25 @@ public class PostTermFragment extends Fragment {
 
     public void setSpinnerItemDay(int select) {
         spinner_item_day.clear();
+        int startday = 1;
         int lastday = 0;
-        switch (select) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
-                lastday = 31;
-                break;
-            case 2:
-                lastday = 29;
-            default:
-                lastday = 30;
+
+        // 같은 달일 경우 공구 끝나는 날짜를 오늘과 같은 날짜부터 선택해야함
+        if(select == calendar.get(Calendar.MONTH)) {
+            startday = calendar.get(Calendar.DATE);
         }
-        for(int i = 1; i <= lastday; i++) {
+
+        // 공구 기간이 2달이 최대기에 마지막 달을 선택한 경우 선택 가능 날짜 마지막 날이 오늘과 같은 날짜가 되어야함
+        if(select == calendar.get(Calendar.MONTH) + 2) {
+            lastday = calendar.get(Calendar.DATE);
+        }
+        else {
+            calendar.set(Calendar.MONTH, select - 1);
+            lastday = calendar.getActualMaximum(Calendar.DATE);
+            calendar = Calendar.getInstance();
+        }
+
+        for(int i = startday; i <= lastday; i++) {
             spinner_item_day.add(i);
         }
         spinnerAdapter_Day.notifyDataSetChanged();

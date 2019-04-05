@@ -1,5 +1,7 @@
 package com.example.gongumi.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static int pos;
 
-    private Post post;
+    public Post post = new Post(); // fragment와 통신을 해야하기 때문에 public
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
         layout_toolbar_post = findViewById(R.id.layout_toolbar_post);
         btn_previous = findViewById(R.id.btn_previous);
         btn_next = findViewById(R.id.btn_next);
-
-        post = new Post();
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -140,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("test", post_pos + "");
                 switch (post_pos) {
                     case 1:
-                        Log.d("test", "test");
                         mTabLayout.setScrollPosition(0, 0f, true);
                         mViewPager.setCurrentItem(0);
                         post_pos = 0;
+                        post = new Post();
                         break;
                     case 2:
                         transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
@@ -165,8 +165,22 @@ public class MainActivity extends AppCompatActivity {
             else {
                 switch (post_pos) {
                     case 1:
-                        transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
-                        transaction.commit();
+                        Log.d("test", post.getCategory() + "");
+                        if(post.getCategory() == null) {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            alert.setMessage("카테고리를 선택해주세요");
+                            alert.show();
+                        }
+                        else {
+                            transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
+                            transaction.commit();
+                        }
                         break;
                     case 2:
                         transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
@@ -180,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                         mTabLayout.setScrollPosition(0, 0f, true);
                         mViewPager.setCurrentItem(0);
                         post_pos = 0;
+                        post = new Post();
                         break;
                 }
             }

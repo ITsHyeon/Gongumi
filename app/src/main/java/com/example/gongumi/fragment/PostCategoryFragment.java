@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.gongumi.R;
+import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.model.Post;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
@@ -20,7 +21,7 @@ import static com.example.gongumi.fragment.PostFragment.post_pos;
 public class PostCategoryFragment extends Fragment {
 
     private Post post;
-    private Button btn_previous, btn_next, btn_fashion, btn_beauty, btn_food, btn_etc;
+    private Button btn_fashion, btn_beauty, btn_food, btn_etc;
     private Button[] btn_categories = new Button[4];
     private String[] categories = {"fashion", "beauty", "food", "etc"};
 
@@ -42,6 +43,7 @@ public class PostCategoryFragment extends Fragment {
         post_pos = 1;
         if(getArguments() != null) {
             post = (Post) getArguments().getSerializable("post");
+            ((MainActivity)getActivity()).post = post;
         }
     }
 
@@ -49,8 +51,6 @@ public class PostCategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_category, container, false);
 
-        btn_previous = view.findViewById(R.id.btn_previous);
-        btn_next = view.findViewById(R.id.btn_next);
         btn_fashion = view.findViewById(R.id.btn_category_fashion);
         btn_beauty = view.findViewById(R.id.btn_category_beauty);
         btn_food = view.findViewById(R.id.btn_category_food);
@@ -70,8 +70,6 @@ public class PostCategoryFragment extends Fragment {
             }
         }
 
-        btn_previous.setOnClickListener(ChangeFragmentClickListener);
-        btn_next.setOnClickListener(ChangeFragmentClickListener);
         btn_fashion.setOnClickListener(CategoryClickListener);
         btn_beauty.setOnClickListener(CategoryClickListener);
         btn_food.setOnClickListener(CategoryClickListener);
@@ -80,36 +78,6 @@ public class PostCategoryFragment extends Fragment {
         return view;
     }
 
-    View.OnClickListener ChangeFragmentClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.btn_previous:
-
-                    break;
-                case R.id.btn_next:
-                    if(selected != -1) {
-                        post.setCategory(categories[selected]);
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
-                        transaction.addToBackStack("post_category");
-                        transaction.commit();
-                    } else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        alert.setMessage("카테고리를 선택해주세요");
-                        alert.show();
-                    }
-                    break;
-            }
-        }
-    };
-
     View.OnClickListener CategoryClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -117,7 +85,6 @@ public class PostCategoryFragment extends Fragment {
                 case R.id.btn_category_fashion:
                     if(selected != -1 && selected != 0) {
                         btn_categories[selected].setSelected(false);
-                        post.setCategory(categories[0]);
                     }
                     selected = 0;
                     btn_fashion.setSelected(true);
@@ -144,6 +111,8 @@ public class PostCategoryFragment extends Fragment {
                     btn_etc.setSelected(true);
                     break;
             }
+            post.setCategory(categories[selected]);
+            Log.d("test", post.getCategory());
         }
     };
 

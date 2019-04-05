@@ -1,15 +1,24 @@
 package com.example.gongumi.fragment;
 
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.gongumi.R;
+import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.model.Post;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
@@ -18,7 +27,7 @@ import static com.example.gongumi.fragment.PostFragment.post_pos;
 public class PostNumberFragment extends Fragment {
 
     private Post post;
-    private Button btn_previous, btn_next;
+    private EditText edit_num;
 
     public PostNumberFragment() {
         // Required empty public constructor
@@ -39,6 +48,7 @@ public class PostNumberFragment extends Fragment {
         post_pos = 3;
         if(getArguments() != null) {
             post = (Post) getArguments().getSerializable("post");
+            ((MainActivity)getActivity()).post = post;
         }
     }
 
@@ -46,32 +56,45 @@ public class PostNumberFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_number, container, false);
-        btn_previous = view.findViewById(R.id.btn_previous);
-        btn_next = view.findViewById(R.id.btn_next);
-
-        btn_previous.setOnClickListener(ChangeFragmentClickListener);
-        btn_next.setOnClickListener(ChangeFragmentClickListener);
+        edit_num = view.findViewById(R.id.edit_num);
+        edit_num.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    checkText(edit_num);
+                }
+                return false;
+            }
+        });
 
         return view;
     }
 
-    View.OnClickListener ChangeFragmentClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.btn_previous:
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
-                    transaction.commit();
-                    break;
-                case R.id.btn_next:
-                    transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame_post, PostFragment.newInstance(post));
-                    transaction.addToBackStack("post_number");
-                    transaction.commit();
-                    break;
-            }
+    public void hidekeyboard(EditText e) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(e.getWindowToken(), 0);
+    }
+
+    public void checkText(EditText e) {
+        int num = Integer.parseInt(e.getText().toString().trim());
+
+        if(num <= 1) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alert.setMessage("2 이상의 숫자를 입력해주세요");
+            alert.show();
+
+            edit_num.getText().clear();
+            edit_num.hasFocus();
         }
-    };
+        else {
+            hidekeyboard(e);
+        }
+    }
 
 }

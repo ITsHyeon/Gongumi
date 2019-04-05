@@ -16,7 +16,6 @@ import static com.example.gongumi.fragment.PostCategoryFragment.newInstance;
 
 public class PostFragment extends Fragment {
 
-    private Button btn_previous, btn_next;
     private Post post = new Post();
 
     public static int post_pos = 0;
@@ -51,31 +50,11 @@ public class PostFragment extends Fragment {
             transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
             transaction.commit();
         }
-        btn_previous = view.findViewById(R.id.btn_previous);
-        btn_next = view.findViewById(R.id.btn_next);
 
-        btn_previous.setOnClickListener(ChangeFragmentClickListener);
-        btn_next.setOnClickListener(ChangeFragmentClickListener);
 
         return view;
     }
 
-    View.OnClickListener ChangeFragmentClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.btn_previous:
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
-                    transaction.commit();
-
-                    break;
-                case R.id.btn_next:
-
-                    break;
-            }
-        }
-    };
 
 
 }

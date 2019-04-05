@@ -13,37 +13,6 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/text_post"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="공구하기"
-            android:textSize="20sp"
-            android:textColor="#000"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-
-            />
-
-        <Button
-            android:id="@+id/btn_previous"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/btn_cancle"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="25dp"
-            />
-
-        <Button
-            android:id="@+id/btn_next"
-            android:layout_width="14dp"
-            android:layout_height="26dp"
-            android:background="@drawable/btn_next"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="25dp"
-            />
-
-        <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +21,6 @@
             android:textSize="20sp"
             android:textColor="#010101"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/text_post"
             android:layout_marginTop="60dp"
             android:layout_marginBottom="70dp"
             />
