@@ -14,11 +14,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="회원가입"
+        android:fontFamily="@font/notosans_regular"
         android:textColor="#010101"
         android:textSize="18sp"
         android:textAlignment="center"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="27dp"
         />
 
     <Button
@@ -59,6 +60,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:singleLine="true"
+        android:fontFamily="@font/notosans_light"
         android:background="@drawable/custom_input_button_gray"
         android:layout_below="@+id/circleviewimage_profile"
         android:layout_marginTop="45dp"
@@ -74,6 +76,7 @@
         android:inputType="textPassword"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:fontFamily="@font/notosans_light"
         android:singleLine="true"
         android:background="@drawable/custom_input_button_gray"
         android:layout_below="@+id/edit_id"
@@ -90,6 +93,7 @@
         android:paddingLeft="20dp"
         android:singleLine="true"
         android:paddingRight="20dp"
+        android:fontFamily="@font/notosans_light"
         android:background="@drawable/custom_input_button_gray"
         android:layout_below="@+id/edit_pw"
         android:layout_marginTop="23dp"
@@ -105,7 +109,8 @@
         android:textSize="17sp"
         android:textColor="#000"
         android:layout_below="@+id/edit_name"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="31dp"
+        android:fontFamily="@font/notosans_light"
         android:layout_marginStart="50dp"
         />
 
@@ -115,6 +120,7 @@
         android:layout_height="45dp"
         android:text="GPS"
         android:background="@drawable/custom_gps_button_yellow"
+        android:fontFamily="@font/notosans_light"
         style="?android:attr/borderlessButtonStyle"
         android:layout_below="@+id/edit_name"
         android:layout_toEndOf="@+id/text_gps"
@@ -143,6 +149,7 @@
         android:text="Log in"
         android:background="@drawable/custom_click_button_yellow"
         style="?android:attr/borderlessButtonStyle"
+        android:fontFamily="@font/notosans_light"
         android:layout_below="@+id/btn_gps"
         android:layout_marginTop="50dp"
         android:layout_marginStart="40dp"
