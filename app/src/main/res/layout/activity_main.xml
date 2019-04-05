@@ -4,11 +4,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    android:background="@color/backgroundColor"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:height="?actionBarSize"
+        app:contentInsetStart="0dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/layout_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:visibility="visible"
+            android:background="@drawable/custom_toolbar_layout"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:src="@drawable/logo"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_toolbar_post"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:visibility="gone"
+            android:background="@drawable/custom_toolbar_layout"
+            >
+
+            <Button
+                android:id="@+id/btn_previous"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/btn_cancle"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="공구하기"
+                android:textColor="#000"
+                android:textSize="20sp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                />
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="16dp"
+                android:layout_height="29dp"
+                android:background="@drawable/btn_next"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"

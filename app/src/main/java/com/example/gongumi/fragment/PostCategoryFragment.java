@@ -26,6 +26,7 @@ public class PostCategoryFragment extends Fragment {
 
     private int selected = -1;
 
+
     public static PostCategoryFragment newInstance(Post post) {
         PostCategoryFragment fragment = new PostCategoryFragment();
         Bundle bundle =  new Bundle(1);
@@ -116,6 +117,7 @@ public class PostCategoryFragment extends Fragment {
                 case R.id.btn_category_fashion:
                     if(selected != -1 && selected != 0) {
                         btn_categories[selected].setSelected(false);
+                        post.setCategory(categories[0]);
                     }
                     selected = 0;
                     btn_fashion.setSelected(true);

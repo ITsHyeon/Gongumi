@@ -20,7 +20,6 @@ public class PostNumberFragment extends Fragment {
     private Post post;
     private Button btn_previous, btn_next;
 
-
     public PostNumberFragment() {
         // Required empty public constructor
     }

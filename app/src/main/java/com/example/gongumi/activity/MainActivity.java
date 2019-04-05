@@ -1,27 +1,60 @@
 package com.example.gongumi.activity;
 
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.example.gongumi.R;
 import com.example.gongumi.fragment.CategoryFragment;
 import com.example.gongumi.fragment.HomeFragment;
+import com.example.gongumi.fragment.PostCategoryFragment;
 import com.example.gongumi.fragment.PostFragment;
+import com.example.gongumi.fragment.PostNumberFragment;
+import com.example.gongumi.fragment.PostTermFragment;
 import com.example.gongumi.fragment.SettingFragment;
 import com.example.gongumi.adapter.PagerAdapter;
+import com.example.gongumi.model.Post;
+
+import static com.example.gongumi.fragment.PostFragment.post_pos;
 
 public class MainActivity extends AppCompatActivity {
+    private static RelativeLayout layout_toolbar, layout_toolbar_post;
+    private Button btn_previous, btn_next;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+
+    private static int pos;
+
+    private Post post;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         // TODO : 피드
 
-        final TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabs);
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        // 액션바 없애기
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
+
+        setContentView(R.layout.activity_main);
+
+        layout_toolbar = findViewById(R.id.layout_toolbar);
+        layout_toolbar_post = findViewById(R.id.layout_toolbar_post);
+        btn_previous = findViewById(R.id.btn_previous);
+        btn_next = findViewById(R.id.btn_next);
+
+        post = new Post();
+
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(R.drawable.tab_home_click,  new HomeFragment());
@@ -29,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(R.drawable.tab_write, new PostFragment());
         adapter.addFragment(R.drawable.tab_setting, new SettingFragment());
         mViewPager.setAdapter(adapter);
-         mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
 
         for (int i = 0; i < mViewPager.getAdapter().getCount(); i++) {
             mTabLayout.getTabAt(i).setIcon(adapter.getFragmentInfo(i).getIconResId());
@@ -39,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 // TODO : tab의 상태가 선택 상태로 변경.
-                int pos = tab.getPosition();
+                pos = tab.getPosition();
+                changeToolbar();
                 switch (pos) {
                     case 0:
                         mTabLayout.getTabAt(0).setIcon(R.drawable.tab_home_click);
@@ -82,8 +116,74 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_previous.setOnClickListener(PostClickListener);
+        btn_next.setOnClickListener(PostClickListener);
 
     }
 
+    public static void changeToolbar() {
+        if(pos == 2) {
+            layout_toolbar_post.setVisibility(View.VISIBLE);
+            layout_toolbar.setVisibility(View.GONE);
+        } else {
+            layout_toolbar.setVisibility(View.VISIBLE);
+            layout_toolbar_post.setVisibility(View.GONE);
+        }
+    }
+
+    View.OnClickListener PostClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            if (v.getId() == R.id.btn_previous) {
+                Log.d("test", post_pos + "");
+                switch (post_pos) {
+                    case 1:
+                        Log.d("test", "test");
+                        mTabLayout.setScrollPosition(0, 0f, true);
+                        mViewPager.setCurrentItem(0);
+                        post_pos = 0;
+                        break;
+                    case 2:
+                        transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                        break;
+                    case 3:
+                        transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                        break;
+                    case 4:
+                        transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                        break;
+                }
+            }
+            else {
+                switch (post_pos) {
+                    case 1:
+                        transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
+                        transaction.commit();
+                        break;
+                    case 2:
+                        transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
+                        transaction.commit();
+                        break;
+                    case 3:
+                        transaction.replace(R.id.frame_post, PostFragment.newInstance(post));
+                        transaction.commit();
+                        break;
+                    case 4:
+                        mTabLayout.setScrollPosition(0, 0f, true);
+                        mViewPager.setCurrentItem(0);
+                        post_pos = 0;
+                        break;
+                }
+            }
+        }
+    };
 
 }
