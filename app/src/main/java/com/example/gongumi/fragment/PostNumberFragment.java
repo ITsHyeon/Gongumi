@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.example.gongumi.R;
 import com.example.gongumi.activity.MainActivity;
@@ -27,6 +28,7 @@ import static com.example.gongumi.fragment.PostFragment.post_pos;
 public class PostNumberFragment extends Fragment {
 
     private Post post;
+    private RelativeLayout layout;
     private EditText edit_num;
 
     public PostNumberFragment() {
@@ -56,27 +58,40 @@ public class PostNumberFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_number, container, false);
+        layout = view.findViewById(R.id.layout_post_number);
         edit_num = view.findViewById(R.id.edit_num);
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkText();
+            }
+        });
         edit_num.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    checkText(edit_num);
+                    checkText();
                 }
                 return false;
             }
         });
 
+        if(post.getNum() != 0) {
+            edit_num.setText(post.getNum() + "");
+        }
+
         return view;
     }
 
-    public void hidekeyboard(EditText e) {
+    public void hidekeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(e.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(edit_num.getWindowToken(), 0);
     }
 
-    public void checkText(EditText e) {
-        int num = Integer.parseInt(e.getText().toString().trim());
+    public boolean checkText() {
+        String text = edit_num.getText().toString().trim().equals("") ? "0" : edit_num.getText().toString().trim();
+        int num = Integer.parseInt(text);
 
         if(num <= 1) {
             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -91,10 +106,26 @@ public class PostNumberFragment extends Fragment {
 
             edit_num.getText().clear();
             edit_num.hasFocus();
+            return false;
         }
         else {
-            hidekeyboard(e);
+            post.setNum(num);
+            hidekeyboard();
+            return true;
         }
+    }
+
+    public void checkTextPrevious() {
+        String text = edit_num.getText().toString().trim().equals("") ? "0" : edit_num.getText().toString().trim();
+        int num = Integer.parseInt(text);
+
+        if(num >= 2) {
+            post.setNum(num);
+        }
+        else {
+            post.setNum(0);
+        }
+        hidekeyboard();
     }
 
 }

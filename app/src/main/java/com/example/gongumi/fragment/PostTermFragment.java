@@ -66,6 +66,7 @@ public class PostTermFragment extends Fragment {
         if(getArguments() != null) {
             post = (Post) getArguments().getSerializable("post");
             ((MainActivity)getActivity()).post = post;
+            post.setStartDay(new Date());
             if(post.getEndDay() != null)
                 Log.d("test", post.getEndDay().toString());
             Log.d("test", post.getCategory());

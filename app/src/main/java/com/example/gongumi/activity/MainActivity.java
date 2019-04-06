@@ -151,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
                         transaction.commit();
                         break;
                     case 3:
+                        PostNumberFragment fragment = (PostNumberFragment) fragmentManager.findFragmentById(R.id.frame_post);
+                        fragment.checkTextPrevious();
                         transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
                         transaction.addToBackStack(null);
                         transaction.commit();
@@ -188,8 +190,11 @@ public class MainActivity extends AppCompatActivity {
                         transaction.commit();
                         break;
                     case 3:
-                        transaction.replace(R.id.frame_post, PostFragment.newInstance(post));
-                        transaction.commit();
+                        PostNumberFragment fragment = (PostNumberFragment) fragmentManager.findFragmentById(R.id.frame_post);
+                        if(fragment.checkText()) {
+                            transaction.replace(R.id.frame_post, PostFragment.newInstance(post));
+                            transaction.commit();
+                        }
                         break;
                     case 4:
                         mTabLayout.setScrollPosition(0, 0f, true);
