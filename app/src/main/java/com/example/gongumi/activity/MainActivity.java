@@ -131,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        post_pos = 0;
+    }
+
     public static void changeToolbar() {
         if(pos == 2) {
             layout_toolbar_post.setVisibility(View.VISIBLE);

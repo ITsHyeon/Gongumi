@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Post implements Serializable {
-    private User user;
-    private String category;
-    private Date startDay, endDay;
-    private int num;
-    private String product;
-    private int price;
-    private String content;
-    private String url;
+    private User user; // 유저 정보
+    private String category; // 카테고리
+    private Date startDay, endDay; // 공구 시작 날짜, 끝나는 날짜
+    private int num; // 공구 인원
+    private String product; // 상품명
+    private int price; // 가격
+    private String content; // 설명
+    private String url; // 상품 url
 
     public Post() {}
     public Post(User user, String category, Date startDay, Date endDay, int num, String product, int price, String content, String url) {
