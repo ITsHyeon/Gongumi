@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case 2:
+                        Log.d("test", post.getEndDay().toString());
                         transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
                         transaction.commit();
                         break;
