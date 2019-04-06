@@ -23,7 +23,7 @@ public class PostCategoryFragment extends Fragment {
     private Post post;
     private Button btn_fashion, btn_beauty, btn_food, btn_etc;
     private Button[] btn_categories = new Button[4];
-    private String[] categories = {"fashion", "beauty", "food", "etc"};
+    private String[] categories = {"패션", "뷰티", "푸드", "기타"};
 
     private int selected = -1;
 

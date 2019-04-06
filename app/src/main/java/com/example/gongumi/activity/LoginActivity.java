@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
@@ -76,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             for(User user : users) {
                 if (etUserId.equals(user.getId()) && etUserPw.equals(user.getPw())) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("user", user);
                     startActivity(intent);
                     Toast.makeText(getApplicationContext(),"환영합니다. " + user.getName() + "님!", Toast.LENGTH_LONG).show();
                     finish();

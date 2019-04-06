@@ -2,6 +2,7 @@ package com.example.gongumi.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.gongumi.R;
 import com.example.gongumi.fragment.CategoryFragment;
@@ -24,6 +26,11 @@ import com.example.gongumi.fragment.PostTermFragment;
 import com.example.gongumi.fragment.SettingFragment;
 import com.example.gongumi.adapter.PagerAdapter;
 import com.example.gongumi.model.Post;
+import com.example.gongumi.model.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
 
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static int pos;
 
+    private User user;
     public Post post = new Post(); // fragment와 통신을 해야하기 때문에 public
 
     @Override
@@ -47,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_main);
+        Intent intent = getIntent();
+        user = (User) intent.getSerializableExtra("user");
 
         layout_toolbar = findViewById(R.id.layout_toolbar);
         layout_toolbar_post = findViewById(R.id.layout_toolbar_post);
@@ -151,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
                         transaction.commit();
                         break;
                     case 3:
-                        PostNumberFragment fragment = (PostNumberFragment) fragmentManager.findFragmentById(R.id.frame_post);
-                        fragment.checkTextPrevious();
+                        PostNumberFragment postNumberFragment = (PostNumberFragment) fragmentManager.findFragmentById(R.id.frame_post);
+                        postNumberFragment.checkTextPrevious();
                         transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
                         transaction.addToBackStack(null);
                         transaction.commit();
@@ -197,14 +207,41 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case 4:
-                        mTabLayout.setScrollPosition(0, 0f, true);
-                        mViewPager.setCurrentItem(0);
-                        post_pos = 0;
-                        post = new Post();
+                        PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
+                        if(postFragment.check()) {
+                            post.setUser(user);
+
+                            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                            alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    post.setStartDay(new Date());
+                                    addPost(post);
+                                    mTabLayout.setScrollPosition(0, 0f, true);
+                                    mViewPager.setCurrentItem(0);
+                                    post = new Post();
+                                    post_pos = 0;
+                                }
+                            });
+                            alert.setMessage("새로운 공구를 등록하시겠습니까?");
+                            alert.show();
+                        }
                         break;
                 }
             }
         }
     };
+
+    public void addPost(Post post) {
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post");
+        mDatabaseRef.push().setValue(post);
+        Toast.makeText(this, "새로운 공구가 등록되었습니다!", Toast.LENGTH_SHORT).show();
+    }
 
 }

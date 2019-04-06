@@ -8,10 +8,202 @@
     android:id="@+id/frame_post"
     >
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- TODO: Post fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/layout_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="category"
+            android:textSize="16sp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:layout_below="@+id/layout_gallery"
+            />
+
+        <LinearLayout
+            android:id="@+id/layout_term"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@drawable/custom_post_layout"
+            android:layout_below="@+id/text_category"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            >
+
+            <TextView
+                android:id="@+id/text_term"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="term"
+                android:textSize="16sp"
+                android:fontFamily="@font/notosans_regular"
+                android:textColor="@color/textColor"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:id="@+id/text_num"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="num"
+                android:textSize="16sp"
+                android:fontFamily="@font/notosans_regular"
+                android:textColor="@color/textColor"
+                android:gravity="center_vertical|end"
+                android:layout_weight="4"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_product"
+            android:layout_width="75dp"
+            android:layout_height="50dp"
+            android:text="상품명"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:layout_below="@+id/layout_term"
+            />
+
+        <EditText
+            android:id="@+id/edit_product"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="상품명을 입력해주세요"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_below="@+id/layout_term"
+            android:layout_toEndOf="@+id/text_product"
+            />
+
+        <TextView
+            android:id="@+id/text_price"
+            android:layout_width="75dp"
+            android:layout_height="50dp"
+            android:text="가격"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:layout_below="@+id/text_product"
+            />
+
+        <EditText
+            android:id="@+id/edit_price"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="가격을 입력해주세요"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_below="@+id/text_product"
+            android:layout_toEndOf="@+id/text_product"
+            />
+
+        <TextView
+            android:id="@+id/text_description"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="설명"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:layout_below="@+id/text_price"
+            />
+
+        <EditText
+            android:id="@+id/edit_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:ellipsize="end"
+            android:hint="설명을 입력해주세요"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="top"
+            android:background="@color/backgroundColor"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_below="@+id/text_description"
+            android:layout_above="@+id/edit_url"
+            />
+
+
+        <TextView
+            android:id="@+id/text_url"
+            android:layout_width="75dp"
+            android:layout_height="50dp"
+            android:text="URL"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical|end"
+            android:background="@drawable/custom_post_layout"
+            android:paddingEnd="15dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            />
+
+        <EditText
+            android:id="@+id/edit_url"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="URL을 입력해주세요"
+            android:inputType="text"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="16sp"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/textColor"
+            android:gravity="center_vertical"
+            android:background="@drawable/custom_post_layout"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_toStartOf="@+id/text_url"
+            android:layout_alignParentBottom="true"
+            />
 
 
 

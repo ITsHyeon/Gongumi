@@ -1,6 +1,8 @@
 package com.example.gongumi.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String id; // ID
     private String pw; // 비밀번호
     private String name; // 이름
