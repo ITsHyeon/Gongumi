@@ -54,7 +54,7 @@ public class PostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post, container, false);
-        if(post_pos == 0) {
+        if(post_pos != 4) {
             post = new Post();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
