@@ -1,11 +1,16 @@
 package com.example.gongumi.fragment;
 
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gongumi.R;
+import com.example.gongumi.activity.MainActivity;
+import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.model.Post;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
+import static com.example.gongumi.activity.MainActivity.THUMBNAIL_PHOTO_REQUEST_CODE;
 import static com.example.gongumi.fragment.PostCategoryFragment.newInstance;
 
 public class PostFragment extends Fragment {
@@ -28,6 +37,9 @@ public class PostFragment extends Fragment {
     private Button btn_thumbnail;
     private TextView text_category, text_term, text_num;
     private EditText edit_product, edit_price, edit_desc, edit_url;
+
+    public PostThumbnailRecyclerViewAdapter adapter;
+    private ArrayList<Uri> list;
 
     private Post post;
 
@@ -68,6 +80,10 @@ public class PostFragment extends Fragment {
             recyclerView = view.findViewById(R.id.post_thumbnail_recyclerview);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             recyclerView.setLayoutManager(linearLayoutManager);
+            list = new ArrayList<>();
+            adapter = new PostThumbnailRecyclerViewAdapter(getContext(), list);
+            recyclerView.setAdapter(adapter);
+
             btn_thumbnail = view.findViewById(R.id.btn_thumbnail);
             text_category = view.findViewById(R.id.text_category);
             text_term = view.findViewById(R.id.text_term);
@@ -76,6 +92,13 @@ public class PostFragment extends Fragment {
             edit_price = view.findViewById(R.id.edit_price);
             edit_desc = view.findViewById(R.id.edit_description);
             edit_url = view.findViewById(R.id.edit_url);
+
+            btn_thumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getThumbnail();
+                }
+            });
 
             if(post.getCategory() != null && post.getEndDay() != null && post.getNum() != 0) {
                 text_category.setText(post.getCategory());
@@ -95,6 +118,17 @@ public class PostFragment extends Fragment {
 
         return date;
     }
+
+    public void getThumbnail() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            Log.d("test", "dd");
+        }
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        getActivity().startActivityForResult(Intent.createChooser(intent, "Get Album"), THUMBNAIL_PHOTO_REQUEST_CODE);
+    }
+
 
     public boolean check() {
         String product = edit_product.getText().toString();
