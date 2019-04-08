@@ -4,6 +4,8 @@ package com.example.gongumi.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import static com.example.gongumi.fragment.PostCategoryFragment.newInstance;
 
 public class PostFragment extends Fragment {
 
+    private RecyclerView recyclerView;
+    private Button btn_thumbnail;
     private TextView text_category, text_term, text_num;
     private EditText edit_product, edit_price, edit_desc, edit_url;
 
@@ -61,6 +65,10 @@ public class PostFragment extends Fragment {
             transaction.commit();
         }
         else {
+            recyclerView = view.findViewById(R.id.post_thumbnail_recyclerview);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            btn_thumbnail = view.findViewById(R.id.btn_thumbnail);
             text_category = view.findViewById(R.id.text_category);
             text_term = view.findViewById(R.id.text_term);
             text_num = view.findViewById(R.id.text_num);
