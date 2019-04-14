@@ -41,7 +41,8 @@
                 android:textColor="#010101"
                 android:maxLength="15"
                 android:textSize="15sp"
-                tools:layout_editor_absoluteX="1dp" />
+                tools:layout_editor_absoluteX="1dp"
+                tools:ignore="MissingConstraints" />
 
             <EditText
                 android:id="@+id/etUserPw"
