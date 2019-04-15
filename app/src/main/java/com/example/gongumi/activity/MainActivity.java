@@ -1,8 +1,13 @@
 package com.example.gongumi.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,9 +32,16 @@ import com.example.gongumi.fragment.SettingFragment;
 import com.example.gongumi.adapter.PagerAdapter;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
@@ -41,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static int pos;
+    public static final int THUMBNAIL_PHOTO_REQUEST_CODE = 10;
 
     private User user;
     public Post post = new Post(); // fragment와 통신을 해야하기 때문에 public
@@ -250,4 +263,61 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "새로운 공구가 등록되었습니다!", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case THUMBNAIL_PHOTO_REQUEST_CODE:
+                if(resultCode == Activity.RESULT_OK) {
+                    ClipData clipData = data.getClipData();
+                    if(clipData != null) {
+                        if(clipData.getItemCount() > 3) {
+                            Toast.makeText(this, "썸네일은 최대 3장까지만 선택할 수 있습니다", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.frame_post);
+                            for(int i = 0; i < clipData.getItemCount(); i++) {
+                                fragment.adapter.addPostThumbnailAdapter(clipData.getItemAt(i).getUri());
+                            }
+                            fragment.adapter.notifyDataSetChanged();
+                        }
+                    }
+                    else {
+                        //Toast.makeText(this, "이 기기는 사진을 여러 장 선택할 수 없습니다", Toast.LENGTH_SHORT).show();
+                        if(data.getData() != null) {
+                            Log.d("test", "getData");
+                            PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.frame_post);
+                            fragment.adapter.addPostThumbnailAdapter(data.getData());
+                            fragment.adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+//    public void uploadProfilePhoto() {
+//        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child("user_profile/" + user.getId() + ".jpg");
+//            StorageMetadata metadata = new StorageMetadata.Builder()
+//                    .setContentType("image/jpg")
+//                    .build();
+//
+//            UploadTask uploadTask = mStorageRef.putFile(photoUri, metadata);
+//            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+////                    Toast.makeText(SignUpActivity.this, "성공", Toast.LENGTH_SHORT).show();
+//                    Log.d("프로필 사진 업로드", "성공");
+//                }
+//            });
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+////                    Toast.makeText(SignUpActivity.this, "실패", Toast.LENGTH_SHORT).show();
+//                    Log.e("프로필 사진 업로드", "실패");
+//                }
+//            });
+//        }
+//    } // uploadProfilePhoto()
 }
