@@ -35,11 +35,13 @@
                 android:background="@drawable/custom_input_button_gray"
                 android:fontFamily="@font/notosans_light"
                 android:hint="ID"
-                android:padding="18dp"
+                android:paddingStart="17dp"
+                android:paddingEnd="17dp"
                 android:singleLine="true"
                 android:textColor="#010101"
                 android:textSize="20sp"
-                tools:layout_editor_absoluteX="1dp" />
+                tools:layout_editor_absoluteX="1dp"
+                tools:ignore="MissingConstraints" />
 
             <EditText
                 android:id="@+id/etUserPw"
@@ -50,7 +52,8 @@
                 android:hint="PW"
                 android:fontFamily="@font/notosans_light"
                 android:inputType="textPassword"
-                android:padding="18dp"
+                android:paddingStart="17dp"
+                android:paddingEnd="17dp"
                 android:textColor="#010101"
                 android:textSize="20sp"
                 android:singleLine="true"
