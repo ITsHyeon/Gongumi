@@ -15,6 +15,8 @@ import com.example.gongumi.R;
 public class CustomDialog {
 
     private Context context;
+    public TextView text;
+    private EditText message;
 
     public CustomDialog(Context context) {
         this.context = context;
@@ -36,10 +38,10 @@ public class CustomDialog {
         dialog.show();
 
         // 커스텀 다이얼로그의 각 위젯들을 정의한다.
-        final TextView text = dialog.findViewById(R.id.tvInput);
-        final EditText message = dialog.findViewById(R.id.etInput);
-        final Button btOk = dialog.findViewById(R.id.btOk);
-        final Button btCancel = dialog.findViewById(R.id.btCancel);
+        text = dialog.findViewById(R.id.tvInput);
+        message = dialog.findViewById(R.id.etInput);
+        Button btOk = dialog.findViewById(R.id.btOk);
+        Button btCancel = dialog.findViewById(R.id.btCancel);
 
         // TODO : 호출된 것에 따라 제목 변경
 //        text.setText();

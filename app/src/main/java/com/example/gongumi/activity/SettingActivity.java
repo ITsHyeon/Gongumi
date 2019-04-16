@@ -1,7 +1,11 @@
 package com.example.gongumi.activity;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -9,7 +13,14 @@ import android.widget.TextView;
 
 import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
+import com.example.gongumi.model.User;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -19,8 +30,7 @@ public class SettingActivity extends AppCompatActivity {
     private LinearLayout mLiPostList, mLiJoinList, mLiLogOut;
     private CircleImageView mCiChangeProfile;
 
-    // firebase
-    private DatabaseReference mDatabase;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,12 @@ public class SettingActivity extends AppCompatActivity {
         mLiJoinList = findViewById(R.id.liJoinList);
         mLiLogOut = findViewById(R.id.liLogOut);
 
+        Intent intent = getIntent();
+        user = (User) intent.getSerializableExtra("user");
+        Log.e("UserName : ", user.getName());
+        Log.e("UserAdress :", user.getLocation());
+        mTvName.setText(user.getName());
+
         mCiChangeProfile = findViewById(R.id.ciChangeProfile);
         Button mBtChangeName = findViewById(R.id.btChangeName);
         Button mBtChangeAdress = findViewById(R.id.btChangeAdress);
@@ -46,12 +62,12 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // 커스텀 다이얼로그를 생성한다.
                 CustomDialog customDialog = new CustomDialog(SettingActivity.this);
+                customDialog.text.setText("변경할 이름을 입력해주세요.");
 
                 // 커스텀 다이얼로그를 호출한다
                 // 커스텀 다이얼로그의 결과를 출력할 Text
+                customDialog.callFunction(mTvName);
             }
         });
-
-
     }
 }
