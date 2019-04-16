@@ -41,6 +41,9 @@ public class CustomDialog {
         final Button btOk = dialog.findViewById(R.id.btOk);
         final Button btCancel = dialog.findViewById(R.id.btCancel);
 
+        // TODO : 호출된 것에 따라 제목 변경
+//        text.setText();
+
 
         btOk.setOnClickListener(new View.OnClickListener() {
             @Override
