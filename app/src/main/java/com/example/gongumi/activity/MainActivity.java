@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,8 +17,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -169,15 +172,36 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("test", post_pos + "");
                 switch (post_pos) {
                     case 1:
-                        mTabLayout.setScrollPosition(0, 0f, true);
-                        mViewPager.setCurrentItem(0);
-                        post_pos = 0;
-                        post = new Post();
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+                        alert.setNegativeButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mTabLayout.setScrollPosition(0, 0f, true);
+                                mViewPager.setCurrentItem(0);
+                                post_pos = 0;
+                                post = new Post();
+                            }
+                        });
+                        alert.setPositiveButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        alert.setMessage("정말로 공구하기를 그만두시겠습니까?");
+                        alert.show();
                         break;
                     case 2:
                         transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
                         transaction.addToBackStack(null);
                         transaction.commit();
+
+                        // 버튼 모양 바꾸기
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(SignUpActivity.dpToPx(getApplicationContext(), 20), SignUpActivity.dpToPx(getApplicationContext(), 20));
+                        layoutParams.leftMargin = SignUpActivity.dpToPx(getApplicationContext(), 20);
+                        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                        btn_previous.setLayoutParams(layoutParams);
+                        btn_previous.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btn_cancle));
                         break;
                     case 3:
                         PostNumberFragment postNumberFragment = (PostNumberFragment) fragmentManager.findFragmentById(R.id.frame_post);
@@ -190,6 +214,15 @@ public class MainActivity extends AppCompatActivity {
                         transaction.replace(R.id.frame_post, PostNumberFragment.newInstance(post));
                         transaction.addToBackStack(null);
                         transaction.commit();
+
+                        // 버튼 모양 바꾸기
+                        layoutParams = new RelativeLayout.LayoutParams(SignUpActivity.dpToPx(getApplicationContext(), 14), SignUpActivity.dpToPx(getApplicationContext(), 25));
+                        layoutParams.rightMargin = SignUpActivity.dpToPx(getApplicationContext(), 20);
+                        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        btn_next.setLayoutParams(layoutParams);
+                        btn_next.setText("");
+                        btn_next.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btn_next));
                         break;
                 }
             }
@@ -211,6 +244,13 @@ public class MainActivity extends AppCompatActivity {
                         else {
                             transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
                             transaction.commit();
+
+                            // 버튼 모양 바꾸기
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(SignUpActivity.dpToPx(getApplicationContext(), 14), SignUpActivity.dpToPx(getApplicationContext(), 25));
+                            layoutParams.leftMargin = SignUpActivity.dpToPx(getApplicationContext(), 20);
+                            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                            btn_previous.setLayoutParams(layoutParams);
+                            btn_previous.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btn_prev));
                         }
                         break;
                     case 2:
@@ -223,10 +263,18 @@ public class MainActivity extends AppCompatActivity {
                         if(fragment.checkText()) {
                             transaction.replace(R.id.frame_post, PostFragment.newInstance(post));
                             transaction.commit();
+
+                            // 버튼 모양 바꾸기
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                            btn_next.setLayoutParams(layoutParams);
+                            btn_next.setText("완료");
+                            btn_next.setBackgroundColor(Color.TRANSPARENT);
                         }
                         break;
                     case 4:
-                        PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
+                        final PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
                         if(postFragment.check()) {
                             post.setUser(user);
 
@@ -242,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     post.setStartDay(new Date());
                                     addPost(post);
+                                    uploadThumbnailPhoto(post.getStartDay().getTime(), postFragment.adapter.getList());
                                     mTabLayout.setScrollPosition(0, 0f, true);
                                     mViewPager.setCurrentItem(0);
                                     post = new Post();
@@ -297,27 +346,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void uploadProfilePhoto() {
-//        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child("user_profile/" + user.getId() + ".jpg");
-//            StorageMetadata metadata = new StorageMetadata.Builder()
-//                    .setContentType("image/jpg")
-//                    .build();
-//
-//            UploadTask uploadTask = mStorageRef.putFile(photoUri, metadata);
-//            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-////                    Toast.makeText(SignUpActivity.this, "성공", Toast.LENGTH_SHORT).show();
-//                    Log.d("프로필 사진 업로드", "성공");
-//                }
-//            });
-//            uploadTask.addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-////                    Toast.makeText(SignUpActivity.this, "실패", Toast.LENGTH_SHORT).show();
-//                    Log.e("프로필 사진 업로드", "실패");
-//                }
-//            });
-//        }
-//    } // uploadProfilePhoto()
+    public void uploadThumbnailPhoto(long time, ArrayList<Uri> list) {
+        StorageReference mStorageRef;
+        for(int i = 0; i < list.size(); i++) {
+            mStorageRef = FirebaseStorage.getInstance().getReference().child("thumnail/" + time + "/thumbnail" +  (i+1)  + ".jpg");
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType("image/jpg")
+                    .build();
+
+            UploadTask uploadTask = mStorageRef.putFile(list.get(i), metadata);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Toast.makeText(SignUpActivity.this, "성공", Toast.LENGTH_SHORT).show();
+                    Log.d("프로필 사진 업로드", "성공");
+                }
+            });
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(SignUpActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                    Log.e("프로필 사진 업로드", "실패");
+                }
+            });
+        }
+    } // uploadProfilePhoto()
+
 }

@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.HomeFragment"
-    android:background="#e1e1e1">
+    android:background="#e1e1e1"
+    android:id="@+id/frame_home">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="10dp"
-        android:id="@+id/homeList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/homeList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 </FrameLayout>
