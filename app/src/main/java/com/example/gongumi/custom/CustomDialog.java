@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.gongumi.R;
 
-
+// https://sharp57dev.tistory.com/10
 public class CustomDialog {
 
     private Context context;
