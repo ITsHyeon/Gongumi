@@ -20,8 +20,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -29,6 +32,8 @@ import static android.support.constraint.Constraints.TAG;
 public class HomeFragment extends Fragment {
     final int ITEM_SIZE = 6;
     private DatabaseReference mDatabase;
+    StorageReference storageRef;
+    StorageReference pathRef;
     ArrayList<Home> items = new ArrayList<>();
     RecyclerAdapter adpater;
     Home item;
@@ -48,8 +53,10 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Post");
+        storageRef = FirebaseStorage.getInstance("gs://gongumi-6995f.appspot.com").getReference().child("thumbnail/");
+        pathRef = storageRef;
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.homeList);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.homeList);
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -61,9 +68,16 @@ public class HomeFragment extends Fragment {
                 items.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     Post post = data.getValue(Post.class);
-                    item = new Home(R.drawable.tab_home, post.getProduct(), String.valueOf(post.getPrice()),0, post.getNum());
+                    item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getUrl(), post.getNum(), 0, post.getContent(), post.getStartDay());
+                    item.setThumbnail(R.drawable.profile_photo);
+                    storageRef = pathRef.child(post.getStartDay().getTime() + "/thumbnail1.jpg");
+                    Log.i("storageref : " , String.valueOf(storageRef));
                     items.add(item);
                 }
+
+                Collections.reverse(items);
+                adpater = new RecyclerAdapter(getActivity(), items, R.layout.activity_main);
+                recyclerView.setAdapter(adpater);
 
                 adpater.notifyDataSetChanged();
             }
@@ -88,9 +102,6 @@ public class HomeFragment extends Fragment {
 //        for (int i = 0; i < ITEM_SIZE; i++) {
 //            items.add(item[i]);
 //        }
-
-        adpater = new RecyclerAdapter(getActivity(), items, R.layout.activity_main);
-        recyclerView.setAdapter(adpater);
 
         return view;
     }
