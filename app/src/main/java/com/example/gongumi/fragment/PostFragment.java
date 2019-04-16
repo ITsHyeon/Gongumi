@@ -10,12 +10,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +28,7 @@ import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.model.Post;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,10 +38,14 @@ import static com.example.gongumi.fragment.PostCategoryFragment.newInstance;
 
 public class PostFragment extends Fragment {
 
+    private ScrollView scrollView;
     private RecyclerView recyclerView;
     private Button btn_thumbnail;
     private TextView text_category, text_term, text_num;
     private EditText edit_product, edit_price, edit_desc, edit_url;
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
+    private String result="";
 
     public PostThumbnailRecyclerViewAdapter adapter;
     private ArrayList<Uri> list;
@@ -84,6 +93,7 @@ public class PostFragment extends Fragment {
             adapter = new PostThumbnailRecyclerViewAdapter(getContext(), list);
             recyclerView.setAdapter(adapter);
 
+            scrollView = view.findViewById(R.id.scrollView);
             btn_thumbnail = view.findViewById(R.id.btn_thumbnail);
             text_category = view.findViewById(R.id.text_category);
             text_term = view.findViewById(R.id.text_term);
@@ -105,6 +115,40 @@ public class PostFragment extends Fragment {
                 text_term.setText(DateToString());
                 text_num.setText(post.getNum() + "명");
             }
+
+            edit_price.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(!TextUtils.isEmpty(s.toString()) && !s.toString().equals(result)){
+                        result = decimalFormat.format(Integer.parseInt(s.toString().replaceAll(",","")));
+                        edit_price.setText(result);
+                        edit_price.setSelection(result.length());
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+            edit_desc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus) {
+                        scrollView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.smoothScrollBy(0, 800);
+                            }
+                        }, 100);
+                    }
+                }
+            });
         }
 
         return view;
@@ -132,7 +176,8 @@ public class PostFragment extends Fragment {
 
     public boolean check() {
         String product = edit_product.getText().toString();
-        int price = Integer.parseInt(edit_price.getText().toString().equals("") ? "0" : edit_price.getText().toString());
+        String str_price = edit_price.getText().toString().replace(",", "");
+        int price = Integer.parseInt(str_price.equals("") ? "0" : str_price);
         String desc = edit_desc.getText().toString().trim();
         String url = edit_url.getText().toString().trim();
 

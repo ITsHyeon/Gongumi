@@ -38,8 +38,6 @@
             android:id="@+id/layout_toolbar_post"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:visibility="gone"
             android:background="@drawable/custom_toolbar_layout"
             >
@@ -50,7 +48,7 @@
                 android:layout_height="20dp"
                 android:background="@drawable/btn_cancle"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="20dp"
                 />
 
             <TextView
@@ -58,15 +56,17 @@
                 android:layout_height="wrap_content"
                 android:text="공구하기"
                 android:textColor="#000"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
                 />
 
             <Button
                 android:id="@+id/btn_next"
-                android:layout_width="16dp"
-                android:layout_height="29dp"
+                android:layout_width="14dp"
+                android:layout_height="25dp"
+                android:fontFamily="@font/notosans_regular"
+                android:textSize="18sp"
                 android:background="@drawable/btn_next"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
