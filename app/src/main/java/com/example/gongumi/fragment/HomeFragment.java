@@ -30,10 +30,8 @@ import java.util.List;
 import static android.support.constraint.Constraints.TAG;
 
 public class HomeFragment extends Fragment {
-    final int ITEM_SIZE = 6;
     private DatabaseReference mDatabase;
-    StorageReference storageRef;
-    StorageReference pathRef;
+
     ArrayList<Home> items = new ArrayList<>();
     RecyclerAdapter adpater;
     Home item;
@@ -53,8 +51,6 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Post");
-        storageRef = FirebaseStorage.getInstance("gs://gongumi-6995f.appspot.com").getReference().child("thumbnail/");
-        pathRef = storageRef;
 
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.homeList);
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
@@ -69,9 +65,6 @@ public class HomeFragment extends Fragment {
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     Post post = data.getValue(Post.class);
                     item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getUrl(), post.getNum(), 0, post.getContent(), post.getStartDay());
-                    item.setThumbnail(R.drawable.profile_photo);
-                    storageRef = pathRef.child(post.getStartDay().getTime() + "/thumbnail1.jpg");
-                    Log.i("storageref : " , String.valueOf(storageRef));
                     items.add(item);
                 }
 
