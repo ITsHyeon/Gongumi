@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,7 +17,7 @@ public class CustomDialog {
 
     private Context context;
     public TextView text;
-    private EditText message;
+    public EditText message;
 
     public CustomDialog(Context context) {
         this.context = context;
@@ -34,6 +35,11 @@ public class CustomDialog {
         // 커스텀 다이얼로그의 레이아웃을 설정한다.
         dialog.setContentView(R.layout.custom_dialog);
 
+        // 커스텀 다이얼로그의 사이즈를 지정한다.
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
         // 커스텀 다이얼로그를 노출한다.
         dialog.show();
 
@@ -43,8 +49,6 @@ public class CustomDialog {
         Button btOk = dialog.findViewById(R.id.btOk);
         Button btCancel = dialog.findViewById(R.id.btCancel);
 
-        // TODO : 호출된 것에 따라 제목 변경
-//        text.setText();
 
 
         btOk.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +58,7 @@ public class CustomDialog {
                 // 커스텀 다이얼로그에서 입력한 메세지를 대입한다.
                 mainLabel.setText(message.getText().toString());
                 Toast.makeText(context,"\"" + message.getText().toString() + "\"을 입력하였습니다.", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
         btCancel.setOnClickListener(new View.OnClickListener() {
