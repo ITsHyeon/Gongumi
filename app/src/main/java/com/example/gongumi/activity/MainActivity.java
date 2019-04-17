@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addPost(Post post) {
         DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post");
-        mDatabaseRef.push().setValue(post);
+        mDatabaseRef.child(String.valueOf(post.getStartDay().getTime())).setValue(post);
         Toast.makeText(this, "새로운 공구가 등록되었습니다!", Toast.LENGTH_SHORT).show();
     }
 
