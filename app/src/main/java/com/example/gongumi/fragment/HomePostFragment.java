@@ -1,16 +1,29 @@
 package com.example.gongumi.fragment;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
+import com.example.gongumi.custom.CustomDialog;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
+import com.google.firebase.storage.StorageReference;
 
 public class HomePostFragment extends Fragment {
     TextView product;
@@ -19,15 +32,19 @@ public class HomePostFragment extends Fragment {
     ProgressBar progressBar;
     TextView people;
     TextView content;
+    ImageView img01;
+    Button joinBtn;
 
-    String product_text, price_text, url_text, content_text;
+    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumnail/");
+
+    String product_text, price_text, url_text, content_text, time_text;
     int progress_int, people_int;
 
     public HomePostFragment() {
     }
 
 
-    public static HomePostFragment newInstance(String product, String price, String url, int progressbar, int people, String content) {
+    public static HomePostFragment newInstance(String product, String price, String url, int progressbar, int people, String content, String time) {
         HomePostFragment fragment = new HomePostFragment();
         Bundle args = new Bundle();
         args.putString("product", product);
@@ -36,6 +53,7 @@ public class HomePostFragment extends Fragment {
         args.putInt("progressbar", progressbar);
         args.putInt("people", people);
         args.putString("content", content);
+        args.putString("time", time);
         fragment.setArguments(args);
 
         return fragment;
@@ -58,7 +76,12 @@ public class HomePostFragment extends Fragment {
             progress_int = getArguments().getInt("progressbar");
             people_int = getArguments().getInt("people");
             content_text = getArguments().getString("content");
+            time_text = getArguments().getString("time");
         }
+
+        img01 = view.findViewById(R.id.img01);
+        storageRef = storageRef.child(time_text + "/thumbnail1.jpg");
+        Glide.with(getActivity()).load(storageRef).into(img01);
 
         product = view.findViewById(R.id.product);
         product.setText(product_text);
@@ -79,7 +102,12 @@ public class HomePostFragment extends Fragment {
         content = view.findViewById(R.id.content);
         content.setText(content_text);
 
-
+        joinBtn = view.findViewById(R.id.joinBtn);
+        joinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
         return view;
     }
 

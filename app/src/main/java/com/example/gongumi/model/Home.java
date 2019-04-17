@@ -11,6 +11,7 @@ public class Home {
     int people;
     String content;
     Date startDay;
+    String time;
 
     public void setThumbnail(int thumbnail) { this.thumbnail = thumbnail; }
 
@@ -38,6 +39,8 @@ public class Home {
 
     public String getContent() { return content; }
 
+    public String getTime() { return time; }
+
     public Home(String product, String price, String url, int progress, int people, String content, Date startDay) {
         this.product = product;
         this.price = price;
@@ -46,6 +49,7 @@ public class Home {
         this.people = people;
         this.content = content;
         this.startDay = startDay;
+        this.time = String.valueOf(startDay.getTime());
     }
 
 }
