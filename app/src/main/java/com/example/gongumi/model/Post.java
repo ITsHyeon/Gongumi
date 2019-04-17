@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Post implements Serializable {
-    private User user; // 유저 정보
+    private String userId;
     private String category; // 카테고리
     private Date startDay, endDay; // 공구 시작 날짜, 끝나는 날짜
     private int num; // 공구 인원
@@ -15,8 +15,8 @@ public class Post implements Serializable {
     private String url; // 상품 url
 
     public Post() {}
-    public Post(User user, String category, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url) {
-        this.user = user;
+    public Post(String userId, String category, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url) {
+        this.userId = userId;
         this.category = category;
         this.startDay = startDay;
         this.endDay = endDay;
@@ -28,12 +28,12 @@ public class Post implements Serializable {
         this.url = url;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
     public void setCategory(String category) {

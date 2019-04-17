@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
+import com.example.gongumi.custom.CustomHomePostDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -34,8 +35,9 @@ public class HomePostFragment extends Fragment {
     TextView content;
     ImageView img01;
     Button joinBtn;
+    boolean dialogOk = false;
 
-    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumnail/");
+    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
 
     String product_text, price_text, url_text, content_text, time_text;
     int progress_int, people_int;
@@ -106,8 +108,19 @@ public class HomePostFragment extends Fragment {
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CustomHomePostDialog customDialog2 = new CustomHomePostDialog(getActivity());
+                customDialog2.callFunction("수량을 입력해주세요");
+
+                CustomHomePostDialog customDialog = new CustomHomePostDialog(getActivity());
+                customDialog.callFunction("옵션을 입력해주세요");
             }
         });
+
+        Log.i("dialogOk",String.valueOf(dialogOk));
+        if(dialogOk) {
+            CustomHomePostDialog customHomePostDialog = new CustomHomePostDialog(getActivity());
+            customHomePostDialog.callFunction("수량을 입력해주세요");
+        }
         return view;
     }
 

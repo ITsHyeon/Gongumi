@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     case 4:
                         final PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
                         if(postFragment.check()) {
-                            post.setUser(user);
+                            post.setUserId(user.getId());
 
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
     public void uploadThumbnailPhoto(long time, ArrayList<Uri> list) {
         StorageReference mStorageRef;
         for(int i = 0; i < list.size(); i++) {
-            mStorageRef = FirebaseStorage.getInstance().getReference().child("thumnail/" + time + "/thumbnail" +  (i+1)  + ".jpg");
+            mStorageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/" + time + "/thumbnail" +  (i+1)  + ".jpg");
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setContentType("image/jpg")
                     .build();

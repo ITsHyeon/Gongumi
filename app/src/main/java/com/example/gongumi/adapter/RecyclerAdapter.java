@@ -73,7 +73,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         Log.i("thubnail", String.valueOf(storageRef));
 
         Glide.with(context).load(storageRef).apply(new RequestOptions().error(R.drawable.profile_photo)).into(holder.thumbnail);
-
         holder.product.setText(item.getProduct());
         holder.price.setText(item.getPrice());
         holder.progressBar.setMax(item.getProgress());
