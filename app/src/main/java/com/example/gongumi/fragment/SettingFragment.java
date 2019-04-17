@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -26,13 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.model.User;
 import com.example.gongumi.service.GpsTracker;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +72,10 @@ public class SettingFragment extends Fragment {
     private DatabaseReference mDatabase;
     private User user;
 
+    // storage
+    StorageReference storageRef;
+    StorageReference pathRef;
+
     public SettingFragment() {
         // Required empty public constructor
     }
@@ -93,13 +104,20 @@ public class SettingFragment extends Fragment {
 
         // database
         mDatabase = FirebaseDatabase.getInstance().getReference().child("User");
+        storageRef = FirebaseStorage.getInstance("gs://gongumi-6995f.appspot.com").getReference().child("user_profile");
+        pathRef = storageRef;
 
         // TODO : 스토리지에 있는 프로필 가져와서 setting 하기기
-       // 기존 값 setting
+        // 기존 값 setting
         Intent intent = getActivity().getIntent();
         user = (User) intent.getSerializableExtra("user");
-        mTvName.setText(user.getName());
-        mTvAddress.setText(user.getLocation());
+        storageRef = pathRef.child(user.getId()+".jpg");
+
+
+        mTvName.setText(user.getName()); // 이름(name)
+        mTvAddress.setText(user.getLocation()); // 주소(address)
+        Glide.with(getActivity()).load(storageRef).into(mCiChangeProfile);
+
 
         mBtChangeName.setOnClickListener(new View.OnClickListener() {
             @Override
