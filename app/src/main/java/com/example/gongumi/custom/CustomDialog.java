@@ -2,6 +2,8 @@ package com.example.gongumi.custom;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -11,6 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gongumi.R;
+import com.example.gongumi.model.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // https://sharp57dev.tistory.com/10
 public class CustomDialog {
@@ -18,7 +26,7 @@ public class CustomDialog {
     private Context context;
     public TextView text;
     public EditText message;
-
+    public String changeValue;
     public CustomDialog(Context context) {
         this.context = context;
     }
@@ -49,16 +57,20 @@ public class CustomDialog {
         Button btOk = dialog.findViewById(R.id.btOk);
         Button btCancel = dialog.findViewById(R.id.btCancel);
 
-
-
         btOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // '확인' 버튼 클릭시 메인 액티비티에서 설정한 main_label에
                 // 커스텀 다이얼로그에서 입력한 메세지를 대입한다.
                 mainLabel.setText(message.getText().toString());
+//                changeValue = message.getText().toString();
+                Log.e("Dialog", message.getText().toString());
+                changeValue = message.getText().toString();
                 Toast.makeText(context,"\"" + message.getText().toString() + "\"을 입력하였습니다.", Toast.LENGTH_SHORT).show();
+
                 dialog.dismiss();
+
+
             }
         });
         btCancel.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +79,6 @@ public class CustomDialog {
                 dialog.dismiss();
             }
         });
-
 
     }
 

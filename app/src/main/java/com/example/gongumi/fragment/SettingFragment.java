@@ -12,6 +12,7 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -38,8 +39,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,8 +71,11 @@ public class SettingFragment extends Fragment {
     private User user;
 
     // storage
-    StorageReference storageRef;
-    StorageReference pathRef;
+    private StorageReference storageRef;
+    private StorageReference pathRef;
+
+    // dialog
+    private CustomDialog customDialog;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -118,17 +124,23 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // 커스텀 다이얼로그를 생성한다.
-                CustomDialog customDialog = new CustomDialog(getContext());
+                customDialog = new CustomDialog(getContext());
 
                 // 커스텀 다이얼로그를 호출한다
                 // 커스텀 다이얼로그의 결과를 출력할 Text
                 customDialog.callFunction(mTvName);
                 customDialog.text.setText("변경할 이름을 입력해주세요.");
                 customDialog.message.setFilters(new InputFilter[]{new InputFilter.LengthFilter((10))});
-                /*Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("name", mTvName);*/
+
+                // TODO : Dialog값이 널인거 고치기...ㅅㅂ
+                Log.e("변경된 이름", customDialog.changeValue);
+                Map<String, Object> taskMap = new HashMap<String, Object>();
+                taskMap.put("/name", customDialog.changeValue);
+                mDatabase.child(user.getId()).updateChildren(taskMap);
+
             }
         });
+
 
         mBtChangeAdress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +159,7 @@ public class SettingFragment extends Fragment {
         mCiChangeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                changeProfile();
             }
         });
 
@@ -159,13 +171,6 @@ public class SettingFragment extends Fragment {
             }
         });
 
-     /*   mTvLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logoutDialog();
-            }
-        });
-*/
         return view;
 
     }
@@ -290,6 +295,7 @@ public class SettingFragment extends Fragment {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
+    // 로그아웃 여부
     public void logoutDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -310,6 +316,12 @@ public class SettingFragment extends Fragment {
         AlertDialog alertDialog = builder.create();
 
         alertDialog.show();
+    }
+
+    public void changeProfile(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+        startActivityForResult(Intent.createChooser(intent, "Get Album"), PROFILE_PHOTO_REQUEST_CODE);
     }
 
 }

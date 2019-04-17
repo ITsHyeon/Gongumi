@@ -1,6 +1,10 @@
 package com.example.gongumi.model;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Serializable {
     private String id; // ID
@@ -47,6 +51,17 @@ public class User implements Serializable {
 
     public String getLocation() {
         return location;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("pw", pw);
+        result.put("name", name);
+        result.put("location", location);
+
+        return result;
     }
 
 }

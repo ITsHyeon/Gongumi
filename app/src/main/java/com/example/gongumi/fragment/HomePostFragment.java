@@ -104,7 +104,7 @@ public class HomePostFragment extends Fragment {
         content = view.findViewById(R.id.content);
         content.setText(content_text);
 
-        joinBtn = view.findViewById(R.id.joinBtn);
+        joinBtn = view.findViewById(R.id.btJoin);
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
