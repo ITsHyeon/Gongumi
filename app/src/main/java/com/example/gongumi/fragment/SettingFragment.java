@@ -7,14 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -31,6 +28,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
+import com.example.gongumi.activity.LoginActivity;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.model.User;
 import com.example.gongumi.service.GpsTracker;
@@ -39,12 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -96,7 +91,7 @@ public class SettingFragment extends Fragment {
         mTvAddress = view.findViewById(R.id.tvAdress);
         mLiPostList = view.findViewById(R.id.liPostList);
         mLiJoinList = view.findViewById(R.id.liJoinList);
-        mLiLogOut = view.findViewById(R.id.liLogOut);
+        mLiLogOut = view.findViewById(R.id.liLogout);
 
         mCiChangeProfile = view.findViewById(R.id.ciChangeProfile);
         Button mBtChangeName = view.findViewById(R.id.btChangeName);
@@ -144,9 +139,33 @@ public class SettingFragment extends Fragment {
                     checkRunTimePermission();
                 }
                 getGPS();
+                Toast.makeText(getContext(),"위치정보가 변경되었습니다.", Toast.LENGTH_LONG).show();
             }
         });
 
+        // TODO : 프로필 이미지 변경
+        mCiChangeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        // TODO : 로그아웃
+        mLiLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialog();
+            }
+        });
+
+     /*   mTvLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialog();
+            }
+        });
+*/
         return view;
 
     }
@@ -269,6 +288,28 @@ public class SettingFragment extends Fragment {
     public boolean checkLocationServicesStatus(){
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    public void logoutDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setMessage("로그아웃 하시겠습니까?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+
+        alertDialog.show();
     }
 
 }
