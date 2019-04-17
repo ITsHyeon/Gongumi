@@ -73,10 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     // profile
     private Uri photoUri = null;
-    private boolean check = false;
     private static final int PROFILE_PHOTO_REQUEST_CODE = 10;
-    private static final int GALLERY_PERMISSIONS_REQUEST_CODE = 11;
-    String[] GALLERY_PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     // gps
     private GpsTracker gpsTracker;
@@ -144,14 +141,14 @@ public class SignUpActivity extends AppCompatActivity {
         circleImageView_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkGalleryPermission();
+                getProfile();
             }
         });
 
         btn_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkGalleryPermission();
+                getProfile();
             }
         });
 
@@ -364,7 +361,7 @@ public class SignUpActivity extends AppCompatActivity {
                     finishAffinity();
                 }
             } else {
-                getProfile();
+
             }
         } else {
             boolean check_result = true;
@@ -386,21 +383,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
     } // onRequestPermissionsResult()
-
-    void checkGalleryPermission() {
-        int hasReadExternalPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if(!(hasReadExternalPermission == PackageManager.PERMISSION_GRANTED)) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(SignUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Toast.makeText(getApplicationContext(), "이 앱을 실행하려면 사진 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
-                ActivityCompat.requestPermissions(SignUpActivity.this, GALLERY_PERMISSIONS, GALLERY_PERMISSIONS_REQUEST_CODE);
-            } else {
-                ActivityCompat.requestPermissions(SignUpActivity.this, GALLERY_PERMISSIONS, GALLERY_PERMISSIONS_REQUEST_CODE);
-            }
-        } else {
-            getProfile();
-        }
-    }
 
     // GPS 퍼미션 확인
     void checkRunTimePermission() {
