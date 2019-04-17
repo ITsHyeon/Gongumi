@@ -50,7 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     Context context;
     List<Home> items;
     int item_layout;
-    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumnail/");
+    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
     StorageReference pathRef = storageRef;
 
     public RecyclerAdapter(Context context, List<Home> items, int item_layout) {
