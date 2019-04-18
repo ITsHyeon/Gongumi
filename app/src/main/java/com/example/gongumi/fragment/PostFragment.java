@@ -41,7 +41,7 @@ public class PostFragment extends Fragment {
     private ScrollView scrollView;
     private RecyclerView recyclerView;
     private Button btn_thumbnail;
-    private TextView text_category, text_term, text_num;
+    private TextView text_category, text_term, text_num, text_desc;
     private EditText edit_product, edit_price, edit_desc, edit_url;
 
     private DecimalFormat decimalFormat = new DecimalFormat("#,###");
@@ -98,6 +98,7 @@ public class PostFragment extends Fragment {
             text_category = view.findViewById(R.id.text_category);
             text_term = view.findViewById(R.id.text_term);
             text_num = view.findViewById(R.id.text_num);
+            text_desc = view.findViewById(R.id.text_description);
             edit_product = view.findViewById(R.id.edit_product);
             edit_price = view.findViewById(R.id.edit_price);
             edit_desc = view.findViewById(R.id.edit_description);
@@ -136,6 +137,14 @@ public class PostFragment extends Fragment {
 
                 }
             });
+
+            text_desc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    edit_desc.requestFocus();
+                }
+            });
+
             edit_desc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
