@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
                 items.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     Post post = data.getValue(Post.class);
-                    item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getUrl(), post.getNum(), 0, post.getContent(), post.getStartDay());
+                    item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getUrl(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay());
                     items.add(item);
                 }
 

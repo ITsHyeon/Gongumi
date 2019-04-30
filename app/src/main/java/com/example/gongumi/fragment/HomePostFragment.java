@@ -1,5 +1,6 @@
 package com.example.gongumi.fragment;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,8 +21,11 @@ import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.custom.CustomHomePostDialog;
+import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
@@ -36,8 +40,9 @@ public class HomePostFragment extends Fragment {
     ImageView img01;
     Button joinBtn;
     boolean dialogOk = false;
-
+    private User user;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
+    DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post/");
 
     String product_text, price_text, url_text, content_text, time_text;
     int progress_int, people_int;
@@ -104,23 +109,25 @@ public class HomePostFragment extends Fragment {
         content = view.findViewById(R.id.content);
         content.setText(content_text);
 
+        Intent intent = getActivity().getIntent();
+        user = (User) intent.getSerializableExtra("user");
+
+        mDatabaseRef = mDatabaseRef.child(time_text + "/join/" + user.getId());
+
         joinBtn = view.findViewById(R.id.btJoin);
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomHomePostDialog customDialog2 = new CustomHomePostDialog(getActivity());
-                customDialog2.callFunction("수량을 입력해주세요");
+                customDialog2.callFunction("수량을 입력해주세요", "qty", user.getId(), time_text);
 
                 CustomHomePostDialog customDialog = new CustomHomePostDialog(getActivity());
-                customDialog.callFunction("옵션을 입력해주세요");
+                customDialog.callFunction("옵션을 입력해주세요", "option", user.getId(), time_text);
             }
         });
 
-        Log.i("dialogOk",String.valueOf(dialogOk));
-        if(dialogOk) {
-            CustomHomePostDialog customHomePostDialog = new CustomHomePostDialog(getActivity());
-            customHomePostDialog.callFunction("수량을 입력해주세요");
-        }
+
+
         return view;
     }
 
