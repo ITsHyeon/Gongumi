@@ -48,7 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingFragment extends Fragment {
     // layout
-    private TextView mTvName, mTvAddress;
+    public TextView mTvName, mTvAddress;
     private LinearLayout mLiPostList, mLiJoinList, mLiLogOut;
     private CircleImageView mCiChangeProfile;
 
@@ -73,9 +73,6 @@ public class SettingFragment extends Fragment {
     // storage
     private StorageReference storageRef;
     private StorageReference pathRef;
-
-    // dialog
-    private CustomDialog customDialog;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -124,19 +121,9 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // 커스텀 다이얼로그를 생성한다.
-                customDialog = new CustomDialog(getContext());
-
-                // 커스텀 다이얼로그를 호출한다
-                // 커스텀 다이얼로그의 결과를 출력할 Text
-                customDialog.callFunction(mTvName);
-                customDialog.text.setText("변경할 이름을 입력해주세요.");
-                customDialog.message.setFilters(new InputFilter[]{new InputFilter.LengthFilter((10))});
-
-                // TODO : Dialog값이 널인거 고치기...ㅅㅂ
-                Log.e("변경된 이름", customDialog.changeValue);
-                Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("/name", customDialog.changeValue);
-                mDatabase.child(user.getId()).updateChildren(taskMap);
+                CustomDialog customNameDialog = new CustomDialog(getActivity());
+                customNameDialog.callFunction("변경할 이름을 입력해주세요.","name", user.getId());
+                // TODO : 바뀐 이름으로 setting하기
 
             }
         });
