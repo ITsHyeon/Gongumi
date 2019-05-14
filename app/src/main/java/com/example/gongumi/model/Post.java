@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Post implements Serializable {
     private String userId;
-    private String category; // 카테고리
+    private String hashtag; // 카테고리
     private Date startDay, endDay; // 공구 시작 날짜, 끝나는 날짜
     private int num; // 공구 인원
     private int people = 0; // 공구 참여한 사람 인원
@@ -15,9 +15,9 @@ public class Post implements Serializable {
     private String url; // 상품 url
 
     public Post() {}
-    public Post(String userId, String category, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url) {
+    public Post(String userId, String hashtag, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url) {
         this.userId = userId;
-        this.category = category;
+        this.hashtag = hashtag;
         this.startDay = startDay;
         this.endDay = endDay;
         this.num = num;
@@ -36,12 +36,12 @@ public class Post implements Serializable {
         return userId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
     }
 
-    public String getCategory() {
-        return category;
+    public String getHashtag() {
+        return hashtag;
     }
 
     public void setStartDay(Date startDay) {
