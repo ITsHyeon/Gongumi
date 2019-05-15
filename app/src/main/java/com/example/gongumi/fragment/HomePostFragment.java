@@ -16,8 +16,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.custom.CustomHomePostDialog;
@@ -37,7 +39,8 @@ public class HomePostFragment extends Fragment {
     ProgressBar progressBar;
     TextView people;
     TextView content;
-    ImageView img01;
+    ViewFlipper flipper;
+    ImageView img01, img02, img03;
     Button joinBtn;
     boolean dialogOk = false;
     private User user;
@@ -86,9 +89,27 @@ public class HomePostFragment extends Fragment {
             time_text = getArguments().getString("time");
         }
 
+        flipper = view.findViewById(R.id.flipper);
+        flipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("viewflipper click","true");
+                flipper.showNext();
+                }
+        });
+
+
         img01 = view.findViewById(R.id.img01);
         storageRef = storageRef.child(time_text + "/thumbnail1.jpg");
-        Glide.with(getActivity()).load(storageRef).into(img01);
+        Glide.with(getActivity()).load(storageRef).apply(new RequestOptions().error(null)).into(img01);
+
+        img02 = view.findViewById(R.id.img02);
+        storageRef = storageRef.child(time_text + "/thumbnail2.jpg");
+        Glide.with(getActivity()).load(storageRef).apply(new RequestOptions().error(null)).into(img02);
+
+        img03 = view.findViewById(R.id.img03);
+        storageRef = storageRef.child(time_text + "/thumbnail3.jpg");
+        Glide.with(getActivity()).load(storageRef).apply(new RequestOptions().error(null)).into(img03);
 
         product = view.findViewById(R.id.product);
         product.setText(product_text);

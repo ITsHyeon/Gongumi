@@ -7,7 +7,6 @@
     android:background="#e1e1e1"
     android:id="@+id/frame_home">
 
-
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="8dp"
             android:layout_marginLeft="10dp"
@@ -15,4 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <TextView
+            android:id="@+id/address_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:text="주소 들어갈 곳"
+            android:gravity="center"
+            android:background="#ccffffff" />
 </FrameLayout>

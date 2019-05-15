@@ -24,12 +24,14 @@
         <ImageView
             android:id="@+id/img02"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="#D3D3D3"/>
 
         <ImageView
             android:id="@+id/img03"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="#D3D3D3"/>
 
     </ViewFlipper>
 
