@@ -99,6 +99,8 @@ public class SignUpActivity extends AppCompatActivity {
         list_user = new ArrayList<>();
         getDatabase();
 
+        // TODO : 채팅
+
         // layout
         layout = findViewById(R.id.layout_sign_up);
         edit_id = findViewById(R.id.edit_id);
