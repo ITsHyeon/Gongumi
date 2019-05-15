@@ -229,8 +229,8 @@ public class MainActivity extends AppCompatActivity {
             else {
                 switch (post_pos) {
                     case 1:
-                        Log.d("test", post.getCategory() + "");
-                        if(post.getCategory() == null) {
+                        Log.d("test", post.getHashtag() + "");
+                        if(post.getHashtag() == null) {
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                 }
                             });
-                            alert.setMessage("카테고리를 선택해주세요");
+                            alert.setMessage("해시태그를 입력해주세요");
                             alert.show();
                         }
                         else {
@@ -277,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
                         final PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
                         if(postFragment.check()) {
                             post.setUserId(user.getId());
+                            post.setHashtag(post.getHashtag().trim());
 
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {

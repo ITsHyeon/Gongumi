@@ -69,7 +69,7 @@ public class PostTermFragment extends Fragment {
             post.setStartDay(new Date());
             if(post.getEndDay() != null)
                 Log.d("test", post.getEndDay().toString());
-            Log.d("test", post.getCategory());
+            Log.d("test", post.getHashtag());
         }
     }
 

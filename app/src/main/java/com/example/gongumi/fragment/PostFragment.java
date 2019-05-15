@@ -41,7 +41,7 @@ public class PostFragment extends Fragment {
     private ScrollView scrollView;
     private RecyclerView recyclerView;
     private Button btn_thumbnail;
-    private TextView text_category, text_term, text_num, text_desc;
+    private TextView text_hashtag, text_term, text_num, text_desc;
     private EditText edit_product, edit_price, edit_desc, edit_url;
 
     private DecimalFormat decimalFormat = new DecimalFormat("#,###");
@@ -95,7 +95,7 @@ public class PostFragment extends Fragment {
 
             scrollView = view.findViewById(R.id.scrollView);
             btn_thumbnail = view.findViewById(R.id.btn_thumbnail);
-            text_category = view.findViewById(R.id.text_category);
+            text_hashtag = view.findViewById(R.id.text_hashtag);
             text_term = view.findViewById(R.id.text_term);
             text_num = view.findViewById(R.id.text_num);
             text_desc = view.findViewById(R.id.text_description);
@@ -111,8 +111,8 @@ public class PostFragment extends Fragment {
                 }
             });
 
-            if(post.getCategory() != null && post.getEndDay() != null && post.getNum() != 0) {
-                text_category.setText(post.getCategory());
+            if(post.getHashtag() != null && post.getEndDay() != null && post.getNum() != 0) {
+                text_hashtag.setText(post.getHashtag());
                 text_term.setText(DateToString());
                 text_num.setText(post.getNum() + "명");
             }

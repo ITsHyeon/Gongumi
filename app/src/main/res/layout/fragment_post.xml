@@ -52,10 +52,10 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/text_category"
+            android:id="@+id/text_hashtag"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="category"
+            android:text="hashtag"
             android:textSize="16sp"
             android:textColor="@color/textColor"
             android:fontFamily="@font/notosans_regular"
@@ -71,7 +71,7 @@
             android:layout_height="50dp"
             android:orientation="horizontal"
             android:background="@drawable/custom_post_layout"
-            android:layout_below="@+id/text_category"
+            android:layout_below="@+id/text_hashtag"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             >

@@ -1,6 +1,7 @@
 package com.example.gongumi.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gongumi.R;
 import com.example.gongumi.activity.MainActivity;
@@ -21,12 +26,13 @@ import static com.example.gongumi.fragment.PostFragment.post_pos;
 public class PostCategoryFragment extends Fragment {
 
     private Post post;
-    private Button btn_fashion, btn_beauty, btn_food, btn_etc;
-    private Button[] btn_categories = new Button[4];
-    private String[] categories = {"패션", "뷰티", "푸드", "기타"};
 
-    private int selected = -1;
+    EditText edit_hashtag;
+    Button btn_done;
+    TextView text_hashtags[] = new TextView[5];
 
+    private int index_hashtag = 0;
+    private String hashtags = "";
 
     public static PostCategoryFragment newInstance(Post post) {
         PostCategoryFragment fragment = new PostCategoryFragment();
@@ -50,70 +56,49 @@ public class PostCategoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_category, container, false);
+        edit_hashtag = view.findViewById(R.id.edit_hashtag);
+        btn_done = view.findViewById(R.id.btn_done);
+        text_hashtags[0] = view.findViewById(R.id.text_hashtag1);
+        text_hashtags[1] = view.findViewById(R.id.text_hashtag2);
+        text_hashtags[2] = view.findViewById(R.id.text_hashtag3);
+        text_hashtags[3] = view.findViewById(R.id.text_hashtag4);
+        text_hashtags[4] = view.findViewById(R.id.text_hashtag5);
 
-        btn_fashion = view.findViewById(R.id.btn_category_fashion);
-        btn_beauty = view.findViewById(R.id.btn_category_beauty);
-        btn_food = view.findViewById(R.id.btn_category_food);
-        btn_etc = view.findViewById(R.id.btn_category_etc);
-
-        btn_categories[0] = btn_fashion;
-        btn_categories[1] = btn_beauty;
-        btn_categories[2] = btn_food;
-        btn_categories[3] = btn_etc;
-
-        if(post.getCategory() != null) {
-            for (int i = 0; i < categories.length; i++) {
-                if (post.getCategory().equals(categories[i])) {
-                    selected = i;
-                    btn_categories[i].setSelected(true);
+        btn_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String editText = edit_hashtag.getText().toString().trim();
+                if(editText.equals("")) {
+                    Toast.makeText(getContext(), "해시태그를 입력해주세요", Toast.LENGTH_SHORT).show();
+                }
+                else if(editText.contains(" ")) {
+                    Toast.makeText(getContext(), "공백을 제외하고 입력해주세요", Toast.LENGTH_SHORT).show();
+                }
+                else if(index_hashtag >= 4) {
+                    Toast.makeText(getContext(), "해시태그는 최대 5개까지 입력할 수 있습니다", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if(editText.indexOf("#") != 0) {
+                        editText = "#" + editText;
+                    }
+                    hashtags += editText + " ";
+                    text_hashtags[index_hashtag].setText(editText);
+                    text_hashtags[index_hashtag].setVisibility(View.VISIBLE);
+                    index_hashtag++;
+                    post.setHashtag(hashtags);
+                    edit_hashtag.setText("");
+                    hidekeyboard();
                 }
             }
-        }
+        });
 
-        btn_fashion.setOnClickListener(CategoryClickListener);
-        btn_beauty.setOnClickListener(CategoryClickListener);
-        btn_food.setOnClickListener(CategoryClickListener);
-        btn_etc.setOnClickListener(CategoryClickListener);
 
         return view;
     }
 
-    View.OnClickListener CategoryClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.btn_category_fashion:
-                    if(selected != -1 && selected != 0) {
-                        btn_categories[selected].setSelected(false);
-                    }
-                    selected = 0;
-                    btn_fashion.setSelected(true);
-                    break;
-                case R.id.btn_category_beauty:
-                    if(selected != -1 && selected != 1) {
-                        btn_categories[selected].setSelected(false);
-                    }
-                    selected = 1;
-                    btn_beauty.setSelected(true);
-                    break;
-                case R.id.btn_category_food:
-                    if(selected != -1 && selected != 2) {
-                        btn_categories[selected].setSelected(false);
-                    }
-                    selected = 2;
-                    btn_food.setSelected(true);
-                    break;
-                case R.id.btn_category_etc:
-                    if(selected != -1 && selected != 3) {
-                        btn_categories[selected].setSelected(false);
-                    }
-                    selected = 3;
-                    btn_etc.setSelected(true);
-                    break;
-            }
-            post.setCategory(categories[selected]);
-            Log.d("test", post.getCategory());
-        }
-    };
+    public void hidekeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(edit_hashtag.getWindowToken(), 0);
+    }
 
 }
