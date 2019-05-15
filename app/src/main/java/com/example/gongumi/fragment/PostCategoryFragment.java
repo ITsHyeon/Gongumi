@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,28 +68,17 @@ public class PostCategoryFragment extends Fragment {
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String editText = edit_hashtag.getText().toString().trim();
-                if(editText.equals("")) {
-                    Toast.makeText(getContext(), "해시태그를 입력해주세요", Toast.LENGTH_SHORT).show();
+                checkText();
+            }
+        });
+
+        edit_hashtag.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    checkText();
                 }
-                else if(editText.contains(" ")) {
-                    Toast.makeText(getContext(), "공백을 제외하고 입력해주세요", Toast.LENGTH_SHORT).show();
-                }
-                else if(index_hashtag >= 4) {
-                    Toast.makeText(getContext(), "해시태그는 최대 5개까지 입력할 수 있습니다", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    if(editText.indexOf("#") != 0) {
-                        editText = "#" + editText;
-                    }
-                    hashtags += editText + " ";
-                    text_hashtags[index_hashtag].setText(editText);
-                    text_hashtags[index_hashtag].setVisibility(View.VISIBLE);
-                    index_hashtag++;
-                    post.setHashtag(hashtags);
-                    edit_hashtag.setText("");
-                    hidekeyboard();
-                }
+                return false;
             }
         });
 
@@ -99,6 +89,33 @@ public class PostCategoryFragment extends Fragment {
     public void hidekeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(edit_hashtag.getWindowToken(), 0);
+    }
+
+    public void checkText() {
+        String editText = edit_hashtag.getText().toString().trim();
+        if(editText.equals("")) {
+            Toast.makeText(getContext(), "해시태그를 입력해주세요", Toast.LENGTH_SHORT).show();
+        }
+        else if(editText.contains(" ")) {
+            Toast.makeText(getContext(), "공백을 제외하고 입력해주세요", Toast.LENGTH_SHORT).show();
+        }
+        else if(index_hashtag > 4) {
+            Toast.makeText(getContext(), "해시태그는 최대 5개까지 입력할 수 있습니다", Toast.LENGTH_SHORT).show();
+            edit_hashtag.setText("");
+            hidekeyboard();
+        }
+        else {
+            if(editText.indexOf("#") != 0) {
+                editText = "#" + editText;
+            }
+            hashtags += editText + " ";
+            text_hashtags[index_hashtag].setText(editText);
+            text_hashtags[index_hashtag].setVisibility(View.VISIBLE);
+            index_hashtag++;
+            post.setHashtag(hashtags);
+            edit_hashtag.setText("");
+            hidekeyboard();
+        }
     }
 
 }

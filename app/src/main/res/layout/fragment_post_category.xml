@@ -22,14 +22,14 @@
             android:textSize="20sp"
             android:textColor="#010101"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="50dp"
             android:layout_marginBottom="70dp"
             />
 
         <LinearLayout
             android:id="@+id/layout_edit"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_centerInParent="true"
             android:paddingStart="10dp"
