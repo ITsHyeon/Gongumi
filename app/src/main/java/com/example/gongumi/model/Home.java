@@ -7,17 +7,12 @@ public class Home {
     String product;
     String price;
     String url;
+    String hashtag;
     int progress;
     int people;
     String content;
     Date startDay;
     String time;
-
-    public void setThumbnail(int thumbnail) { this.thumbnail = thumbnail; }
-
-    public int getThumbnail() {
-        return this.thumbnail;
-    }
 
     public String getProduct() {
         return this.product;
@@ -31,6 +26,8 @@ public class Home {
         return this.url;
     }
 
+    public String getHashtag() { return this.hashtag; }
+
     public int getProgress() {
         return this.progress;
     }
@@ -41,10 +38,10 @@ public class Home {
 
     public String getTime() { return time; }
 
-    public Home(String product, String price, String url, int progress, int people, String content, Date startDay) {
+    public Home(String product, String price, String hashtag, int progress, int people, String content, Date startDay) {
         this.product = product;
         this.price = price;
-        this.url = url;
+        this.hashtag = hashtag;
         this.progress = progress;
         this.people = people;
         this.content = content;
