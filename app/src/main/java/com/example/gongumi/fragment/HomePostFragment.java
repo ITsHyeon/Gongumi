@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,7 +36,7 @@ import com.google.firebase.storage.StorageReference;
 public class HomePostFragment extends Fragment {
     TextView product;
     TextView price;
-    TextView url;
+    TextView hashtag;
     ProgressBar progressBar;
     TextView people;
     TextView content;
@@ -45,21 +46,22 @@ public class HomePostFragment extends Fragment {
     boolean dialogOk = false;
     private User user;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
+    StorageReference mStorage = storageRef;
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post/");
 
-    String product_text, price_text, url_text, content_text, time_text;
+    String product_text, price_text, hashtag_text, content_text, time_text;
     int progress_int, people_int;
 
     public HomePostFragment() {
     }
 
 
-    public static HomePostFragment newInstance(String product, String price, String url, int progressbar, int people, String content, String time) {
+    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time) {
         HomePostFragment fragment = new HomePostFragment();
         Bundle args = new Bundle();
         args.putString("product", product);
         args.putString("price", price);
-        args.putString("url", url);
+        args.putString("hashtag", hashtag);
         args.putInt("progressbar", progressbar);
         args.putInt("people", people);
         args.putString("content", content);
@@ -82,7 +84,7 @@ public class HomePostFragment extends Fragment {
         if(getArguments() != null){
             product_text = getArguments().getString("product");
             price_text = getArguments().getString("price");
-            url_text = getArguments().getString("url");
+            hashtag_text = getArguments().getString("hashtag");
             progress_int = getArguments().getInt("progressbar");
             people_int = getArguments().getInt("people");
             content_text = getArguments().getString("content");
@@ -90,35 +92,34 @@ public class HomePostFragment extends Fragment {
         }
 
         flipper = view.findViewById(R.id.flipper);
-        flipper.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("viewflipper click","true");
-                flipper.showNext();
-                }
-        });
-
 
         img01 = view.findViewById(R.id.img01);
-        storageRef = storageRef.child(time_text + "/thumbnail1.jpg");
+        storageRef = mStorage.child(time_text + "/thumbnail1.jpg");
         Glide.with(getActivity()).load(storageRef).apply(new RequestOptions().error(null)).into(img01);
 
         img02 = view.findViewById(R.id.img02);
-        storageRef = storageRef.child(time_text + "/thumbnail2.jpg");
+        storageRef = mStorage.child(time_text + "/thumbnail2.jpg");
         Glide.with(getActivity()).load(storageRef).apply(new RequestOptions().error(null)).into(img02);
 
         img03 = view.findViewById(R.id.img03);
-        storageRef = storageRef.child(time_text + "/thumbnail3.jpg");
+        storageRef = mStorage.child(time_text + "/thumbnail3.jpg");
         Glide.with(getActivity()).load(storageRef).apply(new RequestOptions().error(null)).into(img03);
 
+        flipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flipper.showNext();
+            }
+        });
+        
         product = view.findViewById(R.id.product);
         product.setText(product_text);
 
         price = view.findViewById(R.id.price);
         price.setText(price_text);
 
-        url = view.findViewById(R.id.url);
-        url.setText(url_text);
+        hashtag = view.findViewById(R.id.hashtag);
+        hashtag.setText(hashtag_text);
 
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setMax(progress_int);

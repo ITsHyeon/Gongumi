@@ -75,6 +75,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         holder.product.setText(item.getProduct());
         holder.price.setText(item.getPrice());
+        holder.hashtag.setText(item.getHashtag());
         holder.progressBar.setMax(item.getProgress());
         holder.progressBar.setProgress(item.getPeople());
         holder.people.setText(String.valueOf(item.getPeople()) + "명이 참여했습니다.");
@@ -83,7 +84,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.add(R.id.frame_home,
-                        HomePostFragment.newInstance(item.getProduct(),item.getPrice(),item.getUrl(), item.getProgress(),item.getPeople(), item.getContent(), item.getTime())).commit();
+                        HomePostFragment.newInstance(item.getProduct(),item.getPrice(),item.getHashtag(), item.getProgress(),item.getPeople(), item.getContent(), item.getTime())).commit();
                 fragmentTransaction.addToBackStack(null);
             }
         });
@@ -99,6 +100,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         ImageView thumbnail;
         TextView product;
         TextView price;
+        TextView hashtag;
         ProgressBar progressBar;
         TextView people;
         CardView cardview;
@@ -109,6 +111,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             thumbnail = (ImageView) itemView.findViewById(R.id.thumbnail);
             product = (TextView) itemView.findViewById(R.id.product);
             price = (TextView) itemView.findViewById(R.id.price);
+            hashtag = itemView.findViewById(R.id.hashtag);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
             people = (TextView) itemView.findViewById(R.id.people);
             cardview = (CardView) itemView.findViewById(R.id.cardview);
