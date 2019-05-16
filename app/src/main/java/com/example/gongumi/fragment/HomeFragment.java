@@ -1,6 +1,7 @@
 package com.example.gongumi.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,11 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.gongumi.R;
 import com.example.gongumi.adapter.RecyclerAdapter;
 import com.example.gongumi.model.Home;
 import com.example.gongumi.model.Post;
+import com.example.gongumi.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +38,8 @@ public class HomeFragment extends Fragment {
     ArrayList<Home> items = new ArrayList<>();
     RecyclerAdapter adpater;
     Home item;
+    private User user;
+    TextView address;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -58,6 +63,11 @@ public class HomeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
+        Intent intent = getActivity().getIntent();
+        user = (User) intent.getSerializableExtra("user");
+        address = view.findViewById(R.id.address_text);
+        address.setText(user.getLocation());
+
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -65,7 +75,7 @@ public class HomeFragment extends Fragment {
                 items.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     Post post = data.getValue(Post.class);
-                    item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getUrl(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay());
+                    item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay());
                     items.add(item);
                 }
 
@@ -85,17 +95,6 @@ public class HomeFragment extends Fragment {
         };
         mDatabase.addValueEventListener(postListener);
 
-//        Home[] item = new Home[ITEM_SIZE];
-//        item[0] = new Home(R.drawable.tab_home, "맛있는 아마스빈", "3000원", 5, 2);
-//        item[1] = new Home(R.drawable.tab_write, "맛있는 과자", "5000원", 10, 4);
-//        item[2] = new Home(R.drawable.tab_setting, "예쁜 봄 옷", "10000원", 20, 17);
-//        item[3] = new Home(R.drawable.tab_category, "휴대폰케이스", "5000원", 10, 3);
-//        item[4] = new Home(R.drawable.tab_setting, "예쁜 지현이", "1억원", 1, 0);
-//        item[5] = new Home(R.drawable.tab_category, "하백", "1억원", 15, 15);
-//
-//        for (int i = 0; i < ITEM_SIZE; i++) {
-//            items.add(item[i]);
-//        }
 
         return view;
     }

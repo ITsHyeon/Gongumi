@@ -12,6 +12,9 @@ public class User implements Serializable {
     private String name; // 이름
     private String location; // 위치
 
+    // TODO : 채팅팅
+   public String uid; // 누구와 채팅하고 있는지 상대방의 id를 받아옴
+
     public User() {}
 
     public User(String id, String pw, String name, String location) {

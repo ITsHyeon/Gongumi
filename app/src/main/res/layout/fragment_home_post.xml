@@ -24,12 +24,14 @@
         <ImageView
             android:id="@+id/img02"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="#D3D3D3"/>
 
         <ImageView
             android:id="@+id/img03"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="#D3D3D3"/>
 
     </ViewFlipper>
 
@@ -60,10 +62,10 @@
         />
 
     <TextView
-        android:id="@+id/url"
+        android:id="@+id/hashtag"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="URL"
+        android:text="해시태그"
         android:textSize="18sp"
         android:textColor="@color/textColor"
         android:fontFamily="@font/notosans_regular"
@@ -77,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_below="@+id/url"
+        android:layout_below="@+id/hashtag"
         android:padding="20dp"/>
 
     <TextView
