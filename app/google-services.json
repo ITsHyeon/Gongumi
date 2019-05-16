@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "304643240952-1tpijh0tulpibhkh6sr5e4mt1026ugqb.apps.googleusercontent.com",
+          "client_id": "304643240952-ibcbsqc1cs6dbt6sj0lrq1ks5o5qtj9b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.gongumi",
-            "certificate_hash": "a48f19dc5b62c9a2dd1a3cc169fb806388af9495"
+            "certificate_hash": "90e84b111454115be2a01476bc25b862a2c80024"
+          }
+        },
+        {
+          "client_id": "304643240952-m2vdcb4pc72sna8abhlgrq75sl7pga16.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gongumi",
+            "certificate_hash": "63c4b04e4a33808d74cab4b6bdc540e845321fb3"
+          }
+        },
+        {
+          "client_id": "304643240952-nutgagelg58qflfq4trmh6iuebfb9sob.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gongumi",
+            "certificate_hash": "0915c10877fd0193ac1da2f24a3e71f3eaea2beb"
           }
         },
         {
@@ -31,11 +47,11 @@
           }
         },
         {
-          "client_id": "304643240952-nutgagelg58qflfq4trmh6iuebfb9sob.apps.googleusercontent.com",
+          "client_id": "304643240952-1tpijh0tulpibhkh6sr5e4mt1026ugqb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.gongumi",
-            "certificate_hash": "0915c10877fd0193ac1da2f24a3e71f3eaea2beb"
+            "certificate_hash": "a48f19dc5b62c9a2dd1a3cc169fb806388af9495"
           }
         },
         {
@@ -49,20 +65,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "304643240952-aft2evplc07i0qp3ietrr52j26rq0ha2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
