@@ -23,6 +23,11 @@ import android.widget.Toast;
 
 import com.example.gongumi.R;
 import com.example.gongumi.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,11 +45,14 @@ public class LoginActivity extends AppCompatActivity {
     private Button mBtLogin;
 
     // firebase
+    private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
     // data
     private String userId, userPw, etUserId, etUserPw;
     private ArrayList<User> users;
+
+    private User user;
 
     //permission
     private final int PERMISSIONS_REQUEST_CODE = 100;
@@ -69,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         mEtUserPw = findViewById(R.id.etUserPw);
         mTvSignUp = findViewById(R.id.textSignUp);
 
+        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("User");
         users = new ArrayList<>();
 
@@ -86,21 +95,23 @@ public class LoginActivity extends AppCompatActivity {
             etUserId = mEtUserId.getText().toString().trim();
             etUserPw = mEtUserPw.getText().toString().trim();
 
-            for(User user : users) {
-                if (etUserId.equals(user.getId()) && etUserPw.equals(user.getPw())) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("user", user);
-                    startActivity(intent);
-                    Toast.makeText(getApplicationContext(),"환영합니다. " + user.getName() + "님!", Toast.LENGTH_LONG).show();
-                    finish();
-                    return;
-                } else if (etUserId.equals(user.getId()) && !etUserPw.equals(user.getPw())) {
-                    Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            signIn(etUserId, etUserPw);
 
-            }
-            Toast.makeText(getApplicationContext(), "존재하지 않는 회원입니다.", Toast.LENGTH_SHORT).show();
+//            for(User user : users) {
+//                if (etUserId.equals(user.getId()) && etUserPw.equals(user.getPw())) {
+//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                    intent.putExtra("user", user);
+//                    startActivity(intent);
+//                    Toast.makeText(getApplicationContext(),"환영합니다. " + user.getName() + "님!", Toast.LENGTH_LONG).show();
+//                    finish();
+//                    return;
+//                } else if (etUserId.equals(user.getId()) && !etUserPw.equals(user.getPw())) {
+//                    Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//            }
+//            Toast.makeText(getApplicationContext(), "존재하지 않는 회원입니다.", Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -141,6 +152,21 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     };
+
+    public void checkUsers(String email, boolean isSuccess) {
+        for(User user : users) {
+            if (isSuccess && user.getId().equals(email)) {
+                this.user = user;
+                Toast.makeText(getApplicationContext(),"환영합니다. " + user.getName() + "님!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if(user.getId().equals(email)) {
+                Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        Toast.makeText(getApplicationContext(), "존재하지 않는 회원입니다.", Toast.LENGTH_SHORT).show();
+    }
 
     public void checkPermission() {
         int hasFineLocationPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
@@ -204,5 +230,29 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public void signIn(final String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("firebaseAuthSignIn", "signInWithEmail:success");
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            checkUsers(email.substring(0, email.indexOf("@")), true);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("user", user);
+                            intent.putExtra("firebaseUser", firebaseUser);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("firebaseAuthSignIn", "signInWithEmail:failure", task.getException());
+                            checkUsers(email.substring(0, email.indexOf("@")), false);
+                        }
+                    }
+                });
     }
 }

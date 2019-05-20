@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -36,8 +37,13 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.gongumi.R;
 import com.example.gongumi.model.User;
 import com.example.gongumi.service.GpsTracker;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,11 +66,12 @@ public class SignUpActivity extends AppCompatActivity {
     // layout
     private RelativeLayout layout;
     private EditText currentEdit;
-    private EditText edit_id, edit_pw, edit_name;
+    private EditText edit_email, edit_pw, edit_name;
     private CircleImageView circleImageView_profile;
     private Button btn_profile, btn_back, btn_gps, btn_gps_cancel, btn_login;
 
     // firebase
+    private FirebaseAuth firebaseAuth;
     private DatabaseReference mDatabaseRef;
     private StorageReference mStorageRef;
 
@@ -94,7 +101,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_sign_up);
 
-        // database
+        // firebase
+        firebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("User");
         list_user = new ArrayList<>();
         getDatabase();
@@ -103,7 +111,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         // layout
         layout = findViewById(R.id.layout_sign_up);
-        edit_id = findViewById(R.id.edit_id);
+        edit_email = findViewById(R.id.edit_email);
         edit_pw = findViewById(R.id.edit_pw);
         edit_name = findViewById(R.id.edit_name);
         circleImageView_profile = findViewById(R.id.circleviewimage_profile);
@@ -113,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
         btn_gps_cancel = findViewById(R.id.btn_gps_cancel);
         btn_login = findViewById(R.id.btn_login);
 
-        currentEdit = edit_id;
+        currentEdit = edit_email;
 
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,8 +130,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        edit_id.setOnFocusChangeListener(EditFocusChangeListener);
-        edit_id.setOnKeyListener(EditKeyListener);
+        edit_email.setOnFocusChangeListener(EditFocusChangeListener);
+        edit_email.setOnKeyListener(EditKeyListener);
 
         edit_pw.setOnFocusChangeListener(EditFocusChangeListener);
         edit_pw.setOnKeyListener(EditKeyListener);
@@ -190,12 +198,12 @@ public class SignUpActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id = edit_id.getText().toString().trim();
+                String email = edit_email.getText().toString().trim();
                 String pw = edit_pw.getText().toString().trim();
                 String name = edit_name.getText().toString().trim();
                 String location = btn_gps.getText().toString().trim();
 
-                checkingUser(id, pw, name, location);
+                checkingUser(email, pw, name, location);
             }
         });
 
@@ -217,12 +225,12 @@ public class SignUpActivity extends AppCompatActivity {
         public void onFocusChange(View v, boolean hasFocus) {
             if(hasFocus) {
                 switch (v.getId()) {
-                    case R.id.edit_id:
-                        Log.d("current", "edit_id");
-                        if(currentEdit != edit_id)
+                    case R.id.edit_email:
+                        Log.d("current", "edit_email");
+                        if(currentEdit != edit_email)
                             changeEditBackground(currentEdit);
-                        edit_id.setBackground(getApplication().getResources().getDrawable(R.drawable.custom_input_button_gray));
-                        currentEdit = edit_id;
+                        edit_email.setBackground(getApplication().getResources().getDrawable(R.drawable.custom_input_button_gray));
+                        currentEdit = edit_email;
                         break;
                     case R.id.edit_pw:
                         Log.d("current", "edit_pw");
@@ -248,8 +256,8 @@ public class SignUpActivity extends AppCompatActivity {
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 switch (v.getId()) {
-                    case R.id.edit_id:
-                        hidekeyboard(edit_id);
+                    case R.id.edit_email:
+                        hidekeyboard(edit_email);
                         break;
                     case R.id.edit_pw:
                         hidekeyboard(edit_pw);
@@ -262,8 +270,8 @@ public class SignUpActivity extends AppCompatActivity {
                 return true;
             } else {
                 switch (v.getId()) {
-                    case R.id.edit_id:
-                        edit_id.setBackground(getApplication().getResources().getDrawable(R.drawable.custom_input_button_gray));
+                    case R.id.edit_email:
+                        edit_email.setBackground(getApplication().getResources().getDrawable(R.drawable.custom_input_button_gray));
                         break;
                     case R.id.edit_pw:
                         edit_pw.setBackground(getApplication().getResources().getDrawable(R.drawable.custom_input_button_gray));
@@ -548,20 +556,26 @@ public class SignUpActivity extends AppCompatActivity {
     } // getDatabase()
 
     // 유효성 검사
-    public void checkingUser(String id, String pw, String name, String loc) {
+    public void checkingUser(String email, String pw, String name, String loc) {
         String toastText = "";
         int count = 0;
 
-        if(id.equals("ID") || id.equals("")) {
-            toastText += "아이디";
+        if(email.equals("EMAIL") || email.equals("")) {
+            toastText += "이메일";
             count++;
         } else {
+            if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(SignUpActivity.this, "이메일 형식이 맞지 않습니다. 형식을 맞춰서 입력해주세요", Toast.LENGTH_SHORT).show();
+                return;
+            }
             for(User user : list_user) {
-                if(user.getId().equals(id)) {
-                    Toast.makeText(SignUpActivity.this, "중복된 아이디입니다. 다른 아이디를 입력해주세요.", Toast.LENGTH_LONG).show();
+                if(user.getId().equals(email.substring(0, email.indexOf("@")))) {
+                    Toast.makeText(SignUpActivity.this, "이미 등록된 이메일입니다. 다른 이메일을 입력해주세요.", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
+
+
         }
         if(pw.equals("PW") || pw.equals("")) {
             toastText += (count > 0) ? ", " : " ";
@@ -588,13 +602,35 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
         }
         else {
-            user = new User(id, pw, name, loc);
-            mDatabaseRef.child(id).setValue(user);
-            uploadProfilePhoto();
-            Toast.makeText(SignUpActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+            createUser(email, pw, name, loc);
         }
     } // checkingUser()
+
+    public void createUser(final String email, final String password, final String name, final String loc) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("firebaseAuthSuccess", email + " " + password);
+                            signUp(email.substring(0, email.indexOf("@")), password, name, loc);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.d("firebaseAuth", email + " " + password);
+                            Toast.makeText(SignUpActivity.this, "회원가입에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void signUp(String id, String pw, String name, String loc) {
+        user = new User(id, pw, name, loc);
+        mDatabaseRef.child(id).setValue(user);
+        uploadProfilePhoto();
+        Toast.makeText(SignUpActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
