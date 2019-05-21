@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(R.drawable.tab_home_click,  new HomeFragment());
-        adapter.addFragment(R.drawable.tab_category, new CategoryFragment());
+        adapter.addFragment(R.drawable.tab_home_click, new HomeFragment());
+//        /*adapter.addFragment(R.drawable.tab_category, new CategoryFragment());*/
         adapter.addFragment(R.drawable.tab_write, new PostFragment());
         adapter.addFragment(R.drawable.tab_setting, new SettingFragment());
         mViewPager.setAdapter(adapter);
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void changeToolbar() {
-        if(pos == 2) {
+        if (pos == 2) {
             layout_toolbar_post.setVisibility(View.VISIBLE);
             layout_toolbar.setVisibility(View.GONE);
         } else {
@@ -225,12 +225,11 @@ public class MainActivity extends AppCompatActivity {
                         btn_next.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btn_next));
                         break;
                 }
-            }
-            else {
+            } else {
                 switch (post_pos) {
                     case 1:
                         Log.d("test", post.getHashtag() + "");
-                        if(post.getHashtag() == null) {
+                        if (post.getHashtag() == null) {
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
@@ -240,8 +239,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                             alert.setMessage("해시태그를 입력해주세요");
                             alert.show();
-                        }
-                        else {
+                        } else {
                             transaction.replace(R.id.frame_post, PostTermFragment.newInstance(post));
                             transaction.commit();
 
@@ -260,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 3:
                         PostNumberFragment fragment = (PostNumberFragment) fragmentManager.findFragmentById(R.id.frame_post);
-                        if(fragment.checkText()) {
+                        if (fragment.checkText()) {
                             transaction.replace(R.id.frame_post, PostFragment.newInstance(post));
                             transaction.commit();
 
@@ -275,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 4:
                         final PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
-                        if(postFragment.check()) {
+                        if (postFragment.check()) {
                             post.setUserId(user.getId());
                             post.setHashtag(post.getHashtag().trim());
 
@@ -317,25 +315,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case THUMBNAIL_PHOTO_REQUEST_CODE:
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     ClipData clipData = data.getClipData();
-                    if(clipData != null) {
-                        if(clipData.getItemCount() > 3) {
+                    if (clipData != null) {
+                        if (clipData.getItemCount() > 3) {
                             Toast.makeText(this, "썸네일은 최대 3장까지만 선택할 수 있습니다", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.frame_post);
-                            for(int i = 0; i < clipData.getItemCount(); i++) {
+                            for (int i = 0; i < clipData.getItemCount(); i++) {
                                 fragment.adapter.addPostThumbnailAdapter(clipData.getItemAt(i).getUri());
                             }
                             fragment.adapter.notifyDataSetChanged();
                         }
-                    }
-                    else {
+                    } else {
                         //Toast.makeText(this, "이 기기는 사진을 여러 장 선택할 수 없습니다", Toast.LENGTH_SHORT).show();
-                        if(data.getData() != null) {
+                        if (data.getData() != null) {
                             Log.d("test", "getData");
                             PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.frame_post);
                             fragment.adapter.addPostThumbnailAdapter(data.getData());
@@ -349,8 +345,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void uploadThumbnailPhoto(long time, ArrayList<Uri> list) {
         StorageReference mStorageRef;
-        for(int i = 0; i < list.size(); i++) {
-            mStorageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/" + time + "/thumbnail" +  (i+1)  + ".jpg");
+        for (int i = 0; i < list.size(); i++) {
+            mStorageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/" + time + "/thumbnail" + (i + 1) + ".jpg");
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setContentType("image/jpg")
                     .build();
