@@ -27,10 +27,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -43,6 +47,9 @@ public class MessageActivity extends AppCompatActivity {
     private String chatRoomUid;
 
     private RecyclerView mRvMessage;
+
+    // 시간 표시
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +83,7 @@ public class MessageActivity extends AppCompatActivity {
                     Chat.Comment comment = new Chat.Comment();
                     comment.uid = uid;
                     comment.message = mEtInputMessage.getText().toString();
+                    comment.timestamp = ServerValue.TIMESTAMP;
                     FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -187,6 +195,13 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.mTvMessage.setTextSize(25);
                 messageViewHolder.mLlMain.setGravity(Gravity.LEFT);
             }
+            // 시간 포맷 설정
+            long unixTime = (long) comments.get(position).timestamp;
+            Date date = new Date(unixTime);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            String time = simpleDateFormat.format(date);
+            messageViewHolder.mTvTimestamp.setText(time);
+
         }
 
         @Override
@@ -200,6 +215,7 @@ public class MessageActivity extends AppCompatActivity {
             public ImageView mIvProfile;
             public LinearLayout mLlDestination;
             public LinearLayout mLlMain;
+            public TextView mTvTimestamp;
 
             public MessageViewHolder(@NonNull View view) {
                 super(view);
@@ -208,6 +224,7 @@ public class MessageActivity extends AppCompatActivity {
                 mIvProfile = view.findViewById(R.id.messageItem_imageview_profile);
                 mLlDestination = view.findViewById(R.id.messageItem_linearLayout_destination);
                 mLlMain = view.findViewById(R.id.messageItem_linearLayout_main);
+                mTvTimestamp = view.findViewById(R.id.messageItem_textview_timestamp);
             }
         }
     }

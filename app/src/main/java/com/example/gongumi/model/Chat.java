@@ -11,5 +11,6 @@ public class Chat {
     public static class Comment{
        public String uid;
        public String message;
+       public Object timestamp;
     }
 }
