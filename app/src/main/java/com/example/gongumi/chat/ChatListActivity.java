@@ -1,5 +1,8 @@
 package com.example.gongumi.chat;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,13 +25,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 public class ChatListActivity extends AppCompatActivity {
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd hh:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +56,12 @@ public class ChatListActivity extends AppCompatActivity {
         // 채팅목록
         private List<Chat> chats = new ArrayList<>();
         private String uid;
+        private ArrayList<String> destinationUsers = new ArrayList<>();
+
         public ChatRecyclerViewAdapter() {
             uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            FirebaseDatabase.getInstance().getReference().child("chatroom").orderByChild("users/"+uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("chatroom").orderByChild("users/"+uid).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     chats.clear();
@@ -73,7 +86,7 @@ public class ChatListActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
             final CustomViewHolder customViewHolder = (CustomViewHolder)holder;
             String destinationUid = null;
 
@@ -81,6 +94,7 @@ public class ChatListActivity extends AppCompatActivity {
             for (String user: chats.get(position).users.keySet()){
                 if (!user.equals(uid)){
                     destinationUid = user;
+                    destinationUsers.add(destinationUid);
                 }
             }
             FirebaseDatabase.getInstance().getReference().child("users").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -108,6 +122,26 @@ public class ChatListActivity extends AppCompatActivity {
             commentMap.putAll(chats.get(position).comments);
             String lastMessageKey = (String) commentMap.keySet().toArray()[0];
             customViewHolder.textView_last_message.setText(chats.get(position).comments.get(lastMessageKey).message);
+
+            customViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ChatListActivity.this, MessageActivity.class);
+                    // 누구랑 대화할지 넘겨주기
+                    intent.putExtra("destinationUid", destinationUsers.get(position));
+
+                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(ChatListActivity.this, R.anim.fromright, R.anim.toleft);
+                    startActivity(intent, activityOptions.toBundle());
+                }
+            });
+            // 시간 포맷
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+
+            long unixTime = (long) chats.get(position).comments.get(lastMessageKey).timestamp;
+
+            Date date = new Date(unixTime);
+            customViewHolder.textView_timestamp.setText(simpleDateFormat.format(date));
+
         }
 
         @Override
@@ -119,6 +153,7 @@ public class ChatListActivity extends AppCompatActivity {
             public ImageView imageView;
             public TextView textView_title;
             public TextView textView_last_message;
+            public TextView textView_timestamp;
 
             public CustomViewHolder(View view) {
                 super(view);
@@ -126,7 +161,7 @@ public class ChatListActivity extends AppCompatActivity {
                 imageView = findViewById(R.id.chatitem_imageview);
                 textView_title = findViewById(R.id.chatitem_textview);
                 textView_last_message = findViewById(R.id.chatitem_textview_last_message);
-
+                textView_timestamp = findViewById(R.id.chatitem_textview_timestamp);
 
             }
         }
