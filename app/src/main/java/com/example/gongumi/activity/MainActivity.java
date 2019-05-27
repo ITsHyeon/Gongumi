@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(R.drawable.tab_home_click, new HomeFragment());
-//        /*adapter.addFragment(R.drawable.tab_category, new CategoryFragment());*/
+        adapter.addFragment(R.drawable.tab_category, new CategoryFragment());
         adapter.addFragment(R.drawable.tab_write, new PostFragment());
         adapter.addFragment(R.drawable.tab_setting, new SettingFragment());
         mViewPager.setAdapter(adapter);

@@ -10,123 +10,118 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ViewFlipper
-         android:id="@+id/flipper"
-         android:layout_width="match_parent"
-         android:layout_height="250dp">
-
-        <ImageView
-            android:id="@+id/img01"
+        <ViewFlipper
+            android:id="@+id/flipper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#D3D3D3"/>
+            android:layout_height="250dp">
 
-        <ImageView
-            android:id="@+id/img02"
+            <ImageView
+                android:id="@+id/img01"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#D3D3D3" />
+
+            <ImageView
+                android:id="@+id/img02"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#D3D3D3" />
+
+            <ImageView
+                android:id="@+id/img03"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#D3D3D3" />
+
+        </ViewFlipper>
+
+        <TextView
+            android:id="@+id/product"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#D3D3D3"/>
+            android:layout_height="40dp"
+            android:layout_below="@+id/flipper"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:text="상품명"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/img03"
+        <TextView
+            android:id="@+id/price"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#D3D3D3"/>
+            android:layout_height="40dp"
+            android:layout_below="@+id/product"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:text="가격"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
 
-    </ViewFlipper>
+        <TextView
+            android:id="@+id/hashtag"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/price"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:text="해시태그"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/product"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="상품명"
-        android:textSize="18sp"
-        android:textColor="@color/textColor"
-        android:fontFamily="@font/notosans_regular"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:layout_below="@+id/flipper"
-        />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_below="@+id/hashtag"
+            android:padding="20dp" />
 
-    <TextView
-        android:id="@+id/price"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="가격"
-        android:textSize="18sp"
-        android:textColor="@color/textColor"
-        android:fontFamily="@font/notosans_regular"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:layout_below="@+id/product"
-        />
+        <TextView
+            android:id="@+id/people"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/progressBar"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:text="명이 참여했습니다."
+            android:textColor="@color/textColor"
+            android:textSize="15sp" />
 
-    <TextView
-        android:id="@+id/hashtag"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="해시태그"
-        android:textSize="18sp"
-        android:textColor="@color/textColor"
-        android:fontFamily="@font/notosans_regular"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:layout_below="@+id/price"
-        />
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/people"
+            android:background="@drawable/custom_post_layout"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="15dp"
+            android:text="설명"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_below="@+id/hashtag"
-        android:padding="20dp"/>
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/info"
+            android:fontFamily="@font/notosans_regular"
+            android:padding="15dp"
+            android:text="이곳에 설명이 나타납니다."
+            android:textColor="@color/textColor"
+            android:textSize="13sp" />
 
-    <TextView
-        android:id="@+id/people"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="명이 참여했습니다."
-        android:textSize="15sp"
-        android:textColor="@color/textColor"
-        android:fontFamily="@font/notosans_regular"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:layout_below="@+id/progressBar"
-        android:layout_marginBottom="10dp"
-        />
-
-    <TextView
-        android:id="@+id/info"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="설명"
-        android:textSize="18sp"
-        android:textColor="@color/textColor"
-        android:fontFamily="@font/notosans_regular"
-        android:gravity="center_vertical"
-        android:background="@drawable/custom_post_layout"
-        android:paddingStart="15dp"
-        android:layout_below="@+id/people"
-        />
-
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/info"
-        android:text="이곳에 설명이 나타납니다."
-        android:textSize="13sp"
-        android:textColor="@color/textColor"
-        android:fontFamily="@font/notosans_regular"
-        android:padding="15dp"/>
-
-    <Button
-        android:id="@+id/btJoin"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Join"
-        android:layout_alignParentBottom="true"/>
+        <Button
+            android:id="@+id/btJoin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:text="Join" />
 
     </RelativeLayout>
 </ScrollView>

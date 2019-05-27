@@ -38,6 +38,7 @@
                 android:layout_height="60dp"
                 android:background="@drawable/custom_input_button_gray"
                 android:fontFamily="@font/notosans_light"
+                android:inputType="textEmailAddress"
                 android:hint="EMAIL"
                 android:maxLength="40"
                 android:paddingStart="17dp"

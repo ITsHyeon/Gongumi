@@ -51,7 +51,7 @@ public class MessageActivity extends AppCompatActivity {
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
-        // destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
+        destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
         mBtSendMessage = findViewById(R.id.message_btn);
         mEtInputMessage = findViewById(R.id.message_edit);
 
@@ -66,7 +66,7 @@ public class MessageActivity extends AppCompatActivity {
                 if (chatRoomUid == null) {
                     mBtSendMessage.setEnabled(false);
                     // 채팅방 이름 임의로 setting
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").push().setValue(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    FirebaseDatabase.getInstance().getReference("Chat").child("chatrooms").push().setValue(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             checkChatRoom();
@@ -89,7 +89,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     void checkChatRoom() {
-        FirebaseDatabase.getInstance().getReference().child("chatrooms").orderByChild("users/" + uid).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Chat").child("chatrooms").orderByChild("users/" + uid).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot item : dataSnapshot.getChildren()) {
