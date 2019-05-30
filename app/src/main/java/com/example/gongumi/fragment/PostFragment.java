@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.gongumi.R;
-import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.model.Post;
 
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static com.example.gongumi.activity.MainActivity.THUMBNAIL_PHOTO_REQUEST_CODE;
-import static com.example.gongumi.fragment.PostCategoryFragment.newInstance;
 
 public class PostFragment extends Fragment {
 
@@ -82,7 +80,7 @@ public class PostFragment extends Fragment {
         if(post_pos != 4) {
             post = new Post();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
+            transaction.replace(R.id.frame_post, PostHashtagFragment.newInstance(post));
             transaction.commit();
         }
         else {
