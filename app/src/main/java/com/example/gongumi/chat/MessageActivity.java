@@ -141,6 +141,7 @@ public class MessageActivity extends AppCompatActivity {
             });
         }
 
+        // TODO : 강의에서 getMessageList() 바뀐 부분 찾기
         void getMessageList() {
             FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").addValueEventListener(new ValueEventListener() {
                 @Override

@@ -37,8 +37,10 @@ import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -46,6 +48,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
 
@@ -145,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
         btn_previous.setOnClickListener(PostClickListener);
         btn_next.setOnClickListener(PostClickListener);
 
+        // TODO : 푸시 알림
+//        passPushTokenToServer();
     }
 
     @Override
@@ -369,4 +375,13 @@ public class MainActivity extends AppCompatActivity {
         }
     } // uploadProfilePhoto()
 
+    // TODO : 푸시알림
+   void passPushTokenToServer(){
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Map<String, Object> map = new HashMap<>();
+        map.put("pushToken", token);
+
+        FirebaseDatabase.getInstance().getReference().child("USER/").child(user.getId()).updateChildren(map);
+    }
 }
