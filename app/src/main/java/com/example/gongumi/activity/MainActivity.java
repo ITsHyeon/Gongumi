@@ -17,17 +17,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.gongumi.R;
 import com.example.gongumi.fragment.CategoryFragment;
 import com.example.gongumi.fragment.HomeFragment;
-import com.example.gongumi.fragment.PostCategoryFragment;
+import com.example.gongumi.fragment.PostHashtagFragment;
 import com.example.gongumi.fragment.PostFragment;
 import com.example.gongumi.fragment.PostNumberFragment;
 import com.example.gongumi.fragment.PostTermFragment;
@@ -198,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                         alert.show();
                         break;
                     case 2:
-                        transaction.replace(R.id.frame_post, PostCategoryFragment.newInstance(post));
+                        transaction.replace(R.id.frame_post, PostHashtagFragment.newInstance(post));
                         transaction.addToBackStack(null);
                         transaction.commit();
 
@@ -281,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
                         final PostFragment postFragment = (PostFragment) fragmentManager.findFragmentById(R.id.frame_post);
                         if (postFragment.check()) {
                             post.setUserId(user.getId());
+                            post.setUserUid(user.getUid());
                             post.setHashtag(post.getHashtag().trim());
 
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);

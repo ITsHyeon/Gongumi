@@ -80,6 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     // profile
     private Uri photoUri = null;
+    private String photoDownloadUrl = "";
     private static final int PROFILE_PHOTO_REQUEST_CODE = 10;
 
     // gps
@@ -294,8 +295,8 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     // 프로필 사진 스토리지에 올리기
-    public void uploadProfilePhoto() {
-        mStorageRef = FirebaseStorage.getInstance().getReference().child("user_profile/" + user.getId() + ".jpg");
+    public void uploadProfilePhoto(String id) {
+        mStorageRef = FirebaseStorage.getInstance().getReference().child("user_profile/" + id + ".jpg");
         if(photoUri != null) {
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setContentType("image/jpg")
@@ -307,6 +308,20 @@ public class SignUpActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 //                    Toast.makeText(SignUpActivity.this, "성공", Toast.LENGTH_SHORT).show();
                     Log.d("프로필 사진 업로드", "성공");
+                    mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            photoDownloadUrl = uri.toString();
+                            Log.d("photoDownloadUrl", photoDownloadUrl);
+                            user.setProfileUrl(photoDownloadUrl);
+                            signUp();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
                 }
             });
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -316,6 +331,9 @@ public class SignUpActivity extends AppCompatActivity {
                     Log.e("프로필 사진 업로드", "실패");
                 }
             });
+        }
+        else {
+            signUp();
         }
     } // uploadProfilePhoto()
 
@@ -614,7 +632,9 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("firebaseAuthSuccess", email + " " + password);
-                            signUp(email.substring(0, email.indexOf("@")), password, name, loc);
+                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                            user = new User(email.substring(0, email.indexOf("@")), password, firebaseUser.getUid(), name, loc, photoDownloadUrl);
+                            uploadProfilePhoto(user.getId());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d("firebaseAuth", email + " " + password);
@@ -624,10 +644,8 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    public void signUp(String id, String pw, String name, String loc) {
-        user = new User(id, pw, name, loc);
-        mDatabaseRef.child(id).setValue(user);
-        uploadProfilePhoto();
+    public void signUp() {
+        mDatabaseRef.child(user.getId()).setValue(user);
         Toast.makeText(SignUpActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

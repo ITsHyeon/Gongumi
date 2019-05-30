@@ -1,13 +1,8 @@
 package com.example.gongumi.fragment;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +19,7 @@ import com.example.gongumi.model.Post;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
 
-public class PostCategoryFragment extends Fragment {
+public class PostHashtagFragment extends Fragment {
 
     private Post post;
 
@@ -35,8 +30,8 @@ public class PostCategoryFragment extends Fragment {
     private int index_hashtag = 0;
     private String hashtags = "";
 
-    public static PostCategoryFragment newInstance(Post post) {
-        PostCategoryFragment fragment = new PostCategoryFragment();
+    public static PostHashtagFragment newInstance(Post post) {
+        PostHashtagFragment fragment = new PostHashtagFragment();
         Bundle bundle =  new Bundle(1);
         bundle.putSerializable("post", post);
         fragment.setArguments(bundle);
@@ -56,7 +51,7 @@ public class PostCategoryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_post_category, container, false);
+        View view = inflater.inflate(R.layout.fragment_post_hashtag, container, false);
         edit_hashtag = view.findViewById(R.id.edit_hashtag);
         btn_done = view.findViewById(R.id.btn_done);
         text_hashtags[0] = view.findViewById(R.id.text_hashtag1);
@@ -105,6 +100,17 @@ public class PostCategoryFragment extends Fragment {
             hidekeyboard();
         }
         else {
+            int start = 1;
+            int end = 0;
+            for(int i = 0; i < index_hashtag; i++) {
+                end = hashtags.indexOf(" ", start);
+                if(editText.equals(hashtags.substring(start, end))) {
+                    Toast.makeText(getContext(), "중복된 해시태그입니다.\n 다른 해시태그를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    edit_hashtag.setText("");
+                    return;
+                }
+                start = end + 2;
+            }
             if(editText.indexOf("#") != 0) {
                 editText = "#" + editText;
             }
