@@ -332,6 +332,9 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             });
         }
+        else {
+            signUp();
+        }
     } // uploadProfilePhoto()
 
     public static int dpToPx(Context context, int dpValue) {
