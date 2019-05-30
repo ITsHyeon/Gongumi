@@ -14,15 +14,17 @@ public class User implements Serializable {
 
     // TODO : 채팅
     private String uid; // 누구와 채팅하고 있는지 상대방의 id를 받아옴
+    private String profileUrl;
 
     public User() {}
 
-    public User(String id, String pw, String uid, String name, String location) {
+    public User(String id, String pw, String uid, String name, String location, String profileUrl) {
         this.id = id;
         this.pw = pw;
         this.uid = uid;
         this.name = name;
         this.location = location;
+        this.profileUrl = profileUrl;
     }
 
     public void setId(String id) {
@@ -65,6 +67,14 @@ public class User implements Serializable {
         return location;
     }
 
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
     @Exclude
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
@@ -73,6 +83,7 @@ public class User implements Serializable {
         result.put("uid", uid);
         result.put("name", name);
         result.put("location", location);
+        result.put("profileUrl", profileUrl);
 
         return result;
     }
