@@ -614,7 +614,8 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("firebaseAuthSuccess", email + " " + password);
-                            signUp(email.substring(0, email.indexOf("@")), password, name, loc);
+                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                            signUp(email.substring(0, email.indexOf("@")), password, name, loc, firebaseUser.getUid());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d("firebaseAuth", email + " " + password);
@@ -624,10 +625,10 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    public void signUp(String id, String pw, String name, String loc) {
-        user = new User(id, pw, name, loc);
-        mDatabaseRef.child(id).setValue(user);
+    public void signUp(String id, String pw, String name, String loc, String uid) {
+        user = new User(id, pw, uid, name, loc);
         uploadProfilePhoto();
+        mDatabaseRef.child(id).setValue(user);
         Toast.makeText(SignUpActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

@@ -12,14 +12,15 @@ public class User implements Serializable {
     private String name; // 이름
     private String location; // 위치
 
-    // TODO : 채팅팅
-   public String uid; // 누구와 채팅하고 있는지 상대방의 id를 받아옴
+    // TODO : 채팅
+    private String uid; // 누구와 채팅하고 있는지 상대방의 id를 받아옴
 
     public User() {}
 
-    public User(String id, String pw, String name, String location) {
+    public User(String id, String pw, String uid, String name, String location) {
         this.id = id;
         this.pw = pw;
+        this.uid = uid;
         this.name = name;
         this.location = location;
     }
@@ -38,6 +39,14 @@ public class User implements Serializable {
 
     public String getPw() {
         return pw;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
     }
 
     public void setName(String name) {
@@ -61,6 +70,7 @@ public class User implements Serializable {
         HashMap<String, Object> result = new HashMap<>();
         result.put("id", id);
         result.put("pw", pw);
+        result.put("uid", uid);
         result.put("name", name);
         result.put("location", location);
 
