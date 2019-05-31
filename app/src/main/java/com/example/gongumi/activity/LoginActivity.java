@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -233,26 +234,36 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signIn(final String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("firebaseAuthSignIn", "signInWithEmail:success");
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            checkUsers(email.substring(0, email.indexOf("@")), true);
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("user", user);
-                            intent.putExtra("firebaseUser", firebaseUser);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("firebaseAuthSignIn", "signInWithEmail:failure", task.getException());
-                            checkUsers(email.substring(0, email.indexOf("@")), false);
+        if(email.equals("EMAIL") || email.equals("") || password.equals("PW") || password.equals("")) {
+            Toast.makeText(this, "이메일과 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "이메일 형식에 맞지 않습니다. 이메일을 올바르게 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("firebaseAuthSignIn", "signInWithEmail:success");
+                                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                checkUsers(email.substring(0, email.indexOf("@")), true);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra("user", user);
+                                intent.putExtra("firebaseUser", firebaseUser);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("firebaseAuthSignIn", "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.\n이메일과 비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 }
