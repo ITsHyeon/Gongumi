@@ -65,7 +65,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:visibility="invisible" />
 
                 <Button
@@ -81,7 +81,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:visibility="invisible" />
 
                 <Button
@@ -97,7 +97,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:visibility="invisible" />
             </LinearLayout>
 
@@ -121,7 +121,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:visibility="invisible" />
 
                 <Button
@@ -137,7 +137,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:visibility="invisible" />
             </LinearLayout>
         </RelativeLayout>
