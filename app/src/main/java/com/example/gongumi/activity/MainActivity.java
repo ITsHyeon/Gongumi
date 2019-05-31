@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         btn_next.setOnClickListener(PostClickListener);
 
         // TODO : 푸시 알림
-//        passPushTokenToServer();
+        passPushTokenToServer();
     }
 
     @Override
@@ -381,6 +381,6 @@ public class MainActivity extends AppCompatActivity {
         Map<String, Object> map = new HashMap<>();
         map.put("pushToken", token);
 
-        FirebaseDatabase.getInstance().getReference().child("USER/").child(user.getId()).updateChildren(map);
+        FirebaseDatabase.getInstance().getReference().child("User/").child(user.getId()).updateChildren(map);
     }
 }
