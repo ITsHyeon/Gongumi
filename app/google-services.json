@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "304643240952-8tod49c4tk37hsem5tderkq85kk0jn51.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gongumi",
+            "certificate_hash": "064ea16be439d717a19a118f4f56af3bef4e039c"
+          }
+        },
+        {
           "client_id": "304643240952-ibcbsqc1cs6dbt6sj0lrq1ks5o5qtj9b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

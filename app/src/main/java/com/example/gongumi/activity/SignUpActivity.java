@@ -638,7 +638,7 @@ public class SignUpActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d("firebaseAuth", email + " " + password);
-                            Toast.makeText(SignUpActivity.this, "회원가입에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "회원가입에 실패했습니다.\n이메일과 비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
