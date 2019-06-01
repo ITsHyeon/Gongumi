@@ -69,6 +69,7 @@ public class SettingFragment extends Fragment {
     // database
     private DatabaseReference mDatabase;
     private User user;
+    Map<String, Object> values = new HashMap<>();
 
     // storage
     private StorageReference storageRef;
@@ -169,7 +170,8 @@ public class SettingFragment extends Fragment {
         double longitude = gpsTracker.getLongitude();
 
         String address = getCurrentAddress(latitude, longitude);
-
+        values.put("location", address);
+        FirebaseDatabase.getInstance().getReference().child("User/").child(user.getId()).updateChildren(values);
         mTvAddress.setText(address);
     }
     // GPS 퍼미션 확인

@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.gongumi.R;
+import com.example.gongumi.chat.MessageActivity;
 import com.example.gongumi.fragment.CategoryFragment;
 import com.example.gongumi.fragment.HomeFragment;
 import com.example.gongumi.fragment.PostHashtagFragment;
@@ -31,6 +32,7 @@ import com.example.gongumi.fragment.PostNumberFragment;
 import com.example.gongumi.fragment.PostTermFragment;
 import com.example.gongumi.fragment.SettingFragment;
 import com.example.gongumi.adapter.PagerAdapter;
+import com.example.gongumi.model.Chat;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,7 +55,7 @@ import static com.example.gongumi.fragment.PostFragment.post_pos;
 
 public class MainActivity extends AppCompatActivity {
     private static RelativeLayout layout_toolbar, layout_toolbar_post;
-    private Button btn_previous, btn_next;
+    private Button btn_previous, btn_next, btn_chat;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
 
@@ -62,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
     private User user;
     public Post post = new Post(); // fragment와 통신을 해야하기 때문에 public
+
+    // 채팅방 만들기
+    private String uid;
+    private String chatRoomUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +83,22 @@ public class MainActivity extends AppCompatActivity {
         user = (User) intent.getSerializableExtra("user");
 
         layout_toolbar = findViewById(R.id.layout_toolbar);
+
         layout_toolbar_post = findViewById(R.id.layout_toolbar_post);
         btn_previous = findViewById(R.id.btn_previous);
         btn_next = findViewById(R.id.btn_next);
+        btn_chat = findViewById(R.id.btn_chat);
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+
+        btn_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(MainActivity.this, MessageActivity.class);
+                startActivity(intent1);
+            }
+        });
 
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(R.drawable.tab_home_click, new HomeFragment());
@@ -314,7 +330,19 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post");
         mDatabaseRef.child(String.valueOf(post.getStartDay().getTime())).setValue(post);
         Toast.makeText(this, "새로운 공구가 등록되었습니다!", Toast.LENGTH_SHORT).show();
+
+        addChatroom();
     }
+
+    public void addChatroom() {
+
+        Chat chat = new Chat();
+        chat.users.put(user.getUid(), true);
+
+        FirebaseDatabase.getInstance().getReference().child("Post").child(String.valueOf(post.getStartDay().getTime())).child("chatroom").push().setValue(chat);
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -375,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
     } // uploadProfilePhoto()
 
     // TODO : 푸시알림
-   void passPushTokenToServer(){
+    void passPushTokenToServer() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String token = FirebaseInstanceId.getInstance().getToken();
         Map<String, Object> map = new HashMap<>();
