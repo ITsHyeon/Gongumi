@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context=".fragment.CategoryFragment">
+    tools:context=".fragment.CategoryFragment"
+    android:id="@+id/frame_search"
+    >
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout

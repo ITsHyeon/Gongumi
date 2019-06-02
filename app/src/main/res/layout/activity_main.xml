@@ -82,6 +82,40 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/layout_toolbar_cate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:visibility="gone"
+            android:background="@drawable/custom_toolbar_layout"
+            >
+            <Button
+                android:id="@+id/cate_previous"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/btn_prev"
+                android:visibility="invisible"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:src="@drawable/logo"
+                android:layout_centerHorizontal="true"
+                />
+            <Button
+                android:id="@+id/cate_chat"
+                android:background="@drawable/icon_chat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
