@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.gongumi.R;
+import com.example.gongumi.chat.ChatListActivity;
 import com.example.gongumi.chat.MessageActivity;
 import com.example.gongumi.fragment.CategoryFragment;
 import com.example.gongumi.fragment.HomeFragment;
@@ -49,6 +50,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         btn_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(MainActivity.this, MessageActivity.class);
+                Intent intent1 = new Intent(MainActivity.this, ChatListActivity.class);
                 startActivity(intent1);
             }
         });
@@ -340,7 +342,6 @@ public class MainActivity extends AppCompatActivity {
         chat.users.put(user.getUid(), true);
 
         FirebaseDatabase.getInstance().getReference().child("Post").child(String.valueOf(post.getStartDay().getTime())).child("chatroom").push().setValue(chat);
-
     }
 
 

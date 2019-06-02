@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,6 +57,11 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 액션바 없애기
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_message);
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
@@ -91,7 +97,8 @@ public class MessageActivity extends AppCompatActivity {
                     Chat.Comment comment = new Chat.Comment();
                     comment.uid = uid;
                     comment.message = mEtInputMessage.getText().toString();
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child("-LgIAfcMOPRKQkRZkYeq").child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    comment.timestamp = ServerValue.TIMESTAMP;
+                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             mEtInputMessage.setText("");
@@ -153,7 +160,7 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         void getMessageList(){
-            FirebaseDatabase.getInstance().getReference().child("chatrooms").child("-LgIAfcMOPRKQkRZkYeq").child("comments").addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     comments.clear();
@@ -216,6 +223,13 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.textView_message.setTextSize(25);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
             }
+
+            // 시간 포맷 설정
+            long unixTime = (long) comments.get(position).timestamp;
+            Date date = new Date(unixTime);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            String time = simpleDateFormat.format(date);
+            messageViewHolder.textView_timestamp.setText(time);
         }
 
         @Override
@@ -229,6 +243,7 @@ public class MessageActivity extends AppCompatActivity {
             public ImageView imageView_profile;
             public LinearLayout linearLayout_destination;
             public LinearLayout linearLayout_main;
+            public TextView textView_timestamp;
 
             public MessageViewHolder(View view) {
                 super(view);
@@ -237,6 +252,8 @@ public class MessageActivity extends AppCompatActivity {
                 imageView_profile = view.findViewById(R.id.messageItem_imageView_profile);
                 linearLayout_destination = view.findViewById(R.id.messageItem_linearLayout_destination);
                 linearLayout_main = view.findViewById(R.id.messageItem_linearLayout_main);
+                textView_timestamp = view.findViewById(R.id.messageItem_textView_timestamp);
+
             }
         }
     }

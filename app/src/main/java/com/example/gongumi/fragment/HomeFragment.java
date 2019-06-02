@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
+                // Get Post object and use the values to ugitpdate the UI
                 items.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     Post post = data.getValue(Post.class);

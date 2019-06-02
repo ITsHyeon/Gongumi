@@ -15,6 +15,8 @@ public class Post implements Serializable {
     private String content; // 설명
     private String url; // 상품 url
 
+
+
     public Post() {}
     public Post(String userId, String userUid, String hashtag, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url) {
         this.userId = userId;

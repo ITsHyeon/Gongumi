@@ -140,6 +140,7 @@ public class HomePostFragment extends Fragment {
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO : 채팅 추가
                 CustomHomePostDialog customDialog2 = new CustomHomePostDialog(getActivity());
                 customDialog2.callFunction("수량을 입력해주세요", "qty", user.getId(), time_text);
 
