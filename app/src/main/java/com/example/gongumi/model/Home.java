@@ -13,6 +13,7 @@ public class Home {
     String content;
     Date startDay;
     String time;
+    int imgCount;
 
     public String getProduct() {
         return this.product;
@@ -38,7 +39,15 @@ public class Home {
 
     public String getTime() { return time; }
 
-    public Home(String product, String price, String hashtag, int progress, int people, String content, Date startDay) {
+    public int getImgCount() {
+        return imgCount;
+    }
+
+    public void setImgCount(int imgCount) {
+        this.imgCount = imgCount;
+    }
+
+    public Home(String product, String price, String hashtag, int progress, int people, String content, Date startDay, int imgCount) {
         this.product = product;
         this.price = price;
         this.hashtag = hashtag;
@@ -47,6 +56,7 @@ public class Home {
         this.content = content;
         this.startDay = startDay;
         this.time = String.valueOf(startDay.getTime());
+        this.imgCount = imgCount;
     }
 
 }

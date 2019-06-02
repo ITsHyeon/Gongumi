@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_previous, btn_next, btn_chat;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private PagerAdapter adapter;
 
     private static int pos;
     public static final int THUMBNAIL_PHOTO_REQUEST_CODE = 10;
@@ -102,11 +103,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(R.drawable.tab_home_click, new HomeFragment());
-        adapter.addFragment(R.drawable.tab_category, new CategoryFragment());
-        adapter.addFragment(R.drawable.tab_write, new PostFragment());
-        adapter.addFragment(R.drawable.tab_setting, new SettingFragment());
+        adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(R.drawable.tab_home_click, "홈", new HomeFragment());
+        adapter.addFragment(R.drawable.tab_category, "카테고리", new CategoryFragment());
+        adapter.addFragment(R.drawable.tab_write, "글쓰기", new PostFragment());
+        adapter.addFragment(R.drawable.tab_setting, "설정", new SettingFragment());
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
@@ -189,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
             if (v.getId() == R.id.btn_previous) {
                 Log.d("test", post_pos + "");
                 switch (post_pos) {
@@ -299,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
                             post.setUserId(user.getId());
                             post.setUserUid(user.getUid());
                             post.setHashtag(post.getHashtag().trim());
+                            post.setLocation(user.getLocation());
 
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -312,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     post.setStartDay(new Date());
                                     addPost(post);
+                                    adapter.notifyDataSetChanged();
                                     uploadThumbnailPhoto(post.getStartDay().getTime(), postFragment.adapter.getList());
                                     mTabLayout.setScrollPosition(0, 0f, true);
                                     mViewPager.setCurrentItem(0);
@@ -362,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
                                 fragment.adapter.addPostThumbnailAdapter(clipData.getItemAt(i).getUri());
                             }
                             fragment.adapter.notifyDataSetChanged();
+                            post.setImgCount(fragment.adapter.getItemCount());
                         }
                     } else {
                         //Toast.makeText(this, "이 기기는 사진을 여러 장 선택할 수 없습니다", Toast.LENGTH_SHORT).show();
@@ -370,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
                             PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.frame_post);
                             fragment.adapter.addPostThumbnailAdapter(data.getData());
                             fragment.adapter.notifyDataSetChanged();
+                            post.setImgCount(fragment.adapter.getItemCount());
                         }
                     }
                 }

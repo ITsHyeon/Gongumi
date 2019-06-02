@@ -28,6 +28,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.constraint.Constraints.TAG;
@@ -71,12 +72,18 @@ public class HomeFragment extends Fragment {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to ugitpdate the UI
+                // Get Post object and use the values to update the UI
                 items.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     Post post = data.getValue(Post.class);
-                    item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay());
-                    items.add(item);
+
+                    Date date = new Date();
+                    long dateCheck = post.getEndDay().getTime() - date.getTime();
+
+                    if(post.getLocation().equals(user.getLocation()) && dateCheck >= 0) {
+                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount());
+                        items.add(item);
+                    }
                 }
 
                 Collections.reverse(items);
@@ -94,7 +101,6 @@ public class HomeFragment extends Fragment {
             }
         };
         mDatabase.addValueEventListener(postListener);
-
 
         return view;
     }

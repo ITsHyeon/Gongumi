@@ -14,11 +14,11 @@ public class Post implements Serializable {
     private int price; // 가격
     private String content; // 설명
     private String url; // 상품 url
-
-
+    private int imgCount; // 이미지 개수
+    private String location; // 주소
 
     public Post() {}
-    public Post(String userId, String userUid, String hashtag, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url) {
+    public Post(String userId, String userUid, String hashtag, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url, int imgCount) {
         this.userId = userId;
         this.userUid = userUid;
         this.hashtag = hashtag;
@@ -30,6 +30,7 @@ public class Post implements Serializable {
         this.price = price;
         this.content = content;
         this.url = url;
+        this.imgCount = imgCount;
     }
 
     public void setUserId(String userId) {
@@ -119,5 +120,22 @@ public class Post implements Serializable {
     public String getUrl() {
         return url;
     }
+
+    public void setImgCount(int imgCount) {
+        this.imgCount = imgCount;
+    }
+
+    public int getImgCount() {
+        return imgCount;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
 
 }
