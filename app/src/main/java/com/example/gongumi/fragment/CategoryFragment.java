@@ -31,12 +31,21 @@ public class CategoryFragment extends Fragment {
     ArrayList<String> tags = new ArrayList<>();
     String str, ch;
     int index;
-    String hashtg[] = new String[5];
+    String hashtg[] = new String[8];
     HashMap<String, Integer> hash= new HashMap<String, Integer>();
-    Button hashtag_btn[] = new Button[5];
+    Button hashtag_btn[] = new Button[8];
 
     public CategoryFragment() {
         // Required empty public constructor
+    }
+
+    public static CategoryFragment newInstance(Post post){
+        CategoryFragment fragment = new CategoryFragment();
+        Bundle bundle =  new Bundle(1);
+        bundle.putSerializable("post", post);
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
@@ -56,6 +65,9 @@ public class CategoryFragment extends Fragment {
         hashtag_btn[2] = view.findViewById(R.id.btn_hashtag3);
         hashtag_btn[3] = view.findViewById(R.id.btn_hashtag4);
         hashtag_btn[4] = view.findViewById(R.id.btn_hashtag5);
+        hashtag_btn[5] = view.findViewById(R.id.btn_hashtag6);
+        hashtag_btn[6] = view.findViewById(R.id.btn_hashtag7);
+        hashtag_btn[7] = view.findViewById(R.id.btn_hashtag8);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -87,6 +99,7 @@ public class CategoryFragment extends Fragment {
 
     public void puthashtag(){
         int s = 0;
+
         while (tags.size() > s){ //arraylist 크기만큼 반복
             String[] tag = tags.get(s).split("#");  //"#" 을 가지고 문장 나누기
 
