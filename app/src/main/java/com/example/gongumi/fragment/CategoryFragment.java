@@ -40,6 +40,8 @@ public class CategoryFragment extends Fragment {
     HashMap<String, Integer> hash= new HashMap<String, Integer>();
     Button hashtag_btn[] = new Button[8];
 
+    public static String keyword;
+
     public CategoryFragment() {
         // Required empty public constructor
     }
@@ -128,10 +130,7 @@ public class CategoryFragment extends Fragment {
 
             Toast.makeText(getContext(), btntext + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
 
-            Fragment fragment = new SearchFragment();
-            Bundle bundle = new Bundle(1);
-            bundle.putString("tagString", btntext);
-            fragment.setArguments(bundle);
+            keyword = btntext;
 
             ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
         }
@@ -150,10 +149,7 @@ public class CategoryFragment extends Fragment {
             }else{
                 Toast.makeText(getContext(), word + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
 
-                Fragment fragment = new SearchFragment();
-                Bundle bundle = new Bundle(1);
-                bundle.putString("tagString", word);
-                fragment.setArguments(bundle);
+                keyword = word;
 
                 ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
             }

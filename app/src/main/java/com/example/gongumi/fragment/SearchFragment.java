@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.support.constraint.Constraints.TAG;
+import static com.example.gongumi.fragment.CategoryFragment.keyword;
 
 public class SearchFragment extends Fragment {
     private DatabaseReference mDatabase;
@@ -67,8 +68,6 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Post");
 
-        final String keyword = getArguments().getString("tagString");
-
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.searchList);
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setHasFixedSize(true);
@@ -85,10 +84,10 @@ public class SearchFragment extends Fragment {
                     post = data.getValue(Post.class);
                     String str = String.valueOf(post.getHashtag());
                     Log.d("getHashtag", str);
-                    //if(keyword != null && str.contains(keyword)) {
+                    if(keyword != null && str.contains(keyword)) {
                         item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount());
                         items.add(item);
-                    //}
+                    }
                 }
 
                 Collections.reverse(items);
