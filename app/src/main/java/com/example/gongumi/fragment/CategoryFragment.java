@@ -1,17 +1,21 @@
 package com.example.gongumi.fragment;
 
-
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.gongumi.R;
+import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.model.Post;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,11 +27,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.support.constraint.Constraints.TAG;
+import static com.example.gongumi.fragment.SearchFragment.search_pos;
 
 public class CategoryFragment extends Fragment {
     private DatabaseReference mDatabase;
-    private RecyclerView recyclerView;
     private Post post;
+    EditText search_edit;
     ArrayList<String> tags = new ArrayList<>();
     String str, ch;
     int index;
@@ -52,6 +57,11 @@ public class CategoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        search_pos = 1;
+        if(getArguments() != null) {
+            post = (Post) getArguments().getSerializable("post");
+            ((MainActivity)getActivity()).post = post;
+        }
     }
 
     @Override
@@ -68,6 +78,19 @@ public class CategoryFragment extends Fragment {
         hashtag_btn[5] = view.findViewById(R.id.btn_hashtag6);
         hashtag_btn[6] = view.findViewById(R.id.btn_hashtag7);
         hashtag_btn[7] = view.findViewById(R.id.btn_hashtag8);
+        ImageButton searchbtn = view.findViewById(R.id.btn_search);
+
+        hashtag_btn[0].setOnClickListener(tagbutton);
+        hashtag_btn[1].setOnClickListener(tagbutton);
+        hashtag_btn[2].setOnClickListener(tagbutton);
+        hashtag_btn[3].setOnClickListener(tagbutton);
+        hashtag_btn[4].setOnClickListener(tagbutton);
+        hashtag_btn[5].setOnClickListener(tagbutton);
+        hashtag_btn[6].setOnClickListener(tagbutton);
+        hashtag_btn[7].setOnClickListener(tagbutton);
+        searchbtn.setOnClickListener(tagsearch);
+
+        search_edit = view.findViewById(R.id.edit_search);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -95,6 +118,58 @@ public class CategoryFragment extends Fragment {
         mDatabase.addValueEventListener(postListener);
 
         return view;
+    }
+
+    View.OnClickListener tagbutton = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Button btn = (Button) v;
+            String btntext = btn.getText().toString();
+
+            Toast.makeText(getContext(), btntext + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
+
+            Fragment fragment = new SearchFragment();
+            Bundle bundle = new Bundle(1);
+            bundle.putString("tagString", btntext);
+            fragment.setArguments(bundle);
+
+            ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
+        }
+    };
+
+    View.OnClickListener tagsearch = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String word = search_edit.getText().toString();
+            if(word.indexOf("#") != 0){
+                Toast.makeText(getContext(), "검색어 앞에 #을 넣어주세요", Toast.LENGTH_SHORT).show();
+            }else if(word.contains(" ")){
+                Toast.makeText(getContext(), "공백을 제외하고 입력해주세요", Toast.LENGTH_SHORT).show();
+            }else if(getCharNumber(word,'#') > 1){
+                Toast.makeText(getContext(), "검색어를 하나만 입력해주세요", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getContext(), word + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
+
+                Fragment fragment = new SearchFragment();
+                Bundle bundle = new Bundle(1);
+                bundle.putString("tagString", word);
+                fragment.setArguments(bundle);
+
+                ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
+            }
+        }
+    };
+
+    public int getCharNumber(String str, char c)
+    {
+        int count = 0;
+        for(int i=0; i < str.length(); i++) {
+            if(str.charAt(i) == c)
+                count++;
+            else
+                continue;
+        }
+        return count;
     }
 
     public void puthashtag(){
@@ -137,11 +212,15 @@ public class CategoryFragment extends Fragment {
                 //나중에 바꿔줄것을 대비해 index도 저장해놓은다
 
                 for (int i = 0; i < tag.length; i++) {
+                    for(int z = 0; z < hashtg.length; z++){
+                        if(hashtg[z] == tag[i])
+                            break;
+                    }//똑같은 단어가 배열안에 있으면 넣지 않는다
                     if (hash.get(ch) < hash.get(tag[i])) {
                         hashtg[index] = tag[i];
                         ch = tag[i];
                     }
-                } //tag배열과 비교하여 너 많이 사용된 해쉬태그가 있다면 배열값과 함께 ch값을 바꿔준다
+                } //tag배열과 비교하여 더 많이 사용된 해쉬태그가 있다면 배열값과 함께 ch값을 바꿔준다
             }
             s++;
         }
