@@ -28,17 +28,24 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.custom.CustomHomePostDialog;
+import com.example.gongumi.model.Chat;
+import com.example.gongumi.model.ChatUser;
 import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class HomePostFragment extends Fragment {
     TextView product;
@@ -194,6 +201,30 @@ public class HomePostFragment extends Fragment {
 
                                         databaseRef = databaseRef.child(time_text + "/people");
                                         databaseRef.setValue(peopleCount);
+
+                                        Chat chat = new Chat();
+
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                Chat chatItem = dataSnapshot.getValue(Chat.class);
+                                                Iterator<String> keySet = chatItem.users.keySet().iterator();
+                                                while(keySet.hasNext()) {
+                                                    String key = (String) keySet.next();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+                                        chat.users.put(user.getUid(), true);
+
+                                        // TODO : 기존 USER까지 다 불러와서 넣어라
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).setValue(chat);
+                                        FirebaseDatabase.getInstance().getReference().child("User").child(user.getId()).child("chatlist").child(time_text).setValue(chat);
 
                                         Toast.makeText(getContext(), "주문을 완료하였습니다..", Toast.LENGTH_SHORT).show();
 

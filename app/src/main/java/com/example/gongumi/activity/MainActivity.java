@@ -384,7 +384,8 @@ public class MainActivity extends AppCompatActivity {
         Chat chat = new Chat();
         chat.users.put(user.getUid(), true);
 
-        FirebaseDatabase.getInstance().getReference().child("Post").child(String.valueOf(post.getStartDay().getTime())).child("chatroom").push().setValue(chat);
+        FirebaseDatabase.getInstance().getReference().child("Post").child(String.valueOf(post.getStartDay().getTime())).child("chatroom").child(String.valueOf(post.getStartDay().getTime())).setValue(chat);
+        FirebaseDatabase.getInstance().getReference().child("User").child(user.getId()).child("chatlist").child(String.valueOf(post.getStartDay().getTime())).setValue(chat);
     }
 
 
