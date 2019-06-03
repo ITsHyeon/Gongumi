@@ -352,6 +352,22 @@ public class MainActivity extends AppCompatActivity {
                                     mViewPager.setCurrentItem(0);
                                     post = new Post();
                                     post_pos = 0;
+
+                                    // 버튼 모양 바꾸기
+                                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(SignUpActivity.dpToPx(getApplicationContext(), 20), SignUpActivity.dpToPx(getApplicationContext(), 20));
+                                    layoutParams.leftMargin = SignUpActivity.dpToPx(getApplicationContext(), 20);
+                                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                                    btn_previous.setLayoutParams(layoutParams);
+                                    btn_previous.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btn_cancle));
+
+                                    // 버튼 모양 바꾸기
+                                    layoutParams = new RelativeLayout.LayoutParams(SignUpActivity.dpToPx(getApplicationContext(), 14), SignUpActivity.dpToPx(getApplicationContext(), 25));
+                                    layoutParams.rightMargin = SignUpActivity.dpToPx(getApplicationContext(), 20);
+                                    layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                                    btn_next.setLayoutParams(layoutParams);
+                                    btn_next.setText("");
+                                    btn_next.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.btn_next));
                                 }
                             });
                             alert.setMessage("새로운 공구를 등록하시겠습니까?");
