@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -54,12 +55,14 @@ import java.util.List;
 import java.util.Map;
 
 import static com.example.gongumi.fragment.PostFragment.post_pos;
+import static com.example.gongumi.fragment.SearchFragment.search_pos;
 
 public class MainActivity extends AppCompatActivity {
-    private static RelativeLayout layout_toolbar, layout_toolbar_post;
-    private Button btn_previous, btn_next, btn_chat;
+    private static RelativeLayout layout_toolbar, layout_toolbar_post, layout_toolbar_cate;
+    private Button btn_previous, btn_next, btn_chat,cate_previous, cate_chat;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private PagerAdapter adapter;
 
     private static int pos;
     public static final int THUMBNAIL_PHOTO_REQUEST_CODE = 10;
@@ -85,11 +88,13 @@ public class MainActivity extends AppCompatActivity {
         user = (User) intent.getSerializableExtra("user");
 
         layout_toolbar = findViewById(R.id.layout_toolbar);
-
+        layout_toolbar_cate = findViewById(R.id.layout_toolbar_cate);
         layout_toolbar_post = findViewById(R.id.layout_toolbar_post);
         btn_previous = findViewById(R.id.btn_previous);
         btn_next = findViewById(R.id.btn_next);
         btn_chat = findViewById(R.id.btn_chat);
+        cate_previous = findViewById(R.id.cate_previous);
+        cate_chat = findViewById(R.id.cate_chat);
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -101,12 +106,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
+        cate_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(MainActivity.this, ChatListActivity.class);
+                startActivity(intent1);
+            }
+        });
 
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(R.drawable.tab_home_click, new HomeFragment());
-        adapter.addFragment(R.drawable.tab_category, new CategoryFragment());
-        adapter.addFragment(R.drawable.tab_write, new PostFragment());
-        adapter.addFragment(R.drawable.tab_setting, new SettingFragment());
+        adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(R.drawable.tab_home_click, "홈", new HomeFragment());
+        adapter.addFragment(R.drawable.tab_category, "카테고리", new CategoryFragment());
+        adapter.addFragment(R.drawable.tab_write, "글쓰기", new PostFragment());
+        adapter.addFragment(R.drawable.tab_setting, "설정", new SettingFragment());
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
@@ -164,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         btn_previous.setOnClickListener(PostClickListener);
         btn_next.setOnClickListener(PostClickListener);
+        cate_previous.setOnClickListener(CateClickListener);
 
         // TODO : 푸시 알림
         passPushTokenToServer();
@@ -179,17 +192,37 @@ public class MainActivity extends AppCompatActivity {
         if (pos == 2) {
             layout_toolbar_post.setVisibility(View.VISIBLE);
             layout_toolbar.setVisibility(View.GONE);
+            layout_toolbar_cate.setVisibility(View.GONE);
+        } else if(pos == 1){
+            layout_toolbar.setVisibility(View.GONE);
+            layout_toolbar_post.setVisibility(View.GONE);
+            layout_toolbar_cate.setVisibility(View.VISIBLE);
         } else {
             layout_toolbar.setVisibility(View.VISIBLE);
             layout_toolbar_post.setVisibility(View.GONE);
+            layout_toolbar_cate.setVisibility(View.GONE);
         }
     }
 
+    View.OnClickListener CateClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(v.getId() == R.id.cate_previous) {
+                if (search_pos == 2){
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame_search, CategoryFragment.newInstance(post)).commit();
+
+                    cate_previous.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    };
     View.OnClickListener PostClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
             if (v.getId() == R.id.btn_previous) {
                 Log.d("test", post_pos + "");
                 switch (post_pos) {
@@ -299,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
                             post.setUserId(user.getId());
                             post.setUserUid(user.getUid());
                             post.setHashtag(post.getHashtag().trim());
+                            post.setLocation(user.getLocation());
 
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -312,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     post.setStartDay(new Date());
                                     addPost(post);
+                                    adapter.notifyDataSetChanged();
                                     uploadThumbnailPhoto(post.getStartDay().getTime(), postFragment.adapter.getList());
                                     mTabLayout.setScrollPosition(0, 0f, true);
                                     mViewPager.setCurrentItem(0);
@@ -327,6 +362,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_search, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+
+        cate_previous.setVisibility(View.VISIBLE);
+    }
 
     public void addPost(Post post) {
         DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post");
@@ -362,6 +405,7 @@ public class MainActivity extends AppCompatActivity {
                                 fragment.adapter.addPostThumbnailAdapter(clipData.getItemAt(i).getUri());
                             }
                             fragment.adapter.notifyDataSetChanged();
+                            post.setImgCount(fragment.adapter.getItemCount());
                         }
                     } else {
                         //Toast.makeText(this, "이 기기는 사진을 여러 장 선택할 수 없습니다", Toast.LENGTH_SHORT).show();
@@ -370,6 +414,7 @@ public class MainActivity extends AppCompatActivity {
                             PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.frame_post);
                             fragment.adapter.addPostThumbnailAdapter(data.getData());
                             fragment.adapter.notifyDataSetChanged();
+                            post.setImgCount(fragment.adapter.getItemCount());
                         }
                     }
                 }

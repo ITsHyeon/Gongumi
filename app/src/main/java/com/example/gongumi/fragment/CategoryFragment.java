@@ -129,9 +129,9 @@ public class CategoryFragment extends Fragment {
             Toast.makeText(getContext(), btntext + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
 
             Fragment fragment = new SearchFragment();
-            Bundle args = new Bundle(1);
-            args.putString("tagString", btntext);
-            fragment.setArguments(args);
+            Bundle bundle = new Bundle(1);
+            bundle.putString("tagString", btntext);
+            fragment.setArguments(bundle);
 
             ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
         }
@@ -151,9 +151,9 @@ public class CategoryFragment extends Fragment {
                 Toast.makeText(getContext(), word + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
 
                 Fragment fragment = new SearchFragment();
-                Bundle args = new Bundle(1);
-                args.putString("tagString", word);
-                fragment.setArguments(args);
+                Bundle bundle = new Bundle(1);
+                bundle.putString("tagString", word);
+                fragment.setArguments(bundle);
 
                 ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
             }

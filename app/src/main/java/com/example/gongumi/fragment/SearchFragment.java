@@ -83,10 +83,12 @@ public class SearchFragment extends Fragment {
                 items.clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     post = data.getValue(Post.class);
-                      //if(String.valueOf(post.getHashtag()).contains(keyword)) {
-                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay());
+                    String str = String.valueOf(post.getHashtag());
+                    Log.d("getHashtag", str);
+                    //if(keyword != null && str.contains(keyword)) {
+                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount());
                         items.add(item);
-                      //}
+                    //}
                 }
 
                 Collections.reverse(items);
