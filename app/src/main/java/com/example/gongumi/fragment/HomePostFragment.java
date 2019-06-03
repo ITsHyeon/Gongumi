@@ -29,7 +29,6 @@ import com.example.gongumi.R;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.custom.CustomHomePostDialog;
 import com.example.gongumi.model.Chat;
-import com.example.gongumi.model.ChatUser;
 import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,7 +63,7 @@ public class HomePostFragment extends Fragment {
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post/");
     DatabaseReference databaseRef = mDatabaseRef;
 
-    String product_text, price_text, hashtag_text, content_text, time_text, people_text;
+    String product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text;
     int progress_int, people_int, imgCount;
     boolean update = false;
     String opt;
@@ -74,7 +73,7 @@ public class HomePostFragment extends Fragment {
     }
 
 
-    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, int imgCount) {
+    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, int imgCount, String userId) {
         HomePostFragment fragment = new HomePostFragment();
         Bundle args = new Bundle();
         args.putString("product", product);
@@ -85,6 +84,7 @@ public class HomePostFragment extends Fragment {
         args.putString("content", content);
         args.putString("time", time);
         args.putInt("imgCount",imgCount);
+        args.putString("userId", userId);
         fragment.setArguments(args);
 
         return fragment;
@@ -109,6 +109,7 @@ public class HomePostFragment extends Fragment {
             content_text = getArguments().getString("content");
             time_text = getArguments().getString("time");
             imgCount = getArguments().getInt("imgCount");
+            userId_text = getArguments().getString("userId");
         }
 
         flipper = view.findViewById(R.id.flipper);
@@ -202,16 +203,36 @@ public class HomePostFragment extends Fragment {
                                         databaseRef = databaseRef.child(time_text + "/people");
                                         databaseRef.setValue(peopleCount);
 
-                                        Chat chat = new Chat();
+                                        final Chat chat = new Chat();
 
-                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                Chat chatItem = dataSnapshot.getValue(Chat.class);
-                                                Iterator<String> keySet = chatItem.users.keySet().iterator();
-                                                while(keySet.hasNext()) {
-                                                    String key = (String) keySet.next();
+                                                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                                    Chat chatItem = data.getValue(Chat.class);
+                                                    chat.users = chatItem.users;
+                                                    Log.d("chatItem_users_size", chatItem.users.size() + "");
                                                 }
+                                                chat.users.put(user.getUid(), true);
+
+                                                // TODO : 기존 USER까지 다 불러와서 넣어라
+                                                FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).setValue(chat);
+                                                FirebaseDatabase.getInstance().getReference().child("User").child(userId_text).child("chatlist").child(time_text).setValue(chat);
+
+                                                FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("join").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                                            String joinId = data.getKey();
+                                                            FirebaseDatabase.getInstance().getReference().child("User").child(joinId).child("chatlist").child(time_text).setValue(chat);
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
                                             }
 
                                             @Override
@@ -219,12 +240,6 @@ public class HomePostFragment extends Fragment {
 
                                             }
                                         });
-
-                                        chat.users.put(user.getUid(), true);
-
-                                        // TODO : 기존 USER까지 다 불러와서 넣어라
-                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).setValue(chat);
-                                        FirebaseDatabase.getInstance().getReference().child("User").child(user.getId()).child("chatlist").child(time_text).setValue(chat);
 
                                         Toast.makeText(getContext(), "주문을 완료하였습니다..", Toast.LENGTH_SHORT).show();
 

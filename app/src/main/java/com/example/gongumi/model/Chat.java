@@ -1,9 +1,10 @@
 package com.example.gongumi.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Chat {
+public class Chat implements Serializable {
 
     public Map<String, Boolean> users = new HashMap<>(); // 채팅방의 유저들
     public Map<String, Comment> comments = new HashMap<>(); // 채팅방의 대화내용

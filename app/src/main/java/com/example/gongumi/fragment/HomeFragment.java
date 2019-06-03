@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
                     long dateCheck = post.getEndDay().getTime() - date.getTime();
 
                     if(post.getLocation().equals(user.getLocation()) && dateCheck >= 0) {
-                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount());
+                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount(), post.getUserId());
                         items.add(item);
                     }
                 }
