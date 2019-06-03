@@ -53,7 +53,7 @@ public class CustomHomePostDialog  extends DialogFragment {
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.custom_home_dialog, null);
+        View view = inflater.inflate(R.layout.custom_dialog, null);
         text = view.findViewById(R.id.tvInput);
         message = view.findViewById(R.id.etInput);
 

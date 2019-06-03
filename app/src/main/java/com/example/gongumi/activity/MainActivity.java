@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         btn_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(MainActivity.this, ChatListActivity.class);
+                Intent intent1 = new Intent(MainActivity.this, MessageActivity.class);
                 startActivity(intent1);
             }
         });
