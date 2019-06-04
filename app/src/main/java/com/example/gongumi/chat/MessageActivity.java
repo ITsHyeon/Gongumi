@@ -2,6 +2,7 @@ package com.example.gongumi.chat;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,8 +56,13 @@ public class MessageActivity extends AppCompatActivity {
 
     private RecyclerView mRvMessage;
 
+    private Post post;
+    private Chat chat;
+
     // 시간 표시
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+    private ArrayList<User> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +76,8 @@ public class MessageActivity extends AppCompatActivity {
 
         // TODO : 각 해당 chatroom을 불러와서 추가되어 있는 user들을 setting하고, 그 방에 commet를 넣는다
         Intent intent = getIntent();
-        final Post post = (Post) intent.getSerializableExtra("post");
-        final Chat chat = (Chat) intent.getSerializableExtra("chat");
+        post = (Post) intent.getSerializableExtra("post");
+        chat = (Chat) intent.getSerializableExtra("chat");
 
         Log.e("Post", post.getUserId());
         Log.e("Chat", chat.users.toString());
@@ -78,11 +85,10 @@ public class MessageActivity extends AppCompatActivity {
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
         chatRoomName = String.valueOf(post.getStartDay().getTime());
+        users = new ArrayList<>();
 
 //        destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
 
-        destinationUid = "6BbWjdcRrKO4aDUqL5Z0luW2vJ33";
-        destinationUid2 = "uuejhXHmrsPro7XYayBlJDkcrNa2";
 
         mBtSendMessage = findViewById(R.id.message_btn);
         mEtInputMessage = findViewById(R.id.message_edit);
@@ -90,7 +96,7 @@ public class MessageActivity extends AppCompatActivity {
         mRvMessage = findViewById(R.id.message_recyclerview);
         mRvMessage.setLayoutManager(new LinearLayoutManager(MessageActivity.this));
         mRvMessage.setAdapter(new RecyclerViewAdapter());
-
+        Log.d("keyset : ", chat.users.keySet().toString());
         mBtSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +143,29 @@ public class MessageActivity extends AppCompatActivity {
         });
     }*/
 
+   public void getUser() {
+       FirebaseDatabase.getInstance().getReference().child("User").addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               for(DataSnapshot data: dataSnapshot.getChildren()) {
+                   User user = data.getValue(User.class);
+                    // String user: chats.get(position).users.keySet()
+                   for (String key : chat.users.keySet()){
+                    if (key.equals(user.getUid())){
+                        users.add(user);
+                    }
+                   }
+
+               }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
+   }
+
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         List<Chat.Comment> comments;
@@ -144,6 +173,8 @@ public class MessageActivity extends AppCompatActivity {
 
         public RecyclerViewAdapter() {
             comments = new ArrayList<>();
+
+            getUser();
             getMessageList();
 //            FirebaseDatabase.getInstance().getReference().child("User").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
 //                @Override
@@ -202,11 +233,16 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
-                Glide.with(holder.itemView.getContext())
-                        .load(R.drawable.profile_photo)
-                        .apply(new RequestOptions().circleCrop())
-                        .into(messageViewHolder.imageView_profile);
-                messageViewHolder.textView_name.setText("수정");
+                User user;
+                for(int i=0; i<users.size(); i++){
+                    if(comments.get(i).uid.equals(users.get(i).getUid())){
+                        Glide.with(holder.itemView.getContext())
+                                .load(users.get(i).getProfileUrl())
+                                .apply(new RequestOptions().circleCrop())
+                                .into(messageViewHolder.imageView_profile);
+                        messageViewHolder.textView_name.setText(users.get(i).getName());
+                    }
+                }
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);

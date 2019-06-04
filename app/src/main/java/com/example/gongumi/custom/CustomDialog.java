@@ -46,7 +46,7 @@ public class CustomDialog {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // 커스텀 다이얼로그의 레이아웃을 설정한다.
-        dialog.setContentView(R.layout.custom_dialog);
+        dialog.setContentView(R.layout.custom_home_dialog);
 
         // 커스텀 다이얼로그의 사이즈를 지정한다.
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
