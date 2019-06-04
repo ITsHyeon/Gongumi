@@ -18,10 +18,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/layout_flipper">
 
+
             <ViewFlipper
                 android:id="@+id/flipper"
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="250dp"
+                android:background="#d9d9d9">
+
 
                 <!-- #D3D3D3 -->
                 <!--<ImageView
@@ -40,6 +43,17 @@
                     android:layout_height="match_parent" />-->
 
             </ViewFlipper>
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="공구날짜"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="#ffba00"
+                android:padding="8dp"
+                android:background="#EFffffff"/>
 
             <Button
                 android:id="@+id/backBtn"
@@ -62,7 +76,7 @@
 
         <TextView
             android:id="@+id/product"
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="40dp"
             android:layout_below="@+id/layout_flipper"
             android:fontFamily="@font/notosans_regular"
@@ -74,15 +88,19 @@
 
         <TextView
             android:id="@+id/price"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_below="@+id/product"
             android:fontFamily="@font/notosans_regular"
-            android:gravity="center_vertical"
-            android:paddingStart="20dp"
+            android:gravity="right"
+            android:paddingEnd="20dp"
             android:text="가격"
             android:textColor="@color/textColor"
-            android:textSize="18sp" />
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/product"
+            android:layout_alignTop="@+id/product"
+            android:textSize="18sp"
+            />
 
         <TextView
             android:id="@+id/hashtag"
@@ -93,16 +111,20 @@
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:text="해시태그"
+            android:layout_marginTop="-10dp"
             android:textColor="@color/textColor"
             android:textSize="18sp" />
+
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:progressDrawable="@drawable/custom_progressbar"
+            android:layout_width="380dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
             android:layout_below="@+id/hashtag"
-            android:padding="20dp" />
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/people"
@@ -139,21 +161,7 @@
             android:padding="15dp"
             android:text="이곳에 설명이 나타납니다."
             android:textColor="@color/textColor"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/text_url"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_below="@+id/content"
-            android:background="@drawable/custom_post_layout"
-            android:fontFamily="@font/notosans_regular"
-            android:gravity="center_vertical"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:text="URL"
-            android:textColor="@color/textColor"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/url"
@@ -161,6 +169,7 @@
             android:layout_height="50dp"
             android:layout_below="@+id/content"
             android:layout_toEndOf="@+id/text_url"
+            android:singleLine="true"
             android:background="@drawable/custom_post_layout"
             android:fontFamily="@font/notosans_regular"
             android:gravity="center_vertical"

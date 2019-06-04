@@ -92,8 +92,8 @@
             >
             <Button
                 android:id="@+id/cate_previous"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="14dp"
+                android:layout_height="25dp"
                 android:background="@drawable/btn_prev"
                 android:visibility="invisible"
                 android:layout_centerVertical="true"

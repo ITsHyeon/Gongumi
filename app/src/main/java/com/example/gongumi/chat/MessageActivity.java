@@ -51,6 +51,10 @@ public class MessageActivity extends AppCompatActivity {
     private Button mBtSendMessage;
     private EditText mEtInputMessage;
 
+    // Toolbar
+    private Button btn_prev;
+    private TextView textView_chatroom;
+
     private String uid;
     private String chatRoomName;
 
@@ -89,6 +93,16 @@ public class MessageActivity extends AppCompatActivity {
 
 //        destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
 
+        textView_chatroom = findViewById(R.id.text_chatroom);
+        textView_chatroom.setText(post.getProduct());
+
+        btn_prev = findViewById(R.id.btn_prev);
+        btn_prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         mBtSendMessage = findViewById(R.id.message_btn);
         mEtInputMessage = findViewById(R.id.message_edit);
@@ -100,6 +114,7 @@ public class MessageActivity extends AppCompatActivity {
         mBtSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Chat chat = new Chat();
 
                 Chat.Comment comment = new Chat.Comment();
                 comment.uid = uid;
