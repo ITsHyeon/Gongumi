@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context=".fragment.CategoryFragment">
+    tools:context=".fragment.CategoryFragment"
+    android:id="@+id/frame_search"
+    >
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
@@ -47,7 +49,7 @@
             android:layout_marginTop="30dp">
 
             <LinearLayout
-                android:id="@+id/group_hashtag"
+                android:id="@+id/group_hashtag1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -65,7 +67,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     android:visibility="invisible" />
 
                 <Button
@@ -81,7 +83,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     android:visibility="invisible" />
 
                 <Button
@@ -97,14 +99,16 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     android:visibility="invisible" />
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/group_hashtag2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/group_hashtag"
+                android:layout_below="@+id/group_hashtag1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:orientation="horizontal">
@@ -121,7 +125,7 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     android:visibility="invisible" />
 
                 <Button
@@ -129,7 +133,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:layout_toEndOf="@+id/text_hashtag4"
                     android:background="@drawable/custom_hashtag"
                     android:elevation="10dp"
                     android:fontFamily="@font/notosans_light"
@@ -137,7 +140,62 @@
                     android:paddingEnd="20dp"
                     android:text="asdf"
                     android:textColor="@color/textColor"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/btn_hashtag6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_toEndOf="@id/text_hashtag1"
+                    android:background="@drawable/custom_hashtag"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/notosans_light"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="asdf"
+                    android:textColor="@color/textColor"
+                    android:textSize="10sp"
+                    android:visibility="invisible" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/group_hashtag2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_hashtag7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_toEndOf="@+id/text_hashtag2"
+                    android:background="@drawable/custom_hashtag"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/notosans_light"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="asdf"
+                    android:textColor="@color/textColor"
+                    android:textSize="10sp"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/btn_hashtag8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/custom_hashtag"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/notosans_light"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="asdf"
+                    android:textColor="@color/textColor"
+                    android:textSize="10sp"
                     android:visibility="invisible" />
             </LinearLayout>
         </RelativeLayout>

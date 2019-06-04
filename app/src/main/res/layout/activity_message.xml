@@ -6,14 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".chat.MessageActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:height="?actionBarSize"
+        app:contentInsetStart="0dp"
+        android:layout_marginBottom="10dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/layout_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:background="@drawable/custom_toolbar_layout"
+            >
+
+            <Button
+                android:id="@+id/btn_prev"
+                android:layout_width="14dp"
+                android:layout_height="25dp"
+                android:background="@drawable/btn_prev"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                />
+
+            <TextView
+                android:id="@+id/text_chatroom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/btn_prev"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/notosans_regular"
+                android:text="방 이름"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_marginStart="15dp"
+                />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/message_recyclerview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/message_btn"
+        android:layout_below="@+id/toolbar"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true">
 

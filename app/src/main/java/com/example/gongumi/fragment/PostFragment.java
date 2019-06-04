@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,9 +15,11 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -27,6 +30,9 @@ import com.example.gongumi.R;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.model.Post;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -200,6 +206,12 @@ public class PostFragment extends Fragment {
         else if(url.equals("")) {
             Toast.makeText(getContext(), "URL을 입력해주세요", Toast.LENGTH_LONG).show();
         }
+        else if(!Patterns.WEB_URL.matcher(url).matches() || !URLUtil.isValidUrl(url)) {
+            Toast.makeText(getContext(), "URL 형식이 맞지 않습니다.\n유효한 URL을 입력해주세요", Toast.LENGTH_LONG).show();
+        }
+        else if(!CheckValidUrl(url)) {
+            Toast.makeText(getContext(), "존재하지 않는 URL입니다.\n존재하는 URL을 입력해주세요.", Toast.LENGTH_LONG).show();
+        }
         else {
             post.setProduct(product);
             post.setPrice(price);
@@ -210,6 +222,27 @@ public class PostFragment extends Fragment {
         }
 
         return false;
+    }
+
+    public boolean CheckValidUrl(String url) {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
+
+        try {
+            URL webUrl = new URL(url);
+            URLConnection urlConnection = webUrl.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection)urlConnection;
+
+            Log.d("validUrlCheck"  + url, httpURLConnection.getResponseCode() + "");
+            if(httpURLConnection.getResponseCode() >= 400) {
+                return false;
+            }
+        }
+        catch (Exception e) {
+            //Toast.makeText(getContext(), "오류가 발생했습니다. 잠시 후 다시 시도해주세요", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
+import com.example.gongumi.fragment.HomeFragment;
 import com.example.gongumi.fragment.HomePostFragment;
 import com.example.gongumi.model.Home;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -84,8 +85,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.add(R.id.frame_home,
-                        HomePostFragment.newInstance(item.getProduct(),item.getPrice(),item.getHashtag(), item.getProgress(),item.getPeople(), item.getContent(), item.getTime())).commit();
+                        HomePostFragment.newInstance(item.getProduct(),item.getPrice(),item.getHashtag(), item.getProgress(),item.getPeople(), item.getContent(), item.getTime(), item.getImgCount(), item.getUserId(), item.getUrl())).commit();
                 fragmentTransaction.addToBackStack(null);
+
             }
         });
     }

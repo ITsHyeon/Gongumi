@@ -11,20 +11,27 @@ import java.util.List;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     private final List<FragmentInfo> mFragmentList = new ArrayList<>();
+
     private static int PAGE_NUMBER=4;
 
     public PagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public void addFragment(int iconResId, Fragment fragment) {
-        FragmentInfo info = new FragmentInfo(iconResId, fragment);
+    public void addFragment(int iconResId, String title, Fragment fragment) {
+        FragmentInfo info = new FragmentInfo(iconResId, title, fragment);
         mFragmentList.add(info);
     }
 
     public FragmentInfo getFragmentInfo(int position) {
         return mFragmentList.get(position);
     }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return mFragmentList.get(position).getTitle();
+    }
+
 
     @Override
     public Fragment getItem(int position) {
