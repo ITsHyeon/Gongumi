@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.TreeMap;
@@ -61,6 +63,8 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         // 메세지를 내림차순으로 정렬 후 마지막 메세지의 키값을 가져옴옴
         Map<String, Chat.Comment> commentMap = new TreeMap<>(Collections.<String>reverseOrder());
         commentMap.putAll(chatList.get(position).getChat().comments);
+        Log.d(chatList.get(position).getPost().getProduct() + "getChat", chatList.get(position).getChat().comments.size() +  "");
+        Log.d("getUser", chatList.get(position).getChat().users.size() + "");
         if(commentMap.size() > 0) {
             String lastMessageKey = (String) commentMap.keySet().toArray()[0];
             holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message);
@@ -77,6 +81,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chatList.get(position).getChat().comments = new HashMap<>();
                 Intent intent = new Intent(context, MessageActivity.class);
                 intent.putExtra("post", chatList.get(position).getPost());
                 intent.putExtra("chat", chatList.get(position).getChat());

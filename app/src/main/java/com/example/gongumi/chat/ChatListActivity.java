@@ -104,11 +104,25 @@ public class ChatListActivity extends AppCompatActivity {
                         FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Chat chat = dataSnapshot.getValue(Chat.class);
-                                chatList.setChat(chat);
+                                final Chat chat = dataSnapshot.getValue(Chat.class);
 
-                                chatLists.add(chatList);
-                                chatListRecyclerViewAdapter.notifyDataSetChanged();
+                                FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").child(chatroom).child("comment").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                            chat.comments.put(data.getKey(), data.getValue(Chat.Comment.class));
+                                        }
+                                        chatList.setChat(chat);
+                                        chatLists.add(chatList);
+                                        chatListRecyclerViewAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                             }
 
                             @Override
