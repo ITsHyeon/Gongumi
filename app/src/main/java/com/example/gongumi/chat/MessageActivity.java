@@ -1,5 +1,6 @@
 package com.example.gongumi.chat;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
 import com.example.gongumi.model.Chat;
+import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,7 +50,7 @@ public class MessageActivity extends AppCompatActivity {
     private EditText mEtInputMessage;
 
     private String uid;
-    private String chatRoomUid;
+    private String chatRoomName;
 
     private RecyclerView mRvMessage;
 
@@ -65,55 +67,47 @@ public class MessageActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_message);
 
+        // TODO : 각 해당 chatroom을 불러와서 추가되어 있는 user들을 setting하고, 그 방에 commet를 넣는다
+        Intent intent = getIntent();
+        final Post post = (Post) intent.getSerializableExtra("post");
+        final Chat chat = (Chat) intent.getSerializableExtra("chat");
+
+        Log.e("Post", post.getUserId());
+        Log.e("Chat", chat.users.toString());
+
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
+        chatRoomName = String.valueOf(post.getStartDay().getTime());
+
 //        destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
-        if (uid.equals("6BbWjdcRrKO4aDUqL5Z0luW2vJ33")){
-            destinationUid = "IO1VPyWi9XSxBb81rwNdOFjxiGR2";
-            destinationUid2 = "uuejhXHmrsPro7XYayBlJDkcrNa2";
-        } else if(uid.equals("IO1VPyWi9XSxBb81rwNdOFjxiGR2")){
-            destinationUid = "6BbWjdcRrKO4aDUqL5Z0luW2vJ33";
-            destinationUid2 = "uuejhXHmrsPro7XYayBlJDkcrNa2";
-        } else {
-            destinationUid ="6BbWjdcRrKO4aDUqL5Z0luW2vJ33";
-            destinationUid2 = "IO1VPyWi9XSxBb81rwNdOFjxiGR2";
-        }
+
+        destinationUid = "6BbWjdcRrKO4aDUqL5Z0luW2vJ33";
+        destinationUid2 = "uuejhXHmrsPro7XYayBlJDkcrNa2";
+
         mBtSendMessage = findViewById(R.id.message_btn);
         mEtInputMessage = findViewById(R.id.message_edit);
 
         mRvMessage = findViewById(R.id.message_recyclerview);
+        mRvMessage.setLayoutManager(new LinearLayoutManager(MessageActivity.this));
+        mRvMessage.setAdapter(new RecyclerViewAdapter());
 
-        // TODO : 채팅방 Setting Post에서 글쓰기 완료버튼을 누르면 생기게 만들기
         mBtSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Chat chat = new Chat();
-                chat.users.put(uid, true);
-                chat.users.put(destinationUid, true);
-                chat.users.put(destinationUid2, true);
 
-                if (chatRoomUid == null) {
-                    mBtSendMessage.setEnabled(false);
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").push().setValue(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            checkChatRoom();
-                        }
-                    });
-                } else {
-                    Chat.Comment comment = new Chat.Comment();
-                    comment.uid = uid;
-                    comment.message = mEtInputMessage.getText().toString();
-                    comment.timestamp = ServerValue.TIMESTAMP;
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child("-LgPg2CEAWeEUZdaQhaL").child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            mEtInputMessage.setText("");
-                        }
-                    });
+                Chat.Comment comment = new Chat.Comment();
+                comment.uid = uid;
+                comment.message = mEtInputMessage.getText().toString();
+                comment.timestamp = ServerValue.TIMESTAMP;
+                FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mEtInputMessage.setText("");
+                    }
+                });
 
 //                    Log.e("room : ", chatRoomUid);
-                }
+
 
             }
         });
@@ -121,7 +115,7 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    void checkChatRoom() {
+   /* void checkChatRoom() {
         FirebaseDatabase.getInstance().getReference().child("chatrooms").orderByChild("users/" + uid).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -141,7 +135,7 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -150,37 +144,24 @@ public class MessageActivity extends AppCompatActivity {
 
         public RecyclerViewAdapter() {
             comments = new ArrayList<>();
-            FirebaseDatabase.getInstance().getReference().child("User").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    user = dataSnapshot.getValue(User.class);
-                    getMessageList();
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            FirebaseDatabase.getInstance().getReference().child("User").child(destinationUid2).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    user = dataSnapshot.getValue(User.class);
-                    getMessageList();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
+            getMessageList();
+//            FirebaseDatabase.getInstance().getReference().child("User").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    user = dataSnapshot.getValue(User.class);
+//                    getMessageList();
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
         }
 
-        void getMessageList(){
-            FirebaseDatabase.getInstance().getReference().child("chatrooms").child("-LgPg2CEAWeEUZdaQhaL").child("comments").addValueEventListener(new ValueEventListener() {
+        void getMessageList() {
+            FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     comments.clear();
@@ -192,7 +173,7 @@ public class MessageActivity extends AppCompatActivity {
                     // 메세지가 갱신
                     notifyDataSetChanged();
 
-                    mRvMessage.scrollToPosition(comments.size()-1);
+                    mRvMessage.scrollToPosition(comments.size() - 1);
                 }
 
                 @Override
@@ -211,57 +192,21 @@ public class MessageActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            MessageViewHolder messageViewHolder = ((MessageViewHolder)holder);
+            MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
             // 내가 보낸 메세지
-            if (comments.get(position).uid.equals(uid)){
+            if (comments.get(position).uid.equals(uid)) {
                 messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_hashtag);
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE);
                 messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
-            } else{
-                if (destinationUid.equals("6BbWjdcRrKO4aDUqL5Z0luW2vJ33")){
-                    Glide.with(holder.itemView.getContext())
-                            .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fs2017s02.jpg?alt=media&token=28b901ae-ac42-4270-be12-b0d6dd2d415e")
-                            .apply(new RequestOptions().circleCrop())
-                            .into(messageViewHolder.imageView_profile);
-                    messageViewHolder.textView_name.setText("가슬");
-
-                } else if(destinationUid.equals("IO1VPyWi9XSxBb81rwNdOFjxiGR2")){
-                    Glide.with(holder.itemView.getContext())
-                            .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fsuhyeon917917.jpg?alt=media&token=1320d74e-069a-4310-a2c9-2ea5522b592f")
-                            .apply(new RequestOptions().circleCrop())
-                            .into(messageViewHolder.imageView_profile);
-                    messageViewHolder.textView_name.setText("수현");
-
-                } else{
-                    Glide.with(holder.itemView.getContext())
-                            .load(R.drawable.profile_photo)
-                            .apply(new RequestOptions().circleCrop())
-                            .into(messageViewHolder.imageView_profile);
-                    messageViewHolder.textView_name.setText("수정");
-                }
-                if (destinationUid2.equals("6BbWjdcRrKO4aDUqL5Z0luW2vJ33")){
-                    Glide.with(holder.itemView.getContext())
-                            .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fs2017s02.jpg?alt=media&token=28b901ae-ac42-4270-be12-b0d6dd2d415e")
-                            .apply(new RequestOptions().circleCrop())
-                            .into(messageViewHolder.imageView_profile);
-                    messageViewHolder.textView_name.setText("가슬");
-                } else if(destinationUid2.equals("IO1VPyWi9XSxBb81rwNdOFjxiGR2")){
-                    Glide.with(holder.itemView.getContext())
-                            .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fsuhyeon917917.jpg?alt=media&token=1320d74e-069a-4310-a2c9-2ea5522b592f")
-                            .apply(new RequestOptions().circleCrop())
-                            .into(messageViewHolder.imageView_profile);
-                    messageViewHolder.textView_name.setText("수현");
-                } else{
-                    Glide.with(holder.itemView.getContext())
-                            .load(R.drawable.profile_photo)
-                            .apply(new RequestOptions().circleCrop())
-                            .into(messageViewHolder.imageView_profile);
-                    messageViewHolder.textView_name.setText("수정");
-                }
-
+            } else {
+                Glide.with(holder.itemView.getContext())
+                        .load(R.drawable.profile_photo)
+                        .apply(new RequestOptions().circleCrop())
+                        .into(messageViewHolder.imageView_profile);
+                messageViewHolder.textView_name.setText("수정");
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);

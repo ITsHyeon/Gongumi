@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,11 @@ public class ChatListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 액션바 없애기
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_chat_list);
 
         String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -75,6 +81,7 @@ public class ChatListActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(chatListRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     public void getChatDatabase() {

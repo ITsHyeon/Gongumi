@@ -37,6 +37,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         this.context = context;
         this.chatList = chatList;
 
+
         notifyDataSetChanged();
     }
 
