@@ -38,6 +38,8 @@ import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.custom.CustomHomePostDialog;
 import com.example.gongumi.model.Chat;
+/*import com.example.gongumi.model.ChatUser;*/
+import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,10 +52,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class HomePostFragment extends Fragment {
     TextView product;
@@ -63,18 +69,20 @@ public class HomePostFragment extends Fragment {
     TextView people;
     TextView content;
     TextView url;
+    TextView date;
     ViewFlipper flipper;
-    ImageView img01, img02, img03;
     Button joinBtn, backBtn, nextBtn;
     WebView webView;
-    boolean dialogOk = false;
     private User user;
+    boolean userCheck = false;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
     StorageReference mStorage = storageRef;
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post/");
     DatabaseReference databaseRef = mDatabaseRef;
 
-    String product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text, url_text;
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
+
+    String product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text, url_text, start_text, end_text;
     int progress_int, people_int, imgCount;
     boolean update = false;
     String opt;
@@ -84,7 +92,7 @@ public class HomePostFragment extends Fragment {
     }
 
 
-    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, int imgCount, String userId, String url) {
+    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, Date startDay, Date endDay, int imgCount, String userId, String url) {
         HomePostFragment fragment = new HomePostFragment();
         Bundle args = new Bundle();
         args.putString("product", product);
@@ -94,6 +102,8 @@ public class HomePostFragment extends Fragment {
         args.putInt("people", people);
         args.putString("content", content);
         args.putString("time", time);
+        args.putString("start", (startDay.getYear()+1900) + "." + (startDay.getMonth()+1) + "." + startDay.getDate());
+        args.putString("end", (endDay.getYear()+1900) + "." + (endDay.getMonth()+1) + "." + endDay.getDate());
         args.putInt("imgCount",imgCount);
         args.putString("userId", userId);
         args.putString("url", url);
@@ -123,7 +133,30 @@ public class HomePostFragment extends Fragment {
             imgCount = getArguments().getInt("imgCount");
             userId_text = getArguments().getString("userId");
             url_text = getArguments().getString("url");
+            start_text = getArguments().getString("start");
+            end_text = getArguments().getString("end");
         }
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    String joinId = data.getKey();
+                    Log.v("joinIDcheck", joinId + " : " + user.getId());
+                    if (user.getId().equals(joinId)) {
+                        userCheck = true;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        };
+        databaseRef.child(time_text).child("join").addValueEventListener(postListener);
+
+        date = view.findViewById(R.id.dateText);
+        date.setText(start_text + " ~ " + end_text);
 
         flipper = view.findViewById(R.id.flipper);
         flipper.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +195,8 @@ public class HomePostFragment extends Fragment {
         product.setText(product_text);
 
         price = view.findViewById(R.id.price);
-        price.setText(price_text);
+        price_text = decimalFormat.format(Integer.parseInt(price_text.replaceAll(",","")));
+        price.setText(price_text + "원");
 
         hashtag = view.findViewById(R.id.hashtag);
         hashtag.setText(hashtag_text);
@@ -191,87 +225,17 @@ public class HomePostFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-
                 /*CustomHomePostDialog customDialog2 = new CustomHomePostDialog(getActivity());
                 customDialog2.callFunction("수량을 입력해주세요", "qty", user.getId(), time_text);
 
                 CustomHomePostDialog customDialog = new CustomHomePostDialog(getActivity());
                 boolean okCheck2= customDialog.callFunction("옵션을 입력해주세요", "option", user.getId(), time_text);*/
 
-                CustomHomePostDialog dialog = CustomHomePostDialog.newInstance(new CustomHomePostDialog.NameInputListener() {
-                    @Override
-                    public void onNameInputComplete(String text) {
-                        if(text != null) {
-                            CustomHomePostDialog dialog2 = CustomHomePostDialog.newInstance(new CustomHomePostDialog.NameInputListener() {
-                                @Override
-                                public void onNameInputComplete(String text) {
-                                    if(text != null) {
-                                        Map<String, Object> values = new HashMap<>();
-                                        values.put("opt", opt);
-                                        values.put("qty", text);
+                Intent intent = getActivity().getIntent();
+                user = (User) intent.getSerializableExtra("user");
 
-                                        mDatabaseRef.updateChildren(values);
-                                        int peopleCount = people_int + 1;
-
-                                        databaseRef = databaseRef.child(time_text + "/people");
-                                        databaseRef.setValue(peopleCount);
-
-                                        final Chat chat = new Chat();
-
-                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                for(DataSnapshot data : dataSnapshot.getChildren()) {
-                                                    Chat chatItem = data.getValue(Chat.class);
-                                                    chat.users = chatItem.users;
-                                                    Log.d("chatItem_users_size", chatItem.users.size() + "");
-                                                }
-                                                chat.users.put(user.getUid(), true);
-
-                                                // TODO : 기존 USER까지 다 불러와서 넣어라
-                                                FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).setValue(chat);
-                                                FirebaseDatabase.getInstance().getReference().child("User").child(userId_text).child("chatlist").child(time_text).setValue(chat);
-
-                                                FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("join").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        for(DataSnapshot data : dataSnapshot.getChildren()) {
-                                                            String joinId = data.getKey();
-                                                            FirebaseDatabase.getInstance().getReference().child("User").child(joinId).child("chatlist").child(time_text).setValue(chat);
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                    }
-                                                });
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                        Toast.makeText(getContext(), "주문을 완료하였습니다..", Toast.LENGTH_SHORT).show();
-
-                                        update = true;
-                                        progressBar.setProgress(peopleCount);
-
-                                        people_text = String.valueOf(progress_int) + "명 중 " + String.valueOf(peopleCount) + "명이 참여했습니다.";
-                                        people.setText(people_text);
-                                    }
-                                }
-                            });
-                            dialog2.setText("수량을 입력하세요");
-                            dialog2.show(getFragmentManager(), "qtyDialog");
-                            opt = text;
-                        }
-                    }
-                });
-                dialog.setText("옵션을 입력하세요");
-                dialog.show(getFragmentManager(), "optDialog");
+                if(!userCheck) showDialog();
+                else Toast.makeText(getContext(), "이미 공구에 참여했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -304,6 +268,83 @@ public class HomePostFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void showDialog() {
+        CustomHomePostDialog dialog = CustomHomePostDialog.newInstance(new CustomHomePostDialog.NameInputListener() {
+            @Override
+            public void onNameInputComplete(String text) {
+                if (text != null) {
+                    CustomHomePostDialog dialog2 = CustomHomePostDialog.newInstance(new CustomHomePostDialog.NameInputListener() {
+                        @Override
+                        public void onNameInputComplete(String text) {
+                            if (text != null) {
+                                Map<String, Object> values = new HashMap<>();
+                                values.put("opt", opt);
+                                values.put("qty", text);
+
+                                mDatabaseRef.updateChildren(values);
+                                int peopleCount = people_int + 1;
+
+                                databaseRef = databaseRef.child(time_text + "/people");
+                                databaseRef.setValue(peopleCount);
+
+                                final Chat chat = new Chat();
+
+                                FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                            Chat chatItem = data.getValue(Chat.class);
+                                            chat.users = chatItem.users;
+                                            Log.d("chatItem_users_size", chatItem.users.size() + "");
+                                        }
+                                        chat.users.put(user.getUid(), true);
+
+                                        // TODO : 기존 USER까지 다 불러와서 넣어라
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).setValue(chat);
+                                        FirebaseDatabase.getInstance().getReference().child("User").child(userId_text).child("chatlist").child(time_text).setValue(chat);
+
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("join").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                    String joinId = data.getKey();
+                                                    FirebaseDatabase.getInstance().getReference().child("User").child(joinId).child("chatlist").child(time_text).setValue(chat);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                Toast.makeText(getContext(), "주문을 완료하였습니다..", Toast.LENGTH_SHORT).show();
+
+                                update = true;
+                                progressBar.setProgress(peopleCount);
+
+                                people_text = String.valueOf(progress_int) + "명 중 " + String.valueOf(peopleCount) + "명이 참여했습니다.";
+                                people.setText(people_text);
+                            }
+                        }
+                    });
+                    dialog2.setText("수량을 입력하세요");
+                    dialog2.show(getFragmentManager(), "qtyDialog");
+                    opt = text;
+                }
+            }
+        });
+        dialog.setText("옵션을 입력하세요");
+        dialog.show(getFragmentManager(), "optDialog");
     }
 
     public void showWeb(String url) {

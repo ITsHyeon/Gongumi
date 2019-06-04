@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                         alert.setNegativeButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mTabLayout.setScrollPosition(0, 0f, true);
+                                mTabLayout.setScrollPosition(0, 0, true);
                                 mViewPager.setCurrentItem(0);
                                 post_pos = 0;
                                 post = new Post();
@@ -346,9 +346,8 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     post.setStartDay(new Date());
                                     addPost(post);
-                                    adapter.notifyDataSetChanged();
                                     uploadThumbnailPhoto(post.getStartDay().getTime(), postFragment.adapter.getList());
-                                    mTabLayout.setScrollPosition(0, 0f, true);
+                                    mTabLayout.setScrollPosition(0, 0, true);
                                     mViewPager.setCurrentItem(0);
                                     post = new Post();
                                     post_pos = 0;
