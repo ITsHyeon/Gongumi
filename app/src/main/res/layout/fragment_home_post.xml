@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".fragment.HomePostFragment">
+    tools:context=".fragment.HomePostFragment"
+    android:fillViewport="true"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -139,14 +141,54 @@
             android:textColor="@color/textColor"
             android:textSize="13sp" />
 
+        <TextView
+            android:id="@+id/text_url"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@+id/content"
+            android:background="@drawable/custom_post_layout"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="URL"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/content"
+            android:layout_toEndOf="@+id/text_url"
+            android:background="@drawable/custom_post_layout"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_vertical"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="URL"
+            android:textColor="#FFC107"
+            android:ellipsize="end"
+            android:textSize="18sp"
+            />
+
         <Button
             android:id="@+id/btJoin"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_below="@+id/url"
             android:layout_alignParentBottom="true"
-            android:background="#ffba00"
+            android:background="@color/mainColor"
             android:textColor="#FFFFFF"
             android:text="Join" />
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            />
 
     </RelativeLayout>
 </ScrollView>

@@ -56,7 +56,7 @@ public class Home {
         return userId;
     }
 
-    public Home(String product, String price, String hashtag, int progress, int people, String content, Date startDay, int imgCount, String userId) {
+    public Home(String product, String price, String hashtag, int progress, int people, String content, Date startDay, int imgCount, String userId, String url) {
         this.product = product;
         this.price = price;
         this.hashtag = hashtag;
@@ -67,6 +67,7 @@ public class Home {
         this.time = String.valueOf(startDay.getTime());
         this.imgCount = imgCount;
         this.userId = userId;
+        this.url = url;
     }
 
 }

@@ -1,5 +1,9 @@
 package com.example.gongumi.fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,12 +14,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,6 +34,7 @@ import android.widget.ViewFlipper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
+import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.custom.CustomHomePostDialog;
 import com.example.gongumi.model.Chat;
@@ -53,9 +62,11 @@ public class HomePostFragment extends Fragment {
     ProgressBar progressBar;
     TextView people;
     TextView content;
+    TextView url;
     ViewFlipper flipper;
     ImageView img01, img02, img03;
     Button joinBtn, backBtn, nextBtn;
+    WebView webView;
     boolean dialogOk = false;
     private User user;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
@@ -63,7 +74,7 @@ public class HomePostFragment extends Fragment {
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post/");
     DatabaseReference databaseRef = mDatabaseRef;
 
-    String product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text;
+    String product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text, url_text;
     int progress_int, people_int, imgCount;
     boolean update = false;
     String opt;
@@ -73,7 +84,7 @@ public class HomePostFragment extends Fragment {
     }
 
 
-    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, int imgCount, String userId) {
+    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, int imgCount, String userId, String url) {
         HomePostFragment fragment = new HomePostFragment();
         Bundle args = new Bundle();
         args.putString("product", product);
@@ -85,6 +96,7 @@ public class HomePostFragment extends Fragment {
         args.putString("time", time);
         args.putInt("imgCount",imgCount);
         args.putString("userId", userId);
+        args.putString("url", url);
         fragment.setArguments(args);
 
         return fragment;
@@ -110,6 +122,7 @@ public class HomePostFragment extends Fragment {
             time_text = getArguments().getString("time");
             imgCount = getArguments().getInt("imgCount");
             userId_text = getArguments().getString("userId");
+            url_text = getArguments().getString("url");
         }
 
         flipper = view.findViewById(R.id.flipper);
@@ -262,9 +275,40 @@ public class HomePostFragment extends Fragment {
             }
         });
 
+        webView = view.findViewById(R.id.webview);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
 
+        url = view.findViewById(R.id.url);
+        url.setText(Html.fromHtml("<u>" + url_text + "</u>"));
+
+        url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showWeb(url_text);
+                    }
+                });
+                alert.setMessage("해당 URL로 이동하시겠습니까?");
+                alert.show();
+            }
+        });
 
         return view;
+    }
+
+    public void showWeb(String url) {
+        webView.loadUrl(url);
+        webView.setVisibility(View.VISIBLE);
     }
 
     public void moveNextView() {

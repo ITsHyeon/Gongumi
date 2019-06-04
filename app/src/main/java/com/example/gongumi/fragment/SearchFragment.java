@@ -85,7 +85,7 @@ public class SearchFragment extends Fragment {
                     String str = String.valueOf(post.getHashtag());
                     Log.d("getHashtag", str);
                     if(keyword != null && str.contains(keyword)) {
-                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount(), post.getUserId());
+                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getImgCount(), post.getUserId(), post.getUrl());
                         items.add(item);
                     }
                 }
