@@ -235,12 +235,14 @@ public class MessageActivity extends AppCompatActivity {
             } else {
                 User user;
                 for(int i=0; i<users.size(); i++){
-                    if(comments.get(i).uid.equals(users.get(i).getUid())){
+                    if(!comments.get(i).uid.equals(users.get(i).getUid())){
                         Glide.with(holder.itemView.getContext())
                                 .load(users.get(i).getProfileUrl())
                                 .apply(new RequestOptions().circleCrop())
                                 .into(messageViewHolder.imageView_profile);
                         messageViewHolder.textView_name.setText(users.get(i).getName());
+                        Log.d("comment Uid", users.get(i).getUid());
+                        Log.d("comment Id", users.get(i).getId());
                     }
                 }
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
@@ -249,6 +251,7 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
             }
+
 
             // 시간 포맷 설정
             long unixTime = (long) comments.get(position).timestamp;
