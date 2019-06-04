@@ -67,10 +67,10 @@ public class MessageActivity extends AppCompatActivity {
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
 //        destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
-        if (uid=="whwACuY42kRCpkQU6I4REQfpDMF3"){
+        if (uid=="6BbWjdcRrKO4aDUqL5Z0luW2vJ33"){
             destinationUid = "IO1VPyWi9XSxBb81rwNdOFjxiGR2";
         } else{
-            destinationUid = "whwACuY42kRCpkQU6I4REQfpDMF3";
+            destinationUid = "6BbWjdcRrKO4aDUqL5Z0luW2vJ33";
         }
         mBtSendMessage = findViewById(R.id.message_btn);
         mEtInputMessage = findViewById(R.id.message_edit);
@@ -98,7 +98,7 @@ public class MessageActivity extends AppCompatActivity {
                     comment.uid = uid;
                     comment.message = mEtInputMessage.getText().toString();
                     comment.timestamp = ServerValue.TIMESTAMP;
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child("-LgL3R5J_hNZ3b1awIPC").child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             mEtInputMessage.setText("");
@@ -160,7 +160,7 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         void getMessageList(){
-            FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomUid).child("comments").addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("chatrooms").child("-LgL3R5J_hNZ3b1awIPC").child("comments").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     comments.clear();
@@ -195,13 +195,13 @@ public class MessageActivity extends AppCompatActivity {
             // 내가 보낸 메세지
             if (comments.get(position).uid.equals(uid)){
                 messageViewHolder.textView_message.setText(comments.get(position).message);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.bubble_right);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_category);
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE);
-                messageViewHolder.textView_message.setTextSize(25);
+                messageViewHolder.textView_message.setTextSize(15);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else{
-                if (destinationUid=="whwACuY42kRCpkQU6I4REQfpDMF3"){
+                if (destinationUid=="6BbWjdcRrKO4aDUqL5Z0luW2vJ33"){
                     Glide.with(holder.itemView.getContext())
                             .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fs2017s02.jpg?alt=media&token=28b901ae-ac42-4270-be12-b0d6dd2d415e")
                             .apply(new RequestOptions().circleCrop())
@@ -218,9 +218,9 @@ public class MessageActivity extends AppCompatActivity {
                 }
 
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.bubble_left);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
-                messageViewHolder.textView_message.setTextSize(25);
+                messageViewHolder.textView_message.setTextSize(15);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
             }
 

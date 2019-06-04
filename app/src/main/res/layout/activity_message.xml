@@ -25,15 +25,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
         android:layout_toLeftOf="@+id/message_btn" />
 
     <Button
+        android:background="@drawable/custom_click_checked_button_yellow"
         android:id="@+id/message_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:textSize="15dp"
         android:text="전송"
+        android:fontFamily="@font/notosans_regular"
 
         />
 
