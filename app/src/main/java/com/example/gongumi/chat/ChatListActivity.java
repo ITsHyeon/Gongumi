@@ -112,8 +112,15 @@ public class ChatListActivity extends AppCompatActivity {
                                         for(DataSnapshot data : dataSnapshot.getChildren()) {
                                             chat.comments.put(data.getKey(), data.getValue(Chat.Comment.class));
                                         }
-                                        chatList.setChat(chat);
-                                        chatLists.add(chatList);
+                                        if(chatLists.contains(chatList)) {
+                                            int index = chatLists.indexOf(chatList);
+                                            chatList.setChat(chat);
+                                            chatLists.set(index, chatList);
+                                        }
+                                        else {
+                                            chatList.setChat(chat);
+                                            chatLists.add(chatList);
+                                        }
                                         chatListRecyclerViewAdapter.notifyDataSetChanged();
                                     }
 
