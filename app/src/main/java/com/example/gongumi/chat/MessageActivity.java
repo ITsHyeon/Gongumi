@@ -83,8 +83,8 @@ public class MessageActivity extends AppCompatActivity {
         post = (Post) intent.getSerializableExtra("post");
         chat = (Chat) intent.getSerializableExtra("chat");
 
-        Log.e("Post", post.getUserId());
-        Log.e("Chat", chat.users.toString());
+      /*  Log.e("Post", post.getUserId());
+        Log.e("Chat", chat.users.toString());*/
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
@@ -248,7 +248,7 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
-                User user;
+               /* User user;
                 for(int i=0; i<users.size(); i++){
                     if(!comments.get(i).uid.equals(users.get(i).getUid())){
                         Glide.with(holder.itemView.getContext())
@@ -259,7 +259,12 @@ public class MessageActivity extends AppCompatActivity {
                         Log.d("comment Uid", users.get(i).getUid());
                         Log.d("comment Id", users.get(i).getId());
                     }
-                }
+                }*/
+               Glide.with(holder.itemView.getContext())
+                       .load(users.get(Integer.valueOf(comments.get(position).uid)).getProfileUrl())
+                       .apply(new RequestOptions().circleCrop())
+                       .into(messageViewHolder.imageView_profile);
+               messageViewHolder.textView_name.setText(users.get(Integer.valueOf(comments.get(position).uid)).getId());
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
