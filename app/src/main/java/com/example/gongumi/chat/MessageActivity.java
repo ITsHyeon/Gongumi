@@ -238,8 +238,8 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+            final MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
             // 내가 보낸 메세지
             if (comments.get(position).uid.equals(uid)) {
                 messageViewHolder.textView_message.setText(comments.get(position).message);
@@ -249,23 +249,35 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
-               /* for(int i=0; i<users.size()-1; i++){
-                    if(comments.get(position).uid.equals(users.get(position).getUid())){
-                        Glide.with(holder.itemView.getContext())
-                                .load(users.get(position).getProfileUrl())
-                                .apply(new RequestOptions().circleCrop())
-                                .into(messageViewHolder.imageView_profile);
-                        messageViewHolder.textView_name.setText(users.get(position).getName());
-                        Log.d("test users Uid", users.get(i).getUid());
-                        Log.d("test users Profile", users.get(i).getProfileUrl());
-                        Log.d("test users Id", users.get(i).getId());
-                        Log.d("test chat", chat.users.keySet() + "");
-                        Log.d("test comment Uid", comments.get(i).uid);
-//                        Log.d("test comment Profile", users.get(Integer.parseInt(comments.get(position).uid)).getProfileUrl());
+                FirebaseDatabase.getInstance().getReference("User").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        users.add(user);
+
+                        for (User user1 : users){
+                            if (comments.get(position).uid.equals(user1.getUid())){
+                                Glide.with(holder.itemView.getContext())
+                                        .load(R.drawable.profile_photo)
+                                        .apply(new RequestOptions().circleCrop())
+                                        .into(messageViewHolder.imageView_profile);
+                                messageViewHolder.textView_name.setText(user1.getId());
+                                Log.d("db comment uid", comments.get(position).uid);
+                                Log.d("db user uid", user1.getUid());
+                                Log.d("db user Id", user1.getId());
+                            }
+                        }
 
                     }
-                }*/
-               if (comments.get(position).uid.equals("aKooNRISQKdtOwFONMR2Xon74No2")){
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+              /* if (comments.get(position).uid.equals("aKooNRISQKdtOwFONMR2Xon74No2")){
                    Glide.with(holder.itemView.getContext())
                            .load(R.drawable.profile_photo)
                            .apply(new RequestOptions().circleCrop())
@@ -283,7 +295,7 @@ public class MessageActivity extends AppCompatActivity {
                            .apply(new RequestOptions().circleCrop())
                            .into(messageViewHolder.imageView_profile);
                    messageViewHolder.textView_name.setText("수현");
-               }
+               }*/
 
                 Log.d("comment uid", comments.get(position).uid);
                 Log.d("comment message", comments.get(position).message);
