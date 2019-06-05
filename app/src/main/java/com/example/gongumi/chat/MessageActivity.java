@@ -88,6 +88,7 @@ public class MessageActivity extends AppCompatActivity {
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
+//        chatRoomName = String.valueOf(post.getStartDay().getTime());
         chatRoomName = String.valueOf(post.getStartDay().getTime());
         users = new ArrayList<>();
 
@@ -158,28 +159,28 @@ public class MessageActivity extends AppCompatActivity {
         });
     }*/
 
-   public void getUser() {
-       FirebaseDatabase.getInstance().getReference().child("User").addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               for(DataSnapshot data: dataSnapshot.getChildren()) {
-                   User user = data.getValue(User.class);
+    public void getUser() {
+        FirebaseDatabase.getInstance().getReference().child("User").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    User user = data.getValue(User.class);
                     // String user: chats.get(position).users.keySet()
-                   for (String key : chat.users.keySet()){
-                    if (key.equals(user.getUid())){
-                        users.add(user);
+                    for (String key : chat.users.keySet()) {
+                        if (key.equals(user.getUid())) {
+                            users.add(user);
+                        }
                     }
-                   }
 
-               }
-           }
+                }
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-           }
-       });
-   }
+            }
+        });
+    }
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -248,23 +249,51 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
-               /* User user;
-                for(int i=0; i<users.size(); i++){
-                    if(!comments.get(i).uid.equals(users.get(i).getUid())){
+               /* for(int i=0; i<users.size()-1; i++){
+                    if(comments.get(position).uid.equals(users.get(position).getUid())){
                         Glide.with(holder.itemView.getContext())
-                                .load(users.get(i).getProfileUrl())
+                                .load(users.get(position).getProfileUrl())
                                 .apply(new RequestOptions().circleCrop())
                                 .into(messageViewHolder.imageView_profile);
-                        messageViewHolder.textView_name.setText(users.get(i).getName());
-                        Log.d("comment Uid", users.get(i).getUid());
-                        Log.d("comment Id", users.get(i).getId());
+                        messageViewHolder.textView_name.setText(users.get(position).getName());
+                        Log.d("test users Uid", users.get(i).getUid());
+                        Log.d("test users Profile", users.get(i).getProfileUrl());
+                        Log.d("test users Id", users.get(i).getId());
+                        Log.d("test chat", chat.users.keySet() + "");
+                        Log.d("test comment Uid", comments.get(i).uid);
+//                        Log.d("test comment Profile", users.get(Integer.parseInt(comments.get(position).uid)).getProfileUrl());
+
                     }
                 }*/
-               Glide.with(holder.itemView.getContext())
+               if (comments.get(position).uid.equals("aKooNRISQKdtOwFONMR2Xon74No2")){
+                   Glide.with(holder.itemView.getContext())
+                           .load(R.drawable.profile_photo)
+                           .apply(new RequestOptions().circleCrop())
+                           .into(messageViewHolder.imageView_profile);
+                   messageViewHolder.textView_name.setText("수정");
+               } else if(comments.get(position).uid.equals("Re8y0gjmJiaA16sMf0tF34W35Uh1")){
+                   Glide.with(holder.itemView.getContext())
+                           .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fs2017s02.jpg?alt=media&token=28b901ae-ac42-4270-be12-b0d6dd2d415e")
+                           .apply(new RequestOptions().circleCrop())
+                           .into(messageViewHolder.imageView_profile);
+                   messageViewHolder.textView_name.setText("가슬");
+               } else{
+                   Glide.with(holder.itemView.getContext())
+                           .load("https://firebasestorage.googleapis.com/v0/b/gongumi-6995f.appspot.com/o/user_profile%2Fsuhyeon917917.jpg?alt=media&token=1320d74e-069a-4310-a2c9-2ea5522b592f")
+                           .apply(new RequestOptions().circleCrop())
+                           .into(messageViewHolder.imageView_profile);
+                   messageViewHolder.textView_name.setText("수현");
+               }
+
+                Log.d("comment uid", comments.get(position).uid);
+                Log.d("comment message", comments.get(position).message);
+
+
+              /* Glide.with(holder.itemView.getContext())
                        .load(users.get(Integer.valueOf(comments.get(position).uid)).getProfileUrl())
                        .apply(new RequestOptions().circleCrop())
                        .into(messageViewHolder.imageView_profile);
-               messageViewHolder.textView_name.setText(users.get(Integer.valueOf(comments.get(position).uid)).getId());
+               messageViewHolder.textView_name.setText(users.get(Integer.valueOf(comments.get(position).uid)).getId());*/
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
