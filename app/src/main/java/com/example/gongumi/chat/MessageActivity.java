@@ -248,7 +248,7 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
-                User user;
+/*                User user;
                 for(int i=0; i<users.size(); i++){
                     if(comments.get(i).uid.equals(users.get(i).getUid())){
                         Glide.with(holder.itemView.getContext())
@@ -257,7 +257,12 @@ public class MessageActivity extends AppCompatActivity {
                                 .into(messageViewHolder.imageView_profile);
                         messageViewHolder.textView_name.setText(users.get(i).getName());
                     }
-                }
+                }*/
+                Glide.with(holder.itemView.getContext())
+                        .load(users.get(Integer.valueOf(comments.get(position).uid)).getProfileUrl())
+                        .apply(new RequestOptions().circleCrop())
+                        .into(messageViewHolder.imageView_profile);
+                messageViewHolder.textView_name.setText(users.get(Integer.valueOf(comments.get(position).uid)).getId());
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
