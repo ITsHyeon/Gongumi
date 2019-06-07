@@ -83,11 +83,12 @@ public class MessageActivity extends AppCompatActivity {
         post = (Post) intent.getSerializableExtra("post");
         chat = (Chat) intent.getSerializableExtra("chat");
 
-        Log.e("Post", post.getUserId());
-        Log.e("Chat", chat.users.toString());
+      /*  Log.e("Post", post.getUserId());
+        Log.e("Chat", chat.users.toString());*/
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
 
+//        chatRoomName = String.valueOf(post.getStartDay().getTime());
         chatRoomName = String.valueOf(post.getStartDay().getTime());
         users = new ArrayList<>();
 
@@ -158,28 +159,28 @@ public class MessageActivity extends AppCompatActivity {
         });
     }*/
 
-   public void getUser() {
-       FirebaseDatabase.getInstance().getReference().child("User").addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               for(DataSnapshot data: dataSnapshot.getChildren()) {
-                   User user = data.getValue(User.class);
+    public void getUser() {
+        FirebaseDatabase.getInstance().getReference().child("User").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    User user = data.getValue(User.class);
                     // String user: chats.get(position).users.keySet()
-                   for (String key : chat.users.keySet()){
-                    if (key.equals(user.getUid())){
-                        users.add(user);
+                    for (String key : chat.users.keySet()) {
+                        if (key.equals(user.getUid())) {
+                            users.add(user);
+                        }
                     }
-                   }
 
-               }
-           }
+                }
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-           }
-       });
-   }
+            }
+        });
+    }
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -237,8 +238,8 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+            final MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
             // 내가 보낸 메세지
             if (comments.get(position).uid.equals(uid)) {
                 messageViewHolder.textView_message.setText(comments.get(position).message);
@@ -248,27 +249,45 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
-/*                User user;
-                for(int i=0; i<users.size(); i++){
-                    if(comments.get(i).uid.equals(users.get(i).getUid())){
-                        Glide.with(holder.itemView.getContext())
-                                .load(users.get(i).getProfileUrl())
-                                .apply(new RequestOptions().circleCrop())
-                                .into(messageViewHolder.imageView_profile);
-                        messageViewHolder.textView_name.setText(users.get(i).getName());
+                FirebaseDatabase.getInstance().getReference("User").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        users.add(user);
+
+                        for (User user1 : users){
+                            if (comments.get(position).uid.equals(user1.getUid())){
+                                Glide.with(holder.itemView.getContext())
+                                        .load(user1.getProfileUrl())
+                                        .apply(new RequestOptions().error(R.drawable.profile_photo))
+                                        .apply(new RequestOptions().circleCrop())
+                                        .into(messageViewHolder.imageView_profile);
+//                                Glide.with(holder.itemView.getContext())
+//                                        .load(R.drawable.profile_photo)
+//                                        .apply(new RequestOptions().circleCrop())
+//                                        .into(messageViewHolder.imageView_profile);
+                                messageViewHolder.textView_name.setText(user1.getId());
+                                Log.d("db comment uid", comments.get(position).uid);
+                                Log.d("db user uid", user1.getUid());
+                                Log.d("db user Id", user1.getId());
+                            }
+                        }
+
                     }
-                }*/
-                Glide.with(holder.itemView.getContext())
-                        .load(users.get(Integer.valueOf(comments.get(position).uid)).getProfileUrl())
-                        .apply(new RequestOptions().circleCrop())
-                        .into(messageViewHolder.imageView_profile);
-                messageViewHolder.textView_name.setText(users.get(Integer.valueOf(comments.get(position).uid)).getId());
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
             }
+
 
             // 시간 포맷 설정
             long unixTime = (long) comments.get(position).timestamp;
