@@ -302,7 +302,7 @@ public class HomePostFragment extends Fragment {
                                         chat.users.put(user.getUid(), true);
 
                                         // TODO : 기존 USER까지 다 불러와서 넣어라
-                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).setValue(chat);
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("chatroom").child(time_text).child("users").setValue(chat.users);
                                         FirebaseDatabase.getInstance().getReference().child("User").child(userId_text).child("chatlist").child(time_text).setValue(chat);
 
                                         FirebaseDatabase.getInstance().getReference().child("Post").child(time_text).child("join").addListenerForSingleValueEvent(new ValueEventListener() {

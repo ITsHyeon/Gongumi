@@ -258,9 +258,14 @@ public class MessageActivity extends AppCompatActivity {
                         for (User user1 : users){
                             if (comments.get(position).uid.equals(user1.getUid())){
                                 Glide.with(holder.itemView.getContext())
-                                        .load(R.drawable.profile_photo)
+                                        .load(user1.getProfileUrl())
+                                        .apply(new RequestOptions().error(R.drawable.profile_photo))
                                         .apply(new RequestOptions().circleCrop())
                                         .into(messageViewHolder.imageView_profile);
+//                                Glide.with(holder.itemView.getContext())
+//                                        .load(R.drawable.profile_photo)
+//                                        .apply(new RequestOptions().circleCrop())
+//                                        .into(messageViewHolder.imageView_profile);
                                 messageViewHolder.textView_name.setText(user1.getId());
                                 Log.d("db comment uid", comments.get(position).uid);
                                 Log.d("db user uid", user1.getUid());

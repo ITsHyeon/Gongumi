@@ -97,7 +97,7 @@
                 android:background="@drawable/btn_prev"
                 android:visibility="invisible"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="5dp"
                 />
 
             <ImageView
