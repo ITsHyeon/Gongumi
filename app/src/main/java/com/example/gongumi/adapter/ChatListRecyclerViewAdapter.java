@@ -19,6 +19,7 @@ import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.chat.MessageActivity;
 import com.example.gongumi.model.Chat;
 import com.example.gongumi.model.ChatList;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +58,11 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Glide.with(context).load(chatList.get(position).getThumbnailUrl()).apply(new RequestOptions().error(R.drawable.profile_photo)).into(holder.image_thumbnail);
+        Glide.with(context)
+                .load(FirebaseStorage.getInstance().getReference().child(chatList.get(position).getThumbnailUrl()))
+                .apply(new RequestOptions().error(R.drawable.profile_photo))
+                .apply(new RequestOptions().circleCrop())
+                .into(holder.image_thumbnail);
         holder.text_chatroom.setText(chatList.get(position).getPost().getProduct());
 
         // 메세지를 내림차순으로 정렬 후 마지막 메세지의 키값을 가져옴옴

@@ -3,6 +3,7 @@ package com.example.gongumi.chat;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.example.gongumi.model.Chat;
 import com.example.gongumi.model.ChatList;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -90,7 +92,7 @@ public class ChatListActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 final String chatroom = dataSnapshot.getKey();
 
-                String url = FirebaseStorage.getInstance().getReference().child("thumbnail").child(chatroom).getDownloadUrl().toString();
+                String url = "thumbnail/" + chatroom + "/thumbnail1.jpg";
 
                 final ChatList chatList = new ChatList();
                 chatList.setThumbnailUrl(url);

@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
 import com.example.gongumi.model.Chat;
@@ -243,7 +244,7 @@ public class MessageActivity extends AppCompatActivity {
             // 내가 보낸 메세지
             if (comments.get(position).uid.equals(uid)) {
                 messageViewHolder.textView_message.setText(comments.get(position).message);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_hashtag);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_message);
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE);
                 messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
@@ -257,8 +258,9 @@ public class MessageActivity extends AppCompatActivity {
 
                         for (User user1 : users){
                             if (comments.get(position).uid.equals(user1.getUid())){
-                                Glide.with(holder.itemView.getContext())
-                                        .load(user1.getProfileUrl())
+                                RequestManager requestManager = Glide.with(holder.itemView.getContext());
+
+                                requestManager.load(user1.getProfileUrl())
                                         .apply(new RequestOptions().error(R.drawable.profile_photo))
                                         .apply(new RequestOptions().circleCrop())
                                         .into(messageViewHolder.imageView_profile);
@@ -282,7 +284,7 @@ public class MessageActivity extends AppCompatActivity {
                 });
 
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_click_checked_button_yellow);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_message_others);
                 messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
