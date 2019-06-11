@@ -6,6 +6,7 @@ import java.util.Date;
 public class Post implements Serializable {
     private String userId; // 공구한 사람 id
     private String userUid; // 공구한 사람 uid
+    private String userName; // 공구한 사람 name
     private String hashtag; // 카테고리
     private Date startDay, endDay; // 공구 시작 날짜, 끝나는 날짜
     private int num; // 공구 인원
@@ -18,9 +19,10 @@ public class Post implements Serializable {
     private String location; // 주소
 
     public Post() {}
-    public Post(String userId, String userUid, String hashtag, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url, int imgCount) {
+    public Post(String userId, String userUid, String userName, String hashtag, Date startDay, Date endDay, int num, int people, String product, int price, String content, String url, int imgCount) {
         this.userId = userId;
         this.userUid = userUid;
+        this.userName = userName;
         this.hashtag = hashtag;
         this.startDay = startDay;
         this.endDay = endDay;
@@ -32,6 +34,10 @@ public class Post implements Serializable {
         this.url = url;
         this.imgCount = imgCount;
     }
+
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public String getUserName() { return userName; }
 
     public void setUserId(String userId) {
         this.userId = userId;

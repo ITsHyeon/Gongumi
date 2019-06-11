@@ -16,6 +16,7 @@ import com.example.gongumi.activity.MainActivity;
 import com.example.gongumi.adapter.RecyclerAdapter;
 import com.example.gongumi.model.Home;
 import com.example.gongumi.model.Post;
+import com.example.gongumi.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,7 @@ public class SearchFragment extends Fragment {
     RecyclerAdapter adpater;
     Home item;
     TextView searchtag;
+    String profile, profileImg;
 
     public static int search_pos = 0;
 
@@ -66,7 +68,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Post");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.searchList);
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
@@ -84,8 +86,29 @@ public class SearchFragment extends Fragment {
                     post = data.getValue(Post.class);
                     String str = String.valueOf(post.getHashtag());
                     Log.d("getHashtag", str);
+
+                    ValueEventListener userListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot data : dataSnapshot.getChildren()){
+                                User postUser = data.getValue(User.class);
+                                if(postUser.getUid().equals(post.getUserUid())) {
+                                    profile = postUser.getName();
+                                    profileImg = postUser.getProfileUrl();
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // ...
+                        }
+                    };
+                    mDatabase.child("User").addValueEventListener(userListener);
+
                     if(keyword != null && str.contains(keyword)) {
-                        item = new Home(post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getEndDay(), post.getImgCount(), post.getUserId(), post.getUrl());
+                        item = new Home(profile, profileImg, post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getEndDay(), post.getImgCount(), post.getUserId(), post.getUrl());
                         items.add(item);
                     }
                 }
@@ -106,7 +129,7 @@ public class SearchFragment extends Fragment {
                 // ...
             }
         };
-        mDatabase.addValueEventListener(postListener);
+        mDatabase.child("Post").addValueEventListener(postListener);
 
         return view;
     }

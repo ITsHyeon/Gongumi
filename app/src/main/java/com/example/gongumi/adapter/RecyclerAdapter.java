@@ -102,7 +102,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.add(R.id.frame_home,
-                        HomePostFragment.newInstance(item.getProduct(),item.getPrice(),item.getHashtag(), item.getProgress(),item.getPeople(), item.getContent(), item.getTime(), item.getStartDay(), item.getEndDay(), item.getImgCount(), item.getUserId(), item.getUrl())).commit();
+                        HomePostFragment.newInstance(item.getProfile(), item.getProfileImg(), item.getProduct(),item.getPrice(),item.getHashtag(), item.getProgress(),item.getPeople(), item.getContent(), item.getTime(), item.getStartDay(), item.getEndDay(), item.getImgCount(), item.getUserId(), item.getUrl())).commit();
                 fragmentTransaction.addToBackStack(null);
 
             }

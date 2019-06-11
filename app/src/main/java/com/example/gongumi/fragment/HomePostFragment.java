@@ -59,9 +59,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.support.constraint.Constraints.TAG;
 
 public class HomePostFragment extends Fragment {
+    CircleImageView profileImg;
+    TextView profile;
     TextView product;
     TextView price;
     TextView hashtag;
@@ -75,14 +79,16 @@ public class HomePostFragment extends Fragment {
     WebView webView;
     private User user;
     boolean userCheck = false;
-    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("thumbnail/");
-    StorageReference mStorage = storageRef;
+    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+    StorageReference mStorage = storageRef.child("thumbnail/");
+    StorageReference profileRef = storageRef.child("user_profile");
+
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("Post/");
     DatabaseReference databaseRef = mDatabaseRef;
 
     private DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
-    String product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text, url_text, start_text, end_text;
+    String profile_text, profileImg_text, product_text, price_text, hashtag_text, content_text, time_text, people_text, userId_text, url_text, start_text, end_text;
     int progress_int, people_int, imgCount;
     boolean update = false;
     String opt;
@@ -92,9 +98,11 @@ public class HomePostFragment extends Fragment {
     }
 
 
-    public static HomePostFragment newInstance(String product, String price, String hashtag, int progressbar, int people, String content, String time, Date startDay, Date endDay, int imgCount, String userId, String url) {
+    public static HomePostFragment newInstance(String profile, String profileImg, String product, String price, String hashtag, int progressbar, int people, String content, String time, Date startDay, Date endDay, int imgCount, String userId, String url) {
         HomePostFragment fragment = new HomePostFragment();
         Bundle args = new Bundle();
+        args.putString("profile", profile);
+        args.putString("profileImg", profileImg);
         args.putString("product", product);
         args.putString("price", price);
         args.putString("hashtag", hashtag);
@@ -123,6 +131,8 @@ public class HomePostFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_post, container, false);
 
         if(getArguments() != null){
+            profile_text = getArguments().getString("profile");
+            profileImg_text = getArguments().getString("profileImg");
             product_text = getArguments().getString("product");
             price_text = getArguments().getString("price");
             hashtag_text = getArguments().getString("hashtag");
@@ -190,6 +200,12 @@ public class HomePostFragment extends Fragment {
         });
 
         flipper.setOnTouchListener(touchListener);
+
+        profile = view.findViewById(R.id.profile);
+        profile.setText(profile_text);
+        profileImg = view.findViewById(R.id.profileImg);
+        profileRef = profileRef.child(userId_text+".jpg");
+        Glide.with(getActivity()).load(profileRef).into(profileImg);
 
         product = view.findViewById(R.id.product);
         product.setText(product_text);

@@ -331,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
                         if (postFragment.check()) {
                             post.setUserId(user.getId());
                             post.setUserUid(user.getUid());
+                            post.setUserName(user.getName());
                             post.setHashtag(post.getHashtag().trim());
                             post.setLocation(user.getLocation());
 
