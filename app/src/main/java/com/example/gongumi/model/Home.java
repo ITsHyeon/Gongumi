@@ -3,7 +3,8 @@ package com.example.gongumi.model;
 import java.util.Date;
 
 public class Home {
-    int thumbnail;
+    String profile;
+    String profileImg;
     String product;
     String price;
     String url;
@@ -16,6 +17,10 @@ public class Home {
     String time;
     int imgCount;
     String userId;
+
+    public String getProfile() { return profile; }
+
+    public String getProfileImg() { return profileImg; }
 
     public String getProduct() {
         return this.product;
@@ -57,7 +62,9 @@ public class Home {
         return this.endDay;
     }
 
-    public Home(String product, String price, String hashtag, int progress, int people, String content, Date startDay, Date endDay, int imgCount, String userId, String url) {
+    public Home(String profile, String profileImg, String product, String price, String hashtag, int progress, int people, String content, Date startDay, Date endDay, int imgCount, String userId, String url) {
+        this.profile = profile;
+        this.profileImg = profileImg;
         this.product = product;
         this.price = price;
         this.hashtag = hashtag;

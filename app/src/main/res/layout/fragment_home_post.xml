@@ -74,17 +74,42 @@
 
         </RelativeLayout>
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileImg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/profile_photo"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/layout_flipper"
+            />
+
+        <TextView
+            android:id="@+id/profile"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/layout_flipper"
+            android:fontFamily="@font/notosans_regular"
+            android:paddingEnd="20dp"
+            android:text="이름"
+            android:textColor="@color/textColor"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/profileImg"
+            android:layout_alignTop="@+id/profileImg"
+            android:textSize="18sp"
+            />
+
         <TextView
             android:id="@+id/product"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/layout_flipper"
+            android:layout_below="@+id/profileImg"
             android:fontFamily="@font/notosans_regular"
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:text="상품명"
             android:textColor="@color/textColor"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:layout_marginTop="-13dp"/>
 
         <TextView
             android:id="@+id/price"
