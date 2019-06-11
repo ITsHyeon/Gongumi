@@ -72,7 +72,12 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         Log.d("getUser", chatList.get(position).getChat().users.size() + "");
         if(commentMap.size() > 0) {
             String lastMessageKey = (String) commentMap.keySet().toArray()[0];
-            holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message);
+            if(chatList.get(position).getChat().comments.get(lastMessageKey).message.equals(chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
+                holder.text_lastMessage.setText("사진을 보냈습니다");
+            }
+            else {
+                holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message);
+            }
 
             // 시간 포맷
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));

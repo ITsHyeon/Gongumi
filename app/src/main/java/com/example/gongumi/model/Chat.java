@@ -12,6 +12,7 @@ public class Chat implements Serializable {
     public static class Comment{
        public String uid;
        public String message;
-       public Object timestamp;
+       // public Object timestamp;
+       public long timestamp;
     }
 }

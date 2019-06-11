@@ -1,6 +1,11 @@
 package com.example.gongumi.chat;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,15 +23,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
+import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
+import com.example.gongumi.fragment.PostFragment;
 import com.example.gongumi.model.Chat;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,12 +47,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import static com.example.gongumi.activity.MainActivity.THUMBNAIL_PHOTO_REQUEST_CODE;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -51,6 +66,13 @@ public class MessageActivity extends AppCompatActivity {
     private String destinationUid2;
     private Button mBtSendMessage;
     private EditText mEtInputMessage;
+
+    // 이미지
+    private Button btn_pic;
+    private RecyclerView recyclerView_pic;
+    private PostThumbnailRecyclerViewAdapter pic_adapter;
+    private ArrayList<Uri> pic_list;
+    final public int IMG_LIMIT = 3;
 
     // Toolbar
     private Button btn_prev;
@@ -121,13 +143,26 @@ public class MessageActivity extends AppCompatActivity {
                 Chat.Comment comment = new Chat.Comment();
                 comment.uid = uid;
                 comment.message = mEtInputMessage.getText().toString();
-                comment.timestamp = ServerValue.TIMESTAMP;
-                FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        mEtInputMessage.setText("");
-                    }
-                });
+                // comment.timestamp = ServerValue.TIMESTAMP;
+                comment.timestamp = new Date().getTime();
+                if(pic_list.size() < 1) {
+                    FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            mEtInputMessage.setText("");
+                        }
+                    });
+                }
+                else {
+                    comment.message = comment.timestamp + "";
+                    uploadPic(comment.timestamp, pic_list);
+                    FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            mEtInputMessage.setText("");
+                        }
+                    });
+                }
 
 //                    Log.e("room : ", chatRoomUid);
 
@@ -135,10 +170,94 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        // 이미지
+        btn_pic = findViewById(R.id.btn_pic);
+        pic_list = new ArrayList<>();
+        pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
+        recyclerView_pic = findViewById(R.id.recyclerview_pic);
+        recyclerView_pic.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView_pic.setAdapter(pic_adapter);
+
+        btn_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPIcture();
+            }
+        });
 
     }
 
-   /* void checkChatRoom() {
+    public void getPIcture() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            Log.d("test", "dd");
+        }
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(Intent.createChooser(intent, "Get Album"), THUMBNAIL_PHOTO_REQUEST_CODE);
+    }
+
+    public void uploadPic(long time, ArrayList<Uri> list) {
+        StorageReference mStorageRef;
+        for (int i = 0; i < list.size(); i++) {
+            mStorageRef = FirebaseStorage.getInstance().getReference().child("message/" + chatRoomName + "/" + time + "/pic" + (i + 1) + ".jpg");
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType("image/jpg")
+                    .build();
+
+            UploadTask uploadTask = mStorageRef.putFile(list.get(i), metadata);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Toast.makeText(SignUpActivity.this, "성공", Toast.LENGTH_SHORT).show();
+                    Log.d("사진 업로드", "성공");
+                }
+            });
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(SignUpActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                    Log.e("사진 업로드", "실패");
+                }
+            });
+        }
+        pic_list.clear();
+        recyclerView_pic.setVisibility(View.GONE);
+    } // uploadProfilePhoto()
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case THUMBNAIL_PHOTO_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    ClipData clipData = data.getClipData();
+                    if (clipData != null) {
+                        recyclerView_pic.setVisibility(View.VISIBLE);
+                        if (clipData.getItemCount() > IMG_LIMIT) {
+                            Toast.makeText(this, "사진은 최대 " + IMG_LIMIT + "장까지만 선택할 수 있습니다", Toast.LENGTH_SHORT).show();
+                        } else {
+                            for (int i = 0; i < clipData.getItemCount(); i++) {
+                                pic_adapter.addPostThumbnailAdapter(clipData.getItemAt(i).getUri());
+                            }
+                            pic_adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        //Toast.makeText(this, "이 기기는 사진을 여러 장 선택할 수 없습니다", Toast.LENGTH_SHORT).show();
+                        if (data.getData() != null) {
+                            recyclerView_pic.setVisibility(View.VISIBLE);
+                            Log.d("test", "getData");
+                            pic_adapter.addPostThumbnailAdapter(data.getData());
+                            pic_adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    /* void checkChatRoom() {
         FirebaseDatabase.getInstance().getReference().child("chatrooms").orderByChild("users/" + uid).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -209,25 +328,56 @@ public class MessageActivity extends AppCompatActivity {
         }
 
         void getMessageList() {
-            FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").addValueEventListener(new ValueEventListener() {
+//            FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    comments.clear();
+//
+//                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+//                        comments.add(item.getValue(Chat.Comment.class));
+//                    }
+//
+//                    // 메세지가 갱신
+//                    notifyDataSetChanged();
+//
+//                    mRvMessage.scrollToPosition(comments.size() - 1);
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                }
+//            });
+
+            FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    comments.clear();
-
-                    for (DataSnapshot item : dataSnapshot.getChildren()) {
-                        comments.add(item.getValue(Chat.Comment.class));
-                    }
-
-                    // 메세지가 갱신
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    comments.add(dataSnapshot.getValue(Chat.Comment.class));
                     notifyDataSetChanged();
 
                     mRvMessage.scrollToPosition(comments.size() - 1);
                 }
 
                 @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
             });
+
         }
 
         @NonNull
@@ -241,12 +391,46 @@ public class MessageActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
             final MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
+
+            // 사진 가져오기
+            if(comments.get(position).message.equals(comments.get(position).timestamp + "")) {
+                ArrayList<Uri> pic_list = new ArrayList<>();
+                final PostThumbnailRecyclerViewAdapter pic_adapter;
+                pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
+                messageViewHolder.recyclerView_pic.setAdapter(pic_adapter);
+                for (int i = 0; i < IMG_LIMIT; i++) {
+                    StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child("message/" + chatRoomName + "/" + comments.get(position).timestamp + "/pic" + (i + 1) + ".jpg");
+                    mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            pic_adapter.addPostThumbnailAdapter(uri);
+                            pic_adapter.notifyDataSetChanged();
+//                            messageViewHolder.pic_adapter.addPostThumbnailAdapter(uri);
+//                            messageViewHolder.pic_adapter.notifyDataSetChanged();
+                            Log.d("getDownloadPic", uri.toString());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                }
+                messageViewHolder.recyclerView_pic.setVisibility(View.VISIBLE);
+                messageViewHolder.textView_message.setVisibility(View.GONE);
+            }
+            else {
+                messageViewHolder.textView_message.setText(comments.get(position).message);
+                messageViewHolder.textView_message.setTextSize(17);
+
+                messageViewHolder.recyclerView_pic.setVisibility(View.GONE);
+                messageViewHolder.textView_message.setVisibility(View.VISIBLE);
+            }
+
             // 내가 보낸 메세지
             if (comments.get(position).uid.equals(uid)) {
-                messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_message);
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE);
-                messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 // 상대방이 보낸 메세지
             } else {
@@ -285,14 +469,18 @@ public class MessageActivity extends AppCompatActivity {
 
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.custom_message_others);
-                messageViewHolder.textView_message.setText(comments.get(position).message);
-                messageViewHolder.textView_message.setTextSize(17);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
             }
 
 
             // 시간 포맷 설정
-            long unixTime = (long) comments.get(position).timestamp;
+            long unixTime = comments.get(position).timestamp;
+//            if(comments.get(position).time > 0) {
+//                unixTime = comments.get(position).time;
+//            }
+//            else {
+//                unixTime = (long) comments.get(position).timestamp;
+//            }
             Date date = new Date(unixTime);
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             String time = simpleDateFormat.format(date);
@@ -311,6 +499,9 @@ public class MessageActivity extends AppCompatActivity {
             public LinearLayout linearLayout_destination;
             public LinearLayout linearLayout_main;
             public TextView textView_timestamp;
+            public RecyclerView recyclerView_pic;
+//            public PostThumbnailRecyclerViewAdapter pic_adapter;
+//            public ArrayList<Uri> pic_list;
 
             public MessageViewHolder(View view) {
                 super(view);
@@ -320,7 +511,12 @@ public class MessageActivity extends AppCompatActivity {
                 linearLayout_destination = view.findViewById(R.id.messageItem_linearLayout_destination);
                 linearLayout_main = view.findViewById(R.id.messageItem_linearLayout_main);
                 textView_timestamp = view.findViewById(R.id.messageItem_textView_timestamp);
+                recyclerView_pic = view.findViewById(R.id.messageItem_recyclerview_pic);
 
+//                pic_list = new ArrayList<>();
+//                pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
+                recyclerView_pic.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+//                recyclerView_pic.setAdapter(pic_adapter);
             }
         }
     }
