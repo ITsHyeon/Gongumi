@@ -78,7 +78,7 @@ public class HomePostFragment extends Fragment {
     Button joinBtn, backBtn, nextBtn;
     WebView webView;
     private User user;
-    boolean userCheck = false;
+    int userCheck = 0;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
     StorageReference mStorage = storageRef.child("thumbnail/");
     StorageReference profileRef = storageRef.child("user_profile");
@@ -152,12 +152,12 @@ public class HomePostFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String joinId = data.getKey();
-                    Log.v("joinIDcheck", joinId + " : " + user.getId());
                     if (user.getId().equals(joinId)) {
-                        userCheck = true;
+                        userCheck = 1;
                         break;
                     }
                 }
+                Log.v("usercheck", userCheck + "");
             }
 
             @Override
@@ -236,22 +236,19 @@ public class HomePostFragment extends Fragment {
 
         mDatabaseRef = mDatabaseRef.child(time_text + "/join/" + user.getId());
 
+        if(user.getId().equals(userId_text)) {
+            userCheck = 2;
+        }
+
         joinBtn = view.findViewById(R.id.btJoin);
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                /*CustomHomePostDialog customDialog2 = new CustomHomePostDialog(getActivity());
-                customDialog2.callFunction("수량을 입력해주세요", "qty", user.getId(), time_text);
-
-                CustomHomePostDialog customDialog = new CustomHomePostDialog(getActivity());
-                boolean okCheck2= customDialog.callFunction("옵션을 입력해주세요", "option", user.getId(), time_text);*/
-
-                Intent intent = getActivity().getIntent();
-                user = (User) intent.getSerializableExtra("user");
-
-                if(!userCheck) showDialog();
-                else Toast.makeText(getContext(), "이미 공구에 참여했습니다.", Toast.LENGTH_SHORT).show();
+                Log.v("usercheck2", userCheck + "");
+                if(userCheck == 0) showDialog();
+                else if(userCheck == 1) Toast.makeText(getContext(), "이미 공구에 참여했습니다.", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getContext(), "공구 당사자는 참여할 수 없습니다.",Toast.LENGTH_SHORT).show();
             }
         });
 
