@@ -27,7 +27,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.example.gongumi.R;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.fragment.PostFragment;
@@ -197,6 +199,8 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     public void uploadPicandComment(long time, ArrayList<Uri> list, Chat.Comment comment) {
+        recyclerView_pic.setVisibility(View.GONE);
+
         StorageReference mStorageRef;
         for (int i = 0; i < list.size(); i++) {
             mStorageRef = FirebaseStorage.getInstance().getReference().child("message/" + chatRoomName + "/" + time + "/pic" + (i + 1) + ".jpg");
@@ -223,7 +227,6 @@ public class MessageActivity extends AppCompatActivity {
         }
         uploadComment(comment);
         pic_list.clear();
-        recyclerView_pic.setVisibility(View.GONE);
     } // uploadProfilePhoto()
 
     @Override
@@ -393,31 +396,57 @@ public class MessageActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
             final MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
 
+            Glide.with(getApplicationContext())
+                    .load(R.drawable.loading)
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .into(new DrawableImageViewTarget(messageViewHolder.imageView_loading));
+
+            messageViewHolder.imageView_loading.setVisibility(View.VISIBLE);
+
             // 사진 가져오기
             if(comments.get(position).message.equals(comments.get(position).timestamp + "")) {
-                messageViewHolder.imageView_loading.setVisibility(View.VISIBLE);
                 ArrayList<Uri> pic_list = new ArrayList<>();
                 final PostThumbnailRecyclerViewAdapter pic_adapter;
                 pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
                 messageViewHolder.recyclerView_pic.setAdapter(pic_adapter);
-                for (int i = 0; i < IMG_LIMIT; i++) {
+                messageViewHolder.recyclerView_pic.setVisibility(View.GONE);
+
+//                if(position == comments.size() - 1) {
+//                    Log.d("getPicView" + position, messageViewHolder.recyclerView_pic.getVisibility() + ", " + messageViewHolder.textView_message.getVisibility());
+//                }
+
+                for (int i = IMG_LIMIT - 1; i >= 0; i--) {
+                    Log.d(position + "getPic", position + "");
                     StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child("message/" + chatRoomName + "/" + comments.get(position).timestamp + "/pic" + (i + 1) + ".jpg");
-                    mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            pic_adapter.addPostThumbnailAdapter(uri);
-                            pic_adapter.notifyDataSetChanged();
-//                            messageViewHolder.pic_adapter.addPostThumbnailAdapter(uri);
-//                            messageViewHolder.pic_adapter.notifyDataSetChanged();
-                            Log.d("getDownloadPic" + position, uri.toString());
-                            messageViewHolder.imageView_loading.setVisibility(View.GONE);
-                            messageViewHolder.recyclerView_pic.setVisibility(View.VISIBLE);
-                        }
-                    });
+                    if(i == 0) {
+                        mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                pic_adapter.addPostThumbnailAdapter(uri);
+                                pic_adapter.notifyDataSetChanged();
+
+                                Log.d("getDownloadPic" + position, uri.toString());
+                                messageViewHolder.imageView_loading.setVisibility(View.GONE);
+                                messageViewHolder.recyclerView_pic.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                    else {
+                        mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                pic_adapter.addPostThumbnailAdapter(uri);
+                                pic_adapter.notifyDataSetChanged();
+
+                                Log.d("getDownloadPic" + position, uri.toString());
+                            }
+                        });
+                    }
                 }
                 messageViewHolder.textView_message.setVisibility(View.GONE);
             }
             else {
+                Log.d("getPicView_message", messageViewHolder.textView_message.getVisibility() + "");
                 messageViewHolder.textView_message.setText(comments.get(position).message);
                 messageViewHolder.textView_message.setTextSize(17);
 
@@ -456,6 +485,8 @@ public class MessageActivity extends AppCompatActivity {
                                 Log.d("db user uid", user1.getUid());
                                 Log.d("db user Id", user1.getId());
                             }
+
+
                         }
 
                     }
