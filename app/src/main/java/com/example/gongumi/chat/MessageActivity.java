@@ -144,20 +144,22 @@ public class MessageActivity extends AppCompatActivity {
 
                 Chat.Comment comment = new Chat.Comment();
                 comment.uid = uid;
-                comment.message = mEtInputMessage.getText().toString();
+                comment.message = mEtInputMessage.getText().toString().trim();
                 // comment.timestamp = ServerValue.TIMESTAMP;
                 comment.timestamp = new Date().getTime();
                 if(pic_list.size() < 1) {
+                    if(comment.message.equals("")) {
+                        Toast.makeText(MessageActivity.this, "메세지를 입력해주세요", Toast.LENGTH_SHORT).show();
+                        mEtInputMessage.setText("");
+                        return;
+                    }
                     uploadComment(comment);
                 }
                 else {
-                    comment.message = comment.timestamp + "";
+                    comment.message = comment.timestamp + comment.message;
                     uploadPicandComment(comment.timestamp, pic_list, comment);
                 }
-
 //                    Log.e("room : ", chatRoomUid);
-
-
             }
         });
 
@@ -403,8 +405,11 @@ public class MessageActivity extends AppCompatActivity {
 
             messageViewHolder.imageView_loading.setVisibility(View.VISIBLE);
 
+            final String timestamp = comments.get(position).timestamp + "";
+            final String message = comments.get(position).message;
+
             // 사진 가져오기
-            if(comments.get(position).message.equals(comments.get(position).timestamp + "")) {
+            if(message.length() >= timestamp.length() && message.substring(0, timestamp.length()).equals(timestamp)) {
                 ArrayList<Uri> pic_list = new ArrayList<>();
                 final PostThumbnailRecyclerViewAdapter pic_adapter;
                 pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
@@ -428,6 +433,14 @@ public class MessageActivity extends AppCompatActivity {
                                 Log.d("getDownloadPic" + position, uri.toString());
                                 messageViewHolder.imageView_loading.setVisibility(View.GONE);
                                 messageViewHolder.recyclerView_pic.setVisibility(View.VISIBLE);
+
+                                // 사진 + 메세지인 경우
+                                if(message.length() > timestamp.length()) {
+                                    messageViewHolder.textView_message.setText(message.substring(timestamp.length()));
+                                    messageViewHolder.textView_message.setTextSize(17);
+
+                                    messageViewHolder.textView_message.setVisibility(View.VISIBLE);
+                                }
                             }
                         });
                     }
