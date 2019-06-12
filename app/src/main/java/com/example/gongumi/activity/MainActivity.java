@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("test", post_pos + "");
                 switch (post_pos) {
                     case 1:
-                        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setNegativeButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

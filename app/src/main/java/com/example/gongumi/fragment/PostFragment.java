@@ -231,6 +231,7 @@ public class PostFragment extends Fragment {
             URL webUrl = new URL(url);
             URLConnection urlConnection = webUrl.openConnection();
             HttpURLConnection httpURLConnection = (HttpURLConnection)urlConnection;
+            httpURLConnection.setConnectTimeout(2000);
 
             Log.d("validUrlCheck"  + url, httpURLConnection.getResponseCode() + "");
             if(httpURLConnection.getResponseCode() >= 400) {
