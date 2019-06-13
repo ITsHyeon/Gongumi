@@ -493,7 +493,7 @@ public class MessageActivity extends AppCompatActivity {
 //                                        .load(R.drawable.profile_photo)
 //                                        .apply(new RequestOptions().circleCrop())
 //                                        .into(messageViewHolder.imageView_profile);
-                                messageViewHolder.textView_name.setText(user1.getId());
+                                messageViewHolder.textView_name.setText(user1.getName());
                                 Log.d("db comment uid", comments.get(position).uid);
                                 Log.d("db user uid", user1.getUid());
                                 Log.d("db user Id", user1.getId());

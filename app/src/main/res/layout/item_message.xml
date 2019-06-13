@@ -44,6 +44,7 @@
             android:layout_height="90dp"
             android:paddingTop="10dp"
             android:visibility="gone"
+            android:layout_marginBottom="10dp"
             >
 
         </android.support.v7.widget.RecyclerView>
@@ -57,7 +58,6 @@
             android:paddingEnd="15dp"
             android:text="메세지"
             android:textSize="14dp"
-            android:layout_marginTop="5dp"
             android:visibility="gone"
             />
         <TextView
