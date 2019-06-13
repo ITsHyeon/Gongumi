@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import com.example.gongumi.R;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.fragment.PostFragment;
 import com.example.gongumi.model.Chat;
+import com.example.gongumi.model.OnImageRecyclerViewItemClickListener;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
 import com.google.android.gms.auth.api.signin.internal.Storage;
@@ -61,7 +63,7 @@ import java.util.TimeZone;
 
 import static com.example.gongumi.activity.MainActivity.THUMBNAIL_PHOTO_REQUEST_CODE;
 
-public class MessageActivity extends AppCompatActivity {
+public class MessageActivity extends AppCompatActivity implements OnImageRecyclerViewItemClickListener {
 
     // 채팅
     private String destinationUid;
@@ -69,12 +71,17 @@ public class MessageActivity extends AppCompatActivity {
     private Button mBtSendMessage;
     private EditText mEtInputMessage;
 
-    // 이미지
+    // 이미지 채팅
     private Button btn_pic;
     private RecyclerView recyclerView_pic;
     private PostThumbnailRecyclerViewAdapter pic_adapter;
     private ArrayList<Uri> pic_list;
     final public int IMG_LIMIT = 3;
+
+    // 이미지 원본 크기
+    private RelativeLayout layout_picture;
+    private Button btn_prev_pic;
+    private ImageView imageView_origin;
 
     // Toolbar
     private Button btn_prev;
@@ -163,7 +170,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        // 이미지
+        // 이미지 가져오기
         btn_pic = findViewById(R.id.btn_pic);
         pic_list = new ArrayList<>();
         pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
@@ -175,6 +182,17 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getPicture();
+            }
+        });
+
+        // 원본 이미지
+        layout_picture = findViewById(R.id.layout_picture);
+        btn_prev_pic = findViewById(R.id.btn_prev_pic);
+        imageView_origin = findViewById(R.id.imageView_origin);
+        btn_prev_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout_picture.setVisibility(View.GONE);
             }
         });
 
@@ -308,6 +326,24 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onClick(Uri uri) {
+        Glide.with(getApplicationContext())
+                .load(uri)
+                .into(imageView_origin);
+        layout_picture.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(layout_picture.getVisibility() == View.VISIBLE) {
+            layout_picture.setVisibility(View.GONE);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         List<Chat.Comment> comments;
@@ -347,6 +383,7 @@ public class MessageActivity extends AppCompatActivity {
                     notifyDataSetChanged();
 
                     mRvMessage.scrollToPosition(comments.size() - 1);
+                    Log.d("getMesssageList", comments.size() + " " + chatRoomName + " " + post.getStartDay().getTime());
                 }
 
                 @Override
@@ -412,7 +449,7 @@ public class MessageActivity extends AppCompatActivity {
             if(message.length() >= timestamp.length() && message.substring(0, timestamp.length()).equals(timestamp)) {
                 ArrayList<Uri> pic_list = new ArrayList<>();
                 final PostThumbnailRecyclerViewAdapter pic_adapter;
-                pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list);
+                pic_adapter = new PostThumbnailRecyclerViewAdapter(getApplicationContext(), pic_list, MessageActivity.this);
                 messageViewHolder.recyclerView_pic.setAdapter(pic_adapter);
                 messageViewHolder.recyclerView_pic.setVisibility(View.GONE);
 

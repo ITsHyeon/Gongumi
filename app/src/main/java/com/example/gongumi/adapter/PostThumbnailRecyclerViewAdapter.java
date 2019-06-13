@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
+import com.example.gongumi.model.OnImageRecyclerViewItemClickListener;
 
 import java.util.ArrayList;
 
@@ -19,9 +20,17 @@ public class PostThumbnailRecyclerViewAdapter extends RecyclerView.Adapter<PostT
     Context context;
     ArrayList<Uri> list;
 
+    OnImageRecyclerViewItemClickListener imageClickListener = null;
+
     public PostThumbnailRecyclerViewAdapter(Context context, ArrayList<Uri> list) {
         this.context = context;
         this.list = list;
+    }
+
+    public PostThumbnailRecyclerViewAdapter(Context context, ArrayList<Uri> list, OnImageRecyclerViewItemClickListener imageClickListener) {
+        this.context = context;
+        this.list = list;
+        this.imageClickListener = imageClickListener;
     }
 
     public void setPostThumbnailAdapter(ArrayList<Uri> list) {
@@ -67,10 +76,18 @@ public class PostThumbnailRecyclerViewAdapter extends RecyclerView.Adapter<PostT
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         Glide.with(context)
              .load(list.get(position))
              .into(viewHolder.image_thumbnail);
+        if(imageClickListener != null) {
+            viewHolder.image_thumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageClickListener.onClick(list.get(position));
+                }
+            });
+        }
     }
 
     @Override
