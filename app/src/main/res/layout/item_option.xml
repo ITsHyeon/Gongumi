@@ -12,39 +12,48 @@
         >
 
         <TextView
+            android:id="@+id/textview_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:textAlignment="center"
             />
 
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/textColor"
-            >
-
-        </LinearLayout>
+            />
 
         <TextView
+            android:id="@+id/textview_option"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:textAlignment="center"
             />
 
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/textColor"
-            >
-
-        </LinearLayout>
-
-
+            />
 
         <TextView
+            android:id="@+id/textview_quantity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:textAlignment="center"
             />
 
     </LinearLayout>
@@ -53,8 +62,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/textColor"
-        >
-
-    </LinearLayout>
+        />
 
 </LinearLayout>

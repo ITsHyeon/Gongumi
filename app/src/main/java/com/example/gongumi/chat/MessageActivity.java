@@ -32,10 +32,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.example.gongumi.R;
+import com.example.gongumi.adapter.OptionListRecyclerViewAdapter;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
 import com.example.gongumi.fragment.PostFragment;
 import com.example.gongumi.model.Chat;
 import com.example.gongumi.model.OnImageRecyclerViewItemClickListener;
+import com.example.gongumi.model.Option;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.User;
 import com.google.android.gms.auth.api.signin.internal.Storage;
@@ -77,6 +79,12 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     private PostThumbnailRecyclerViewAdapter pic_adapter;
     private ArrayList<Uri> pic_list;
     final public int IMG_LIMIT = 3;
+
+    // 공구 리스트 보기
+    private RelativeLayout layout_option;
+    private RecyclerView recyclerView_option;
+    private OptionListRecyclerViewAdapter option_adapter;
+    private ArrayList<Option> option_list;
 
     // Glide
     private RequestManager requestManager;
@@ -137,15 +145,13 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
         btn_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-            }
-        });
-
-        btn_list = findViewById(R.id.btn_list);
-        btn_list.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                if(layout_option.getVisibility() == View.VISIBLE) {
+                    layout_option.setVisibility(View.GONE);
+                    btn_list.setVisibility(View.VISIBLE);
+                }
+                else {
+                    finish();
+                }
             }
         });
 
@@ -209,6 +215,56 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
             }
         });
 
+        // 공구 리스트
+        btn_list = findViewById(R.id.btn_list);
+        layout_option = findViewById(R.id.layout_option_list);
+        recyclerView_option = findViewById(R.id.recyclerview_option_list);
+
+        option_list = new ArrayList<>();
+        option_adapter = new OptionListRecyclerViewAdapter(MessageActivity.this, option_list);
+        recyclerView_option.setAdapter(option_adapter);
+        recyclerView_option.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        btn_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout_option.setVisibility(View.VISIBLE);
+                btn_list.setVisibility(View.GONE);
+            }
+        });
+
+        getOptionList();
+    }
+
+    public void getOptionList() {
+        getUser();
+
+        FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("join").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                option_list.clear();
+                option_list.add(new Option("이름", "옵션", "수량"));
+
+                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                    Option option = data.getValue(Option.class);
+
+                    for(User user : users) {
+                        if(data.getKey().equals(user.getId())) {
+                            option.setName(user.getName());
+                            option_list.add(option);
+                            break;
+                        }
+                    }
+                }
+
+                option_adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void uploadComment(Chat.Comment comment) {
@@ -317,6 +373,8 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     }*/
 
     public void getUser() {
+        users.clear();
+
         FirebaseDatabase.getInstance().getReference().child("User").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -349,7 +407,11 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
     @Override
     public void onBackPressed() {
-        if(layout_picture.getVisibility() == View.VISIBLE) {
+        if(layout_option.getVisibility() == View.VISIBLE) {
+            layout_option.setVisibility(View.GONE);
+            btn_list.setVisibility(View.VISIBLE);
+        }
+        else if(layout_picture.getVisibility() == View.VISIBLE) {
             layout_picture.setVisibility(View.GONE);
         }
         else {
