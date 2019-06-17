@@ -89,6 +89,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     // Toolbar
     private Button btn_prev;
     private TextView textView_chatroom;
+    private Button btn_list;
 
     private String uid;
     private String chatRoomName;
@@ -137,6 +138,14 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        btn_list = findViewById(R.id.btn_list);
+        btn_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
