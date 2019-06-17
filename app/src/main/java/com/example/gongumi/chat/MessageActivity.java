@@ -78,6 +78,9 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     private ArrayList<Uri> pic_list;
     final public int IMG_LIMIT = 3;
 
+    // Glide
+    private RequestManager requestManager;
+
     // 이미지 원본 크기
     private RelativeLayout layout_picture;
     private Button btn_prev_pic;
@@ -142,7 +145,8 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
         mRvMessage = findViewById(R.id.message_recyclerview);
         mRvMessage.setLayoutManager(new LinearLayoutManager(MessageActivity.this));
-        mRvMessage.setAdapter(new RecyclerViewAdapter());
+        requestManager = Glide.with(this);
+        mRvMessage.setAdapter(new RecyclerViewAdapter(requestManager));
         Log.d("keyset : ", chat.users.keySet().toString());
         mBtSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -348,8 +352,10 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
         List<Chat.Comment> comments;
         User user;
+        RequestManager requestManager;
 
-        public RecyclerViewAdapter() {
+        public RecyclerViewAdapter(RequestManager requestManager) {
+            this.requestManager = requestManager;
             comments = new ArrayList<>();
 
             getUser();
@@ -520,7 +526,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
                         for (User user1 : users){
                             if (comments.get(position).uid.equals(user1.getUid())){
-                                RequestManager requestManager = Glide.with(holder.itemView.getContext());
+                                // RequestManager requestManager = Glide.with(holder.itemView.getContext());
 
                                 requestManager.load(user1.getProfileUrl())
                                         .apply(new RequestOptions().error(R.drawable.profile_photo))

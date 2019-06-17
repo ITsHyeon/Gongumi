@@ -77,7 +77,7 @@ public class ChatListActivity extends AppCompatActivity {
         databaseRef = FirebaseDatabase.getInstance().getReference().child("User").child(userId).child("chatlist");
         recyclerView = findViewById(R.id.chatlist_recyclerview);
         chatLists = new ArrayList<>();
-        chatListRecyclerViewAdapter = new ChatListRecyclerViewAdapter(getApplicationContext(), chatLists);
+        chatListRecyclerViewAdapter = new ChatListRecyclerViewAdapter(ChatListActivity.this, chatLists);
 
         getChatDatabase();
 
@@ -118,12 +118,15 @@ public class ChatListActivity extends AppCompatActivity {
                                             int index = chatLists.indexOf(chatList);
                                             chatList.setChat(chat);
                                             chatLists.set(index, chatList);
+                                            Log.d("chatLists",chatroom + " " + index);
+                                            chatListRecyclerViewAdapter.notifyItemChanged(index);
                                         }
                                         else {
                                             chatList.setChat(chat);
                                             chatLists.add(chatList);
+                                            Log.d("chatLists",chatroom + " " + (chatLists.size() - 1));
+                                            chatListRecyclerViewAdapter.notifyDataSetChanged();
                                         }
-                                        chatListRecyclerViewAdapter.notifyDataSetChanged();
                                     }
 
                                     @Override

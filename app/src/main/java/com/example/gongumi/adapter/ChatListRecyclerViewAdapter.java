@@ -1,5 +1,6 @@
 package com.example.gongumi.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -75,6 +76,9 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             if(chatList.get(position).getChat().comments.get(lastMessageKey).message.equals(chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
                 holder.text_lastMessage.setText("사진을 보냈습니다");
             }
+            else if(chatList.get(position).getChat().comments.get(lastMessageKey).message.length() >= (chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "").length() && chatList.get(position).getChat().comments.get(lastMessageKey).message.contains(chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
+                holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message.substring((chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "").length()));
+            }
             else {
                 holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message);
             }
@@ -96,6 +100,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
                 intent.putExtra("post", chatList.get(position).getPost());
                 intent.putExtra("chat", chatList.get(position).getChat());
                 context.startActivity(intent);
+                // ((Activity) context).overridePendingTransition(R.anim.fromright, R.anim.toleft);
             }
         });
     }
