@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,8 @@ public class ChatListActivity extends AppCompatActivity {
 
     private String userId;
 
+    private Button btn_prev;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,13 @@ public class ChatListActivity extends AppCompatActivity {
         recyclerView.setAdapter(chatListRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        btn_prev = findViewById(R.id.btn_prev);
+        btn_prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void getChatDatabase() {

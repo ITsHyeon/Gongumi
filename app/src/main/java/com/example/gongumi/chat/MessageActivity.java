@@ -243,13 +243,14 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 option_list.clear();
-                option_list.add(new Option("이름", "옵션", "수량"));
+                option_list.add(new Option("", "멤버", "옵션", "수량"));
 
                 for(DataSnapshot data : dataSnapshot.getChildren()) {
                     Option option = data.getValue(Option.class);
 
                     for(User user : users) {
                         if(data.getKey().equals(user.getId())) {
+                            option.setUrl(user.getProfileUrl());
                             option.setName(user.getName());
                             option_list.add(option);
                             break;
@@ -265,6 +266,8 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
             }
         });
+
+
     }
 
     public void uploadComment(Chat.Comment comment) {

@@ -11,19 +11,35 @@
         android:orientation="horizontal"
         >
 
-        <TextView
-            android:id="@+id/textview_name"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="16dp"
-            android:textColor="@color/textColor"
-            android:fontFamily="@font/notosans_regular"
-            android:textAlignment="center"
-            />
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:id="@+id/imageview_option_profile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                />
+
+            <TextView
+                android:id="@+id/textview_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp"
+                android:textColor="@color/textColor"
+                android:fontFamily="@font/notosans_regular"
+                android:layout_toEndOf="@id/imageview_option_profile"
+                />
+
+        </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:background="@color/textColor"
             />
@@ -40,7 +56,7 @@
             />
 
         <LinearLayout
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:background="@color/textColor"
             />
@@ -60,7 +76,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/textColor"
         />
 

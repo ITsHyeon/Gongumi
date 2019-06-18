@@ -6,8 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.gongumi.R;
 import com.example.gongumi.model.Option;
 
@@ -35,6 +38,15 @@ public class OptionListRecyclerViewAdapter extends RecyclerView.Adapter<OptionLi
             holder.textView_name.setBackgroundColor(context.getResources().getColor(R.color.mainColor));
             holder.textView_option.setBackgroundColor(context.getResources().getColor(R.color.mainColor));
             holder.textView_quantity.setBackgroundColor(context.getResources().getColor(R.color.mainColor));
+            holder.imageView_profile.setVisibility(View.GONE);
+            holder.textView_name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        }
+        else {
+            Glide.with(context)
+                .load(list.get(position).getUrl())
+                .apply(new RequestOptions().error(R.drawable.profile_photo))
+                .apply(new RequestOptions().circleCrop())
+                .into(holder.imageView_profile);
         }
         holder.textView_name.setText(list.get(position).getName());
         holder.textView_option.setText(list.get(position).getOpt());
@@ -50,6 +62,7 @@ public class OptionListRecyclerViewAdapter extends RecyclerView.Adapter<OptionLi
         private TextView textView_name;
         private TextView textView_option;
         private TextView textView_quantity;
+        private ImageView imageView_profile;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -57,6 +70,7 @@ public class OptionListRecyclerViewAdapter extends RecyclerView.Adapter<OptionLi
             textView_name = view.findViewById(R.id.textview_name);
             textView_option = view.findViewById(R.id.textview_option);
             textView_quantity = view.findViewById(R.id.textview_quantity);
+            imageView_profile = view.findViewById(R.id.imageview_option_profile);
         }
     }
 }
