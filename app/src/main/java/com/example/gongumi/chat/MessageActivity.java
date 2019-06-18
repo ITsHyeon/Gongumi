@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.example.gongumi.R;
 import com.example.gongumi.adapter.OptionListRecyclerViewAdapter;
 import com.example.gongumi.adapter.PostThumbnailRecyclerViewAdapter;
+import com.example.gongumi.custom.CustomOptionProfileDialog;
 import com.example.gongumi.fragment.PostFragment;
 import com.example.gongumi.model.Chat;
 import com.example.gongumi.model.OnImageRecyclerViewItemClickListener;
@@ -295,6 +296,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
         StorageReference mStorageRef;
         for (int i = 0; i < list.size(); i++) {
+            final int position = i;
             mStorageRef = FirebaseStorage.getInstance().getReference().child("message/" + chatRoomName + "/" + time + "/pic" + (i + 1) + ".jpg");
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setContentType("image/jpg")
@@ -306,7 +308,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 //                    Toast.makeText(SignUpActivity.this, "성공", Toast.LENGTH_SHORT).show();
                     Log.d("pic 사진 업로드", "성공");
-                    mRvMessage.getAdapter().notifyDataSetChanged();
+                    mRvMessage.getAdapter().notifyItemChanged(position);
                 }
             });
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -598,7 +600,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
                         User user = dataSnapshot.getValue(User.class);
                         users.add(user);
 
-                        for (User user1 : users){
+                        for (final User user1 : users){
                             if (comments.get(position).uid.equals(user1.getUid())){
                                 // RequestManager requestManager = Glide.with(holder.itemView.getContext());
 
@@ -606,6 +608,29 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
                                         .apply(new RequestOptions().error(R.drawable.profile_photo))
                                         .apply(new RequestOptions().circleCrop())
                                         .into(messageViewHolder.imageView_profile);
+
+                                messageViewHolder.imageView_profile.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("join").orderByKey().equalTo(user1.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                Option option;
+                                                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                                    option = data.getValue(Option.class);
+                                                    CustomOptionProfileDialog dialog = new CustomOptionProfileDialog(MessageActivity.this);
+                                                    dialog.showDialog(user1.getProfileUrl(), user1.getName(), option.getOpt(), option.getQty());
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                });
+
 //                                Glide.with(holder.itemView.getContext())
 //                                        .load(R.drawable.profile_photo)
 //                                        .apply(new RequestOptions().circleCrop())
