@@ -24,7 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
 
 import static android.support.constraint.Constraints.TAG;
 import static com.example.gongumi.fragment.SearchFragment.search_pos;
@@ -35,7 +39,7 @@ public class CategoryFragment extends Fragment {
     EditText search_edit;
     ArrayList<String> tags = new ArrayList<>();
     String str, ch;
-    int index;
+    int index, cnt;
     String hashtg[] = new String[8];
     HashMap<String, Integer> hash= new HashMap<String, Integer>();
     Button hashtag_btn[] = new Button[8];
@@ -104,7 +108,12 @@ public class CategoryFragment extends Fragment {
                     str = String.valueOf(post.getHashtag());
                     Log.d("getHashtag", str);
                     str = str.replace(" ", "");
-                    tags.add(str);
+                    String[] tag = str.split("#");
+
+                    for(int i = 0; i < tag.length; i++) {
+                        tags.add(tag[i]);
+                        Log.i("tags",tags.get(i));
+                    }
 
                     puthashtag();
                 }
@@ -169,36 +178,40 @@ public class CategoryFragment extends Fragment {
     }
 
     public void puthashtag(){
-        int s = 0;
 
-        while (tags.size() > s){ //arraylist 크기만큼 반복
-            String[] tag = tags.get(s).split("#");  //"#" 을 가지고 문장 나누기
+        for(int i = 0; i < tags.size(); i++) {
+            if (hash.containsKey(tags.get(i))) { //키를 포함하고 있는지 확인
+                hash.put(tags.get(i), hash.get(tags.get(i)) + 1); //있으면 value값 +1
+            } else {
+                hash.put(tags.get(i), 1);
+            } //없으면 등록
+        }//for
 
-            for(int i = 0; i < tag.length; i++) {
-                if (hash.containsKey(tag[i])) { //키를 포함하고 있는지 확인
-                    hash.put(tag[i], hash.get(tag[i]) + 1); //있으면 value값 +1
-                } else {
-                    hash.put(tag[i], 1);
-                } //없으면 등록
-
-                if (TextUtils.isEmpty(hashtg[0])) {
-                    for (int j = hashtg.length - 1; j >= 0; j--) {
-                        if (!(TextUtils.isEmpty(hashtg[j]))) { //배열이 차있으면 넘긴다
-                            continue;
-                        } else {  //비어있으면 배열에 값을 넣고 반복을 빠져나온다
-                            hashtg[j] = tag[i];
+        for(int i = 0; i < tags.size(); i++){
+            for (int j = hashtg.length - 1; j >= 0; j--) {
+                if (TextUtils.isEmpty(hashtg[j])) {
+                    for(int z = j+1; z < hashtg.length; z++) {
+                        if(hashtg[z] == tags.get(i)) {
+                            break;
+                        }else {
+                            hashtg[j] = tags.get(i);
+                            Log.i("put", tags.get(i));
                             break;
                         }
-                    } //배열을 역순으로 돌린다
+                    }
+                    hashtg[j] = tags.get(i);
+                    Log.i("put", tags.get(i));
+                    break;
                 } //버튼에 넣을 배열값이 한칸 이라도 비어있으면
-            }//for
+            } //배열을 역순으로 돌린다
+        }
 
             index = 0;
             if(TextUtils.isEmpty(ch)) //ch가 비어있으면 값을 넣어줌
                 ch = hashtg[index];
             int j = 0;
 
-            while (!(TextUtils.isEmpty(tag[j]))) { //tag배열이 안 비어있으면
+            while (!(TextUtils.isEmpty(tags.get(j)))) { //tag배열이 안 비어있으면
                 for (int i = 0; i < hashtg.length; i++) {
                     if (hash.get(hashtg[i]) < hash.get(ch)) {
                         ch = hashtg[i];
@@ -207,19 +220,20 @@ public class CategoryFragment extends Fragment {
                 } //버튼에 넣을 배열에서 태그된 숫자가 가장 작은 키를 ch에 넣어준다
                 //나중에 바꿔줄것을 대비해 index도 저장해놓은다
 
-                for (int i = 0; i < tag.length; i++) {
-                    for(int z = 0; z < hashtg.length; z++){
-                        if(hashtg[z] == tag[i])
-                            break;
+                for (int i = 0; i < tags.size(); i++) {
+                    cnt = 0;
+                    for (int z = 0; z < hashtg.length; z++) {
+                        if (hashtg[z] == tags.get(i))
+                            cnt++;
                     }//똑같은 단어가 배열안에 있으면 넣지 않는다
-                    if (hash.get(ch) < hash.get(tag[i])) {
-                        hashtg[index] = tag[i];
-                        ch = tag[i];
+                    if (cnt == 0) {
+                        if (hash.get(ch) < hash.get(tags.get(i))) {
+                            hashtg[index] = tags.get(i);
+                            ch = tags.get(i);
+                        }
                     }
                 } //tag배열과 비교하여 더 많이 사용된 해쉬태그가 있다면 배열값과 함께 ch값을 바꿔준다
             }
-            s++;
-        }
 
         for(int i = 0; i < hashtg.length; i++){
             String st = "#" + hashtg[i];
