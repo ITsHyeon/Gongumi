@@ -615,11 +615,18 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
                                         FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("join").orderByKey().equalTo(user1.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                Log.d("customoptionprofile", "true");
                                                 Option option;
-                                                for(DataSnapshot data : dataSnapshot.getChildren()) {
-                                                    option = data.getValue(Option.class);
+                                                if(dataSnapshot.getChildrenCount() > 0) {
+                                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                        option = data.getValue(Option.class);
+                                                        CustomOptionProfileDialog dialog = new CustomOptionProfileDialog(MessageActivity.this);
+                                                        dialog.showDialog(user1.getProfileUrl(), user1.getName(), option.getOpt(), option.getQty());
+                                                    }
+                                                }
+                                                else {
                                                     CustomOptionProfileDialog dialog = new CustomOptionProfileDialog(MessageActivity.this);
-                                                    dialog.showDialog(user1.getProfileUrl(), user1.getName(), option.getOpt(), option.getQty());
+                                                    dialog.showDialog(user1.getProfileUrl(), user1.getName(), "공구장" + user1.getName(), "");
                                                 }
                                             }
 

@@ -2,6 +2,7 @@ package com.example.gongumi.custom;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,13 +40,19 @@ public class CustomOptionProfileDialog {
 
         Glide.with(context)
                 .load(profileUrl)
-                .apply(new RequestOptions().error(R.drawable.profile_photo))
+                .apply(new RequestOptions().error(R.drawable.profile_photo_background_white))
                 .apply(new RequestOptions().circleCrop())
                 .into(imageView_profile);
 
         textView_name.setText(name);
-        textView_option.setText("옵션 : " + option);
-        textView_quantity.setText("수량 : " + quantity);
+        if(option.equals("공구장" + name)) {
+            textView_option.setText("공구장");
+            textView_quantity.setVisibility(View.GONE);
+        }
+        else {
+            textView_option.setText("옵션 : " + option);
+            textView_quantity.setText("수량 : " + quantity);
+        }
 
         // 커스텀 다이얼로그를 노출한다.
         dialog.show();
