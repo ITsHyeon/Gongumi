@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -87,6 +89,10 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     private OptionListRecyclerViewAdapter option_adapter;
     private ArrayList<Option> option_list;
 
+    // Animation
+    Animation animationShow;
+    Animation animationHidden;
+
     // Glide
     private RequestManager requestManager;
 
@@ -137,6 +143,10 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
         chatRoomName = String.valueOf(post.getStartDay().getTime());
         users = new ArrayList<>();
 
+        // animation
+        animationShow = AnimationUtils.loadAnimation(MessageActivity.this, R.anim.fromright);
+        animationHidden = AnimationUtils.loadAnimation(MessageActivity.this, R.anim.toright);
+
 //        destinationUid = getIntent().getStringExtra("destinationUid"); // 채팅을 당하는 아이디
 
         textView_chatroom = findViewById(R.id.text_chatroom);
@@ -148,6 +158,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
             public void onClick(View v) {
                 if(layout_option.getVisibility() == View.VISIBLE) {
                     layout_option.setVisibility(View.GONE);
+                    layout_option.startAnimation(animationHidden);
                     btn_list.setVisibility(View.VISIBLE);
                 }
                 else {
@@ -230,6 +241,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
             @Override
             public void onClick(View v) {
                 layout_option.setVisibility(View.VISIBLE);
+                layout_option.startAnimation(animationShow);
                 btn_list.setVisibility(View.GONE);
             }
         });
@@ -414,6 +426,8 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     public void onBackPressed() {
         if(layout_option.getVisibility() == View.VISIBLE) {
             layout_option.setVisibility(View.GONE);
+            layout_option.startAnimation(animationHidden);
+
             btn_list.setVisibility(View.VISIBLE);
         }
         else if(layout_picture.getVisibility() == View.VISIBLE) {
