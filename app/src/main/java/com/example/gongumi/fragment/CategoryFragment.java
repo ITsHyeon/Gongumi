@@ -1,14 +1,17 @@
 package com.example.gongumi.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,6 +46,7 @@ public class CategoryFragment extends Fragment {
     String hashtg[] = new String[8];
     HashMap<String, Integer> hash= new HashMap<String, Integer>();
     Button hashtag_btn[] = new Button[8];
+    ImageButton searchbtn;
 
     public static String keyword;
 
@@ -84,7 +88,7 @@ public class CategoryFragment extends Fragment {
         hashtag_btn[5] = view.findViewById(R.id.btn_hashtag6);
         hashtag_btn[6] = view.findViewById(R.id.btn_hashtag7);
         hashtag_btn[7] = view.findViewById(R.id.btn_hashtag8);
-        ImageButton searchbtn = view.findViewById(R.id.btn_search);
+        searchbtn = view.findViewById(R.id.btn_search);
 
         hashtag_btn[0].setOnClickListener(tagbutton);
         hashtag_btn[1].setOnClickListener(tagbutton);
@@ -97,6 +101,7 @@ public class CategoryFragment extends Fragment {
         searchbtn.setOnClickListener(tagsearch);
 
         search_edit = view.findViewById(R.id.edit_search);
+        search_edit.setOnKeyListener(keyDownListener);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -115,8 +120,10 @@ public class CategoryFragment extends Fragment {
                         Log.i("tags",tags.get(i));
                     }
 
-                    puthashtag();
+                    // puthashtag();
                 }
+
+                setHashtag();
 
             }//ondatachange
 
@@ -148,20 +155,47 @@ public class CategoryFragment extends Fragment {
     View.OnClickListener tagsearch = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String word = search_edit.getText().toString();
-            if(word.indexOf("#") != 0){
-                Toast.makeText(getContext(), "검색어 앞에 #을 넣어주세요", Toast.LENGTH_SHORT).show();
-            }else if(word.contains(" ")){
+            String word = search_edit.getText().toString().trim();
+//            if(word.indexOf("#") != 0){
+//                Toast.makeText(getContext(), "검색어 앞에 #을 넣어주세요", Toast.LENGTH_SHORT).show();
+//            }else
+            if(word.equals("")) {
+                Toast.makeText(getContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show();
+            }
+            else if(word.contains(" ")){
                 Toast.makeText(getContext(), "공백을 제외하고 입력해주세요", Toast.LENGTH_SHORT).show();
             }else if(getCharNumber(word,'#') > 1){
                 Toast.makeText(getContext(), "검색어를 하나만 입력해주세요", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(getContext(), word + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
+                if(!word.substring(0,1).equals("#")){
+                    keyword = "#" + word;
+                }
+                else {
+                    keyword = word;
+                }
 
-                keyword = word;
+                Toast.makeText(getContext(), keyword + "(으)로 검색합니다", Toast.LENGTH_SHORT).show();
 
                 ((MainActivity)getActivity()).replaceFragment(SearchFragment.newInstance(post));
             }
+        }
+    };
+
+    public void hidekeyboard(EditText e) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(e.getWindowToken(), 0);
+    }
+
+    View.OnKeyListener keyDownListener = new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                hidekeyboard((EditText) v);
+                searchbtn.performClick();
+
+                return true;
+            }
+            return false;
         }
     };
 
@@ -240,5 +274,50 @@ public class CategoryFragment extends Fragment {
             hashtag_btn[i].setText(st);
             hashtag_btn[i].setVisibility(View.VISIBLE);
         }//버튼에 배열의 값을 옮겨담는다
+    }
+
+    public void setHashtag() {
+        if(setHash()) {
+            ArrayList<String> keys = new ArrayList<>();
+            keys.addAll(hash.keySet());
+
+            ArrayList<Integer> counts = new ArrayList<>();
+            for(int i = 0; i < keys.size(); i++) {
+                counts.add(hash.get(keys.get(i)));
+            }
+
+            int index = 0;
+            int max_index = 0;
+            for(int i = 0; i < counts.size(); i++) {
+                max_index = i;
+                for(int j = 0; j < counts.size(); j++) {
+                    if(counts.get(max_index) < counts.get(j)) {
+                        max_index = j;
+                    }
+                }
+
+                Log.d("hastags", keys.get(max_index) + " " + max_index + " " + counts.get(max_index));
+                hashtag_btn[index].setText("#" + keys.get(max_index));
+                hashtag_btn[index].setVisibility(View.VISIBLE);
+                counts.set(max_index, 0);
+                if(++index >= hashtag_btn.length)
+                    break;
+            }
+
+        }
+    }
+
+    public boolean setHash() {
+        for(int i = 0; i < tags.size(); i++) {
+            Log.d("tags_value", tags.get(i));
+            if(tags.get(i).equals("")) continue;
+            if (hash.containsKey(tags.get(i))) { //키를 포함하고 있는지 확인
+                hash.put(tags.get(i), hash.get(tags.get(i)) + 1); //있으면 value값 +1
+            } else {
+                hash.put(tags.get(i), 1);
+            } //없으면 등록
+        }//for
+
+        return true;
     }
 }

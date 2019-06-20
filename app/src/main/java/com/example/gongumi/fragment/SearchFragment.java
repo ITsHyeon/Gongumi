@@ -76,6 +76,7 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         searchtag = view.findViewById(R.id.hashtag_text);
+        searchtag.setText(keyword);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -107,15 +108,24 @@ public class SearchFragment extends Fragment {
                     };
                     mDatabase.child("User").addValueEventListener(userListener);
 
-                    if(keyword != null && str.contains(keyword)) {
-                        item = new Home(profile, profileImg, post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getEndDay(), post.getImgCount(), post.getUserId(), post.getUrl());
-                        items.add(item);
+                    str = str.replace(" ", "");
+                    String keys[] = str.split("#");
+
+                    if(keyword.substring(0, 1).equals("#")) {
+                        keyword = keyword.substring(1);
+                    }
+
+                    for(String key : keys) {
+                        if(keyword != null && key != null && key.equals(keyword)) {
+                            item = new Home(profile, profileImg, post.getProduct(), String.valueOf(post.getPrice()), post.getHashtag(), post.getNum(), post.getPeople(), post.getContent(), post.getStartDay(), post.getEndDay(), post.getImgCount(), post.getUserId(), post.getUrl());
+                            items.add(item);
+                            break;
+                        }
                     }
                 }
 
                 Collections.reverse(items);
 
-                searchtag.setText(keyword);
                 adpater = new RecyclerAdapter(getActivity(), items, R.layout.activity_main);
                 recyclerView.setAdapter(adpater);
 
