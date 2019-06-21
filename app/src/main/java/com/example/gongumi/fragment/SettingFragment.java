@@ -14,9 +14,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,22 +27,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
 import com.example.gongumi.activity.LoginActivity;
+import com.example.gongumi.adapter.SettingPostListRecyclerViewAdapter;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.model.CustomDialogInterface;
+import com.example.gongumi.model.Post;
+import com.example.gongumi.model.PostList;
 import com.example.gongumi.model.User;
 import com.example.gongumi.service.GpsTracker;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -52,6 +65,16 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
     public TextView mTvName, mTvAddress;
     private LinearLayout mLiPostList, mLiJoinList, mLiLogOut;
     private CircleImageView mCiChangeProfile;
+    private RelativeLayout layout_PostList;
+
+    // postList, joinList
+    private RecyclerView recyclerView_PostList;
+    private RecyclerView recyclerView_JoinList;
+    private SettingPostListRecyclerViewAdapter postListRecyclerViewAdapter;
+
+    private ArrayList<PostList> postLists;
+
+    SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 
     // gps
     private GpsTracker gpsTracker;
@@ -97,6 +120,15 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
         mLiPostList = view.findViewById(R.id.liPostList);
         mLiJoinList = view.findViewById(R.id.liJoinList);
         mLiLogOut = view.findViewById(R.id.liLogout);
+
+        // 공구 게시, 참여 목록
+        layout_PostList = view.findViewById(R.id.layout_post_write);
+
+        recyclerView_PostList = view.findViewById(R.id.recyclerview_post_list);
+        postLists = new ArrayList<>();
+        postListRecyclerViewAdapter = new SettingPostListRecyclerViewAdapter(getActivity(), postLists);
+        recyclerView_PostList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView_PostList.setAdapter(postListRecyclerViewAdapter);
 
         mCiChangeProfile = view.findViewById(R.id.ciChangeProfile);
         Button mBtChangeName = view.findViewById(R.id.btChangeName);
@@ -148,6 +180,14 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
             }
         });
 
+        // TODO : 공구 게시 목록
+        mLiPostList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout_PostList.setVisibility(View.VISIBLE);
+                getPostList();
+            }
+        });
 
         // TODO : 로그아웃
         mLiLogOut.setOnClickListener(new View.OnClickListener() {
@@ -309,6 +349,37 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
         startActivityForResult(Intent.createChooser(intent, "Get Album"), PROFILE_PHOTO_REQUEST_CODE);
+    }
+
+    public String DateToString(Post post) {
+        String date = "";
+        date = format.format(post.getStartDay()) + " ~ " + format.format(post.getEndDay());
+
+        return date;
+    }
+
+    public void getPostList() {
+        postLists.clear();
+        postLists.add(new PostList("공구 물품", "공구 기간"));
+        FirebaseDatabase.getInstance().getReference().child("Post").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                    Post post = data.getValue(Post.class);
+
+                    if(post.getUserId().equals(user.getId())) {
+                        PostList postList = new PostList(post.getProduct(), DateToString(post));
+                        postLists.add(postList);
+                    }
+                }
+                postListRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

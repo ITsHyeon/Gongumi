@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,152 +8,201 @@
     android:orientation="vertical"
     tools:context=".fragment.SettingFragment">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/ciChangeProfile"
-            android:layout_width="109.3dp"
-            android:layout_height="109.3dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/profile_photo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/liChangeName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal"
-            app:layout_constraintLeft_toRightOf="@+id/ciChangeProfile"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosans_regular"
-                android:text="TEST"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/btChangeName"
-                android:layout_width="48dp"
-                android:layout_height="27.3dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/custom_click_checked_button_yellow"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="변경"
-                android:textColor="#000000"
-                android:textSize="10.3sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            app:layout_constraintLeft_toRightOf="@+id/ciChangeProfile"
-            app:layout_constraintTop_toBottomOf="@+id/liChangeName">
-
-            <TextView
-                android:id="@+id/tvAdress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosans_regular"
-                android:text="testAdress"
-                android:textColor="#000000"
-                android:textSize="15sp" />
-
-            <Button
-                android:id="@+id/btChangeAdress"
-                android:layout_width="48dp"
-                android:layout_height="27.3dp"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/custom_click_checked_button_yellow"
-                android:text="변경"
-                android:textColor="#000000"
-                android:textSize="10.3sp" />
-        </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
-    <!--<View
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:background="#e1e1e1"/>-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-        <LinearLayout
-            android:id="@+id/liPostList"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="140dp"
-                android:layout_weight="1"
-                android:background="@drawable/box"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center_horizontal|center_vertical"
-                android:lineSpacingExtra="10dp"
-                android:text="공구\n게시\n목록"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/liJoinList"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="140dp"
-                android:layout_marginLeft="-5dp"
-                android:layout_weight="1"
-                android:background="@drawable/box"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center_horizontal|center_vertical"
-                android:lineSpacingExtra="10dp"
-                android:text="공구\n참여\n목록"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/liLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tvLogout"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/notosans_regular"
-            android:paddingStart="42sp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:text="로그아웃"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:layout_marginBottom="10dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ciChangeProfile"
+                android:layout_width="109.3dp"
+                android:layout_height="109.3dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/profile_photo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/liChangeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toRightOf="@+id/ciChangeProfile"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosans_regular"
+                    android:text="TEST"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btChangeName"
+                    android:layout_width="48dp"
+                    android:layout_height="27.3dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/custom_click_checked_button_yellow"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="변경"
+                    android:textColor="#000000"
+                    android:textSize="10.3sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                app:layout_constraintLeft_toRightOf="@+id/ciChangeProfile"
+                app:layout_constraintTop_toBottomOf="@+id/liChangeName">
+
+                <TextView
+                    android:id="@+id/tvAdress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosans_regular"
+                    android:text="testAdress"
+                    android:textColor="#000000"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/btChangeAdress"
+                    android:layout_width="48dp"
+                    android:layout_height="27.3dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/custom_click_checked_button_yellow"
+                    android:text="변경"
+                    android:textColor="#000000"
+                    android:textSize="10.3sp" />
+            </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+        <!--<View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#e1e1e1"/>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/liPostList"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="140dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/box"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:lineSpacingExtra="10dp"
+                    android:text="공구\n게시\n목록"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/liJoinList"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="140dp"
+                    android:layout_marginLeft="-5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/box"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:lineSpacingExtra="10dp"
+                    android:text="공구\n참여\n목록"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/liLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notosans_regular"
+                android:paddingStart="42sp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:text="로그아웃"
+                android:textColor="#000000"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#e1e1e1" />
+
     </LinearLayout>
 
-    <View
+    <RelativeLayout
+        android:id="@+id/layout_post_write"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#e1e1e1" />
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor"
+        android:visibility="gone"
+        >
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/textview_option_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="공구 게시 목록"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:layout_margin="20dp"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_post_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/textview_option_list"
+            android:layout_margin="10dp"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_post_join"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor"
+        android:visibility="gone"
+        >
+
+    </RelativeLayout>
+
+</FrameLayout>
