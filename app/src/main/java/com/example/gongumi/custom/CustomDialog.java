@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.gongumi.R;
 import com.example.gongumi.fragment.SettingFragment;
+import com.example.gongumi.model.CustomDialogInterface;
 import com.example.gongumi.model.User;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 // https://sharp57dev.tistory.com/10
 public class CustomDialog {
+    private CustomDialogInterface customDialogInterface;
 
     private Context context;
     public TextView text;
@@ -34,6 +36,10 @@ public class CustomDialog {
     DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("User/");
     public CustomDialog(Context context) {
         this.context = context;
+    }
+    public CustomDialog(Context context, CustomDialogInterface customDialogInterface) {
+        this.context = context;
+        this.customDialogInterface = customDialogInterface;
     }
 
     // 호출할 다이얼로그 함수를 정의한다.
@@ -46,7 +52,7 @@ public class CustomDialog {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // 커스텀 다이얼로그의 레이아웃을 설정한다.
-        dialog.setContentView(R.layout.custom_home_dialog);
+        dialog.setContentView(R.layout.custom_dialog);
 
         // 커스텀 다이얼로그의 사이즈를 지정한다.
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
@@ -77,17 +83,22 @@ public class CustomDialog {
                 Log.v("dialog info name", name);
                 Log.v("dialog info key", key);
 
+                changeValue = message.getText().toString().trim();
+                user.setName(changeValue);
+
                 mDatabaseRef = mDatabaseRef.child("/"+name+"/");
-                values.put(key, message.getText().toString());
+                values.put(key, changeValue);
                 mDatabaseRef.updateChildren(values);
 
+                if(customDialogInterface != null) {
+                    customDialogInterface.onPositiveClick();
+                }
+                Log.v("dialog info user", user.getId());
 
                 Log.i("dialog info dbPath", mDatabaseRef.toString());
                 Log.i("dialog info values", String.valueOf(values));
 
                 dialog.dismiss();
-
-
             }
         });
         btCancel.setOnClickListener(new View.OnClickListener() {

@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
 import com.example.gongumi.activity.LoginActivity;
 import com.example.gongumi.custom.CustomDialog;
+import com.example.gongumi.model.CustomDialogInterface;
 import com.example.gongumi.model.User;
 import com.example.gongumi.service.GpsTracker;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +47,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment implements CustomDialogInterface {
     // layout
     public TextView mTvName, mTvAddress;
     private LinearLayout mLiPostList, mLiJoinList, mLiLogOut;
@@ -112,20 +113,16 @@ public class SettingFragment extends Fragment {
         user = (User) intent.getSerializableExtra("user");
         storageRef = pathRef.child(user.getId()+".jpg");
 
-
         mTvName.setText(user.getName()); // 이름(name)
         mTvAddress.setText(user.getLocation()); // 주소(address)
         Glide.with(getActivity()).load(storageRef).into(mCiChangeProfile);
-
 
         mBtChangeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 커스텀 다이얼로그를 생성한다.
-                CustomDialog customNameDialog = new CustomDialog(getActivity());
+                CustomDialog customNameDialog = new CustomDialog(getActivity(), SettingFragment.this);
                 customNameDialog.callFunction("변경할 이름을 입력해주세요.","name", user.getId());
-                // TODO : 바뀐 이름으로 setting하기
-
             }
         });
 
@@ -150,6 +147,7 @@ public class SettingFragment extends Fragment {
                 changeProfile();
             }
         });
+
 
         // TODO : 로그아웃
         mLiLogOut.setOnClickListener(new View.OnClickListener() {
@@ -313,4 +311,10 @@ public class SettingFragment extends Fragment {
         startActivityForResult(Intent.createChooser(intent, "Get Album"), PROFILE_PHOTO_REQUEST_CODE);
     }
 
+    @Override
+    public void onPositiveClick() {
+        Log.d("after dialog", user.getName());
+        // TODO : 바뀐 이름으로 setting하기
+        mTvName.setText(user.getName());
+    }
 }
