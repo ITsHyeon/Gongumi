@@ -163,6 +163,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
                 }
                 else {
                     finish();
+                    overridePendingTransition(R.anim.fromleft, R.anim.toright);
                 }
             }
         });
@@ -435,6 +436,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
         }
         else {
             super.onBackPressed();
+            overridePendingTransition(R.anim.fromleft, R.anim.toright);
         }
     }
 

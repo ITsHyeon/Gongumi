@@ -100,7 +100,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
                 intent.putExtra("post", chatList.get(position).getPost());
                 intent.putExtra("chat", chatList.get(position).getChat());
                 context.startActivity(intent);
-                // ((Activity) context).overridePendingTransition(R.anim.fromright, R.anim.toleft);
+                ((Activity) context).overridePendingTransition(R.anim.fromright, R.anim.toleft);
             }
         });
     }
