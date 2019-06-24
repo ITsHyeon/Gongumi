@@ -25,6 +25,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,9 +36,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.gongumi.R;
 import com.example.gongumi.activity.LoginActivity;
+import com.example.gongumi.activity.MainActivity;
+import com.example.gongumi.adapter.SettingJoinListRecyclerViewAdapter;
 import com.example.gongumi.adapter.SettingPostListRecyclerViewAdapter;
 import com.example.gongumi.custom.CustomDialog;
 import com.example.gongumi.model.CustomDialogInterface;
+import com.example.gongumi.model.JoinList;
+import com.example.gongumi.model.Option;
 import com.example.gongumi.model.Post;
 import com.example.gongumi.model.PostList;
 import com.example.gongumi.model.User;
@@ -65,16 +71,21 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
     public TextView mTvName, mTvAddress;
     private LinearLayout mLiPostList, mLiJoinList, mLiLogOut;
     private CircleImageView mCiChangeProfile;
-    private RelativeLayout layout_PostList;
+    private RelativeLayout layout_PostList, layout_JoinList;
 
     // postList, joinList
     private RecyclerView recyclerView_PostList;
     private RecyclerView recyclerView_JoinList;
     private SettingPostListRecyclerViewAdapter postListRecyclerViewAdapter;
-
+    private SettingJoinListRecyclerViewAdapter joinListRecyclerViewAdapter;
     private ArrayList<PostList> postLists;
+    private ArrayList<JoinList> joinLists;
 
     SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+
+    // Animation
+    Animation animationShow;
+    Animation animationHidden;
 
     // gps
     private GpsTracker gpsTracker;
@@ -121,7 +132,7 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
         mLiJoinList = view.findViewById(R.id.liJoinList);
         mLiLogOut = view.findViewById(R.id.liLogout);
 
-        // 공구 게시, 참여 목록
+        // 공구 게시 목록
         layout_PostList = view.findViewById(R.id.layout_post_write);
 
         recyclerView_PostList = view.findViewById(R.id.recyclerview_post_list);
@@ -129,6 +140,19 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
         postListRecyclerViewAdapter = new SettingPostListRecyclerViewAdapter(getActivity(), postLists);
         recyclerView_PostList.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView_PostList.setAdapter(postListRecyclerViewAdapter);
+
+        // 공구 참여 목록
+        layout_JoinList = view.findViewById(R.id.layout_post_join);
+
+        recyclerView_JoinList = view.findViewById(R.id.recyclerview_join_list);
+        joinLists = new ArrayList<>();
+        joinListRecyclerViewAdapter = new SettingJoinListRecyclerViewAdapter(getActivity(), joinLists);
+        recyclerView_JoinList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView_JoinList.setAdapter(joinListRecyclerViewAdapter);
+
+        // animation
+        animationShow = AnimationUtils.loadAnimation(getActivity(), R.anim.fromdown);
+        animationHidden = AnimationUtils.loadAnimation(getActivity(), R.anim.todown);
 
         mCiChangeProfile = view.findViewById(R.id.ciChangeProfile);
         Button mBtChangeName = view.findViewById(R.id.btChangeName);
@@ -184,8 +208,21 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
         mLiPostList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layout_PostList.setVisibility(View.VISIBLE);
                 getPostList();
+                layout_PostList.setVisibility(View.VISIBLE);
+                layout_PostList.startAnimation(animationShow);
+                ((MainActivity)getActivity()).changeSettingPrev();
+            }
+        });
+
+        // TODO : 공구 참여 목록
+        mLiJoinList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getJoinList();
+                layout_JoinList.setVisibility(View.VISIBLE);
+                layout_JoinList.startAnimation(animationShow);
+                ((MainActivity)getActivity()).changeSettingPrev();
             }
         });
 
@@ -382,10 +419,61 @@ public class SettingFragment extends Fragment implements CustomDialogInterface {
         });
     }
 
+    public void getJoinList() {
+        joinLists.clear();
+        joinLists.add(new JoinList("공구 물품", "공구 기간", "옵션", "수량"));
+        FirebaseDatabase.getInstance().getReference().child("Post").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                    final Post post = data.getValue(Post.class);
+
+                    FirebaseDatabase.getInstance().getReference().child("Post").child(post.getStartDay().getTime() + "").child("join").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                Option option = data.getValue(Option.class);
+
+                                if(data.getKey().equals(user.getId())) {
+                                    JoinList joinList = new JoinList(post.getProduct(), DateToString(post), option.getOpt(), option.getQty());
+                                    joinLists.add(joinList);
+                                    joinListRecyclerViewAdapter.notifyDataSetChanged();
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     public void onPositiveClick() {
         Log.d("after dialog", user.getName());
         // TODO : 바뀐 이름으로 setting하기
         mTvName.setText(user.getName());
+    }
+
+    public void changeLayout() {
+        if(layout_PostList.getVisibility() == View.VISIBLE) {
+            layout_PostList.setVisibility(View.GONE);
+            layout_PostList.startAnimation(animationHidden);
+        }
+        else if(layout_JoinList.getVisibility() == View.VISIBLE) {
+            layout_JoinList.setVisibility(View.GONE);
+            layout_JoinList.startAnimation(animationHidden);
+        }
     }
 }

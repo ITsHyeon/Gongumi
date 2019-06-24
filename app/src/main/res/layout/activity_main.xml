@@ -25,6 +25,16 @@
             android:background="@drawable/custom_toolbar_layout"
             >
 
+            <Button
+                android:id="@+id/btn_setting_prev"
+                android:layout_width="14dp"
+                android:layout_height="25dp"
+                android:background="@drawable/btn_prev"
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"

@@ -59,7 +59,7 @@ import static com.example.gongumi.fragment.SearchFragment.search_pos;
 
 public class MainActivity extends AppCompatActivity {
     private static RelativeLayout layout_toolbar, layout_toolbar_post, layout_toolbar_cate;
-    private Button btn_previous, btn_next, btn_chat,cate_previous, cate_chat;
+    private Button btn_previous, btn_next, btn_chat,cate_previous, cate_chat, btn_setting_prev;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private PagerAdapter adapter;
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         btn_chat = findViewById(R.id.btn_chat);
         cate_previous = findViewById(R.id.cate_previous);
         cate_chat = findViewById(R.id.cate_chat);
+        btn_setting_prev = findViewById(R.id.btn_setting_prev);
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         btn_previous.setOnClickListener(PostClickListener);
         btn_next.setOnClickListener(PostClickListener);
         cate_previous.setOnClickListener(CateClickListener);
+        btn_setting_prev.setOnClickListener(SettingClickListener);
 
         // TODO : 푸시 알림
         passPushTokenToServer();
@@ -379,6 +381,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    View.OnClickListener SettingClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            SettingFragment settingFragment = (SettingFragment) adapter.getItem(3);
+            settingFragment.changeLayout();
+            btn_setting_prev.setVisibility(View.GONE);
+        }
+    };
+
     public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -402,6 +413,10 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().getReference().child("Post").child(String.valueOf(post.getStartDay().getTime())).child("chatroom").child(String.valueOf(post.getStartDay().getTime())).setValue(chat);
         FirebaseDatabase.getInstance().getReference().child("User").child(user.getId()).child("chatlist").child(String.valueOf(post.getStartDay().getTime())).setValue(chat);
+    }
+
+    public void changeSettingPrev() {
+        btn_setting_prev.setVisibility(View.VISIBLE);
     }
 
 

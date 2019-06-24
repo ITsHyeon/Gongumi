@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:orientation="horizontal"
+        android:background="@color/backgroundColor"
+        android:weightSum="10"
+        >
+
+        <TextView
+            android:id="@+id/textview_post"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3.5"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:background="@drawable/custom_background_list"
+            />
+
+        <TextView
+            android:id="@+id/textview_term"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="-10dp"
+            android:layout_weight="3.5"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:gravity="center_horizontal"
+            android:background="@drawable/custom_background_list"
+            />
+
+        <TextView
+            android:id="@+id/textview_option"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.7"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:background="@drawable/custom_background_list"
+            />
+
+        <TextView
+            android:id="@+id/textview_quantity"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.3"
+            android:textSize="16dp"
+            android:textColor="@color/textColor"
+            android:fontFamily="@font/notosans_regular"
+            android:singleLine="true"
+            android:textAlignment="center"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/textColor"
+        />
+
+</LinearLayout>

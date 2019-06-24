@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical"
-    tools:context=".fragment.SettingFragment">
+    tools:context=".fragment.SettingFragment"
+    android:id="@+id/frame_setting"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -202,6 +204,27 @@
         android:background="@color/backgroundColor"
         android:visibility="gone"
         >
+
+        <TextView
+            android:id="@+id/textview_join_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="공구 참여 목록"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:layout_margin="20dp"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_join_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/textview_join_list"
+            android:layout_margin="10dp"
+            >
+
+        </android.support.v7.widget.RecyclerView>
 
     </RelativeLayout>
 
