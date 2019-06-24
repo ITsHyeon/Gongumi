@@ -33,23 +33,24 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleviewimage_profile"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@drawable/profile_photo"
         android:padding="3dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/text_sign_up"
         />
 
     <Button
         android:id="@+id/btn_profile"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="@drawable/profile_button"
         android:layout_below="@id/text_sign_up"
         android:layout_toEndOf="@+id/text_sign_up"
-        android:layout_marginTop="97dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginStart="-10dp"
         />
 
     <EditText
@@ -66,7 +67,7 @@
         android:fontFamily="@font/notosans_light"
         android:background="@drawable/custom_input_button_gray"
         android:layout_below="@+id/circleviewimage_profile"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="40dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         />
@@ -159,7 +160,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:fontFamily="@font/notosans_light"
         android:layout_below="@+id/btn_gps"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         />
