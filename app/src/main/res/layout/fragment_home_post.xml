@@ -216,13 +216,5 @@
             android:textColor="#FFFFFF"
             android:text="Join" />
 
-        <WebView
-            android:id="@+id/webview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            />
-
     </RelativeLayout>
 </ScrollView>

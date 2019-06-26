@@ -21,9 +21,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -76,7 +73,6 @@ public class HomePostFragment extends Fragment {
     TextView date;
     ViewFlipper flipper;
     Button joinBtn, backBtn, nextBtn;
-    WebView webView;
     private User user;
     int userCheck = 0;
     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -252,10 +248,6 @@ public class HomePostFragment extends Fragment {
             }
         });
 
-        webView = view.findViewById(R.id.webview);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
-
         url = view.findViewById(R.id.url);
         url.setText(Html.fromHtml("<u>" + url_text + "</u>"));
 
@@ -272,7 +264,9 @@ public class HomePostFragment extends Fragment {
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showWeb(url_text);
+                        // showWeb(url_text);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url_text));
+                        getActivity().startActivity(intent);
                     }
                 });
                 alert.setMessage("해당 URL로 이동하시겠습니까?");
@@ -323,7 +317,7 @@ public class HomePostFragment extends Fragment {
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                     String joinId = data.getKey();
-                                                    FirebaseDatabase.getInstance().getReference().child("User").child(joinId).child("chatlist").child(time_text).setValue(chat);
+                                                    FirebaseDatabase.getInstance().getReference().child("User").child(joinId).child("chatlist").child(time_text).child("users").setValue(chat.users);
                                                 }
                                             }
 
@@ -358,11 +352,6 @@ public class HomePostFragment extends Fragment {
         });
         dialog.setText("옵션을 입력하세요");
         dialog.show(getFragmentManager(), "optDialog");
-    }
-
-    public void showWeb(String url) {
-        webView.loadUrl(url);
-        webView.setVisibility(View.VISIBLE);
     }
 
     public void moveNextView() {
