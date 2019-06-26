@@ -97,114 +97,120 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     public void getChatDatabase() {
-        ChildEventListener chatEventListener = new ChildEventListener() {
+        ValueEventListener chatValueListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                final String chatroom = dataSnapshot.getKey();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshots) {
+                for(DataSnapshot dataSnapshot : dataSnapshots.getChildren()) {
+                    chatLists.clear();
+                    final String chatroom = dataSnapshot.getKey();
+                    final Chat chatLastReadTime = dataSnapshot.getValue(Chat.class);
 
-                String url = "thumbnail/" + chatroom + "/thumbnail1.jpg";
+                    String url = "thumbnail/" + chatroom + "/thumbnail1.jpg";
 
-                final ChatList chatList = new ChatList();
-                chatList.setThumbnailUrl(url);
+                    final ChatList chatList = new ChatList();
+                    chatList.setThumbnailUrl(url);
 
-                FirebaseDatabase.getInstance().getReference().child("Post").orderByKey().equalTo(chatroom).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Post post = dataSnapshot.getValue(Post.class);
-                        chatList.setPost(post);
+                    FirebaseDatabase.getInstance().getReference().child("Post").orderByKey().equalTo(chatroom).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Post post = dataSnapshot.getValue(Post.class);
+                            chatList.setPost(post);
 
-                        FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                final Chat chat = dataSnapshot.getValue(Chat.class);
+                            FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    final Chat chat = dataSnapshot.getValue(Chat.class);
+                                    chat.lastReadTime = chatLastReadTime.lastReadTime;
 
-                                FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").child(chatroom).child("comment").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for(DataSnapshot data : dataSnapshot.getChildren()) {
-                                            chat.comments.put(data.getKey(), data.getValue(Chat.Comment.class));
+                                    FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").child(chatroom).child("comment").addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                                chat.comments.put(data.getKey(), data.getValue(Chat.Comment.class));
+                                            }
+                                            int i = 0;
+                                            for(i = 0; i < chatLists.size(); i++) {
+                                                if(chatLists.get(i).getPost().getStartDay().getTime() == chatList.getPost().getStartDay().getTime()) {
+                                                    chatList.setChat(chat);
+                                                    chatLists.set(i, chatList);
+                                                    Log.d("chatLists",chatroom + " " + i);
+                                                    chatListRecyclerViewAdapter.notifyItemChanged(i);
+                                                    break;
+                                                }
+                                            }
+                                            if(i >= chatLists.size()) {
+                                                chatList.setChat(chat);
+                                                chatLists.add(chatList);
+                                                Log.d("chatLists",chatroom + " " + (chatLists.size() - 1));
+                                                chatListRecyclerViewAdapter.notifyDataSetChanged();
+                                            }
+//                                            if(chatLists.contains(chatList)) {
+//                                                int index = chatLists.indexOf(chatList);
+//                                                chatList.setChat(chat);
+//                                                chatLists.set(index, chatList);
+//                                                Log.d("chatLists",chatroom + " " + index);
+//                                                chatListRecyclerViewAdapter.notifyItemChanged(index);
+//                                            }
+//                                            else {
+//                                                chatList.setChat(chat);
+//                                                chatLists.add(chatList);
+//                                                Log.d("chatLists",chatroom + " " + (chatLists.size() - 1));
+//                                                chatListRecyclerViewAdapter.notifyDataSetChanged();
+//                                            }
                                         }
-                                        if(chatLists.contains(chatList)) {
-                                            int index = chatLists.indexOf(chatList);
-                                            chatList.setChat(chat);
-                                            chatLists.set(index, chatList);
-                                            Log.d("chatLists",chatroom + " " + index);
-                                            chatListRecyclerViewAdapter.notifyItemChanged(index);
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                         }
-                                        else {
-                                            chatList.setChat(chat);
-                                            chatLists.add(chatList);
-                                            Log.d("chatLists",chatroom + " " + (chatLists.size() - 1));
-                                            chatListRecyclerViewAdapter.notifyDataSetChanged();
-                                        }
-                                    }
+                                    });
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
 
-                                    }
-                                });
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
+                                }
+                            });
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
 
-                            }
-                        });
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-        }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                        }
+                    });
+                }
             }
 
             @Override
@@ -212,8 +218,221 @@ public class ChatListActivity extends AppCompatActivity {
 
             }
         };
+//        ChildEventListener chatEventListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                chatLists.clear();
+//                chatListRecyclerViewAdapter.notifyDataSetChanged();
+//                final String chatroom = dataSnapshot.getKey();
+//                final Chat chatLastReadTime = dataSnapshot.getValue(Chat.class);
+//
+//                String url = "thumbnail/" + chatroom + "/thumbnail1.jpg";
+//
+//                final ChatList chatList = new ChatList();
+//                chatList.setThumbnailUrl(url);
+//
+//                FirebaseDatabase.getInstance().getReference().child("Post").orderByKey().equalTo(chatroom).addChildEventListener(new ChildEventListener() {
+//                    @Override
+//                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                        Post post = dataSnapshot.getValue(Post.class);
+//                        chatList.setPost(post);
+//
+//                        FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").addChildEventListener(new ChildEventListener() {
+//                            @Override
+//                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                                final Chat chat = dataSnapshot.getValue(Chat.class);
+//                                chat.lastReadTime = chatLastReadTime.lastReadTime;
+//
+//                                FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").child(chatroom).child("comment").addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                        for(DataSnapshot data : dataSnapshot.getChildren()) {
+//                                            chat.comments.put(data.getKey(), data.getValue(Chat.Comment.class));
+//                                        }
+//                                        if(chatLists.contains(chatList)) {
+//                                            int index = chatLists.indexOf(chatList);
+//                                            chatList.setChat(chat);
+//                                            chatLists.set(index, chatList);
+//                                            Log.d("chatLists",chatroom + " " + index);
+//                                            chatListRecyclerViewAdapter.notifyItemChanged(index);
+//                                        }
+//                                        else {
+//                                            chatList.setChat(chat);
+//                                            chatLists.add(chatList);
+//                                            Log.d("chatLists",chatroom + " " + (chatLists.size() - 1));
+//                                            chatListRecyclerViewAdapter.notifyDataSetChanged();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                    }
+//                                });
+//
+//                            }
+//
+//                            @Override
+//                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                chatLists.clear();
+//                chatListRecyclerViewAdapter.notifyDataSetChanged();
+//                final String chatroom = dataSnapshot.getKey();
+//                final Chat chatLastReadTime = dataSnapshot.getValue(Chat.class);
+//
+//                String url = "thumbnail/" + chatroom + "/thumbnail1.jpg";
+//
+//                final ChatList chatList = new ChatList();
+//                chatList.setThumbnailUrl(url);
+//
+//                FirebaseDatabase.getInstance().getReference().child("Post").orderByKey().equalTo(chatroom).addChildEventListener(new ChildEventListener() {
+//                    @Override
+//                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                        Post post = dataSnapshot.getValue(Post.class);
+//                        chatList.setPost(post);
+//
+//                        FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").addChildEventListener(new ChildEventListener() {
+//                            @Override
+//                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                                final Chat chat = dataSnapshot.getValue(Chat.class);
+//                                chat.lastReadTime = chatLastReadTime.lastReadTime;
+//
+//                                FirebaseDatabase.getInstance().getReference().child("Post").child(chatroom).child("chatroom").child(chatroom).child("comment").addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                        for(DataSnapshot data : dataSnapshot.getChildren()) {
+//                                            chat.comments.put(data.getKey(), data.getValue(Chat.Comment.class));
+//                                        }
+//                                        if(chatLists.contains(chatList)) {
+//                                            int index = chatLists.indexOf(chatList);
+//                                            chatList.setChat(chat);
+//                                            chatLists.set(index, chatList);
+//                                            Log.d("chatLists",chatroom + " " + index);
+//                                            chatListRecyclerViewAdapter.notifyItemChanged(index);
+//                                        }
+//                                        else {
+//                                            chatList.setChat(chat);
+//                                            chatLists.add(chatList);
+//                                            Log.d("chatLists",chatroom + " " + (chatLists.size() - 1));
+//                                            chatListRecyclerViewAdapter.notifyDataSetChanged();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                    }
+//                                });
+//
+//                            }
+//
+//                            @Override
+//                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
 
-        databaseRef.addChildEventListener(chatEventListener);
+        // databaseRef.addChildEventListener(chatEventListener);
+        databaseRef.addValueEventListener(chatValueListener);
     }
 
 //    class ChatRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

@@ -107,6 +107,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
     private Button btn_list;
 
     private String uid;
+    private String userId;
     private String chatRoomName;
 
     private RecyclerView mRvMessage;
@@ -138,6 +139,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
         Log.e("Chat", chat.users.toString());*/
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 채팅을 요구하는 아이디 즉 단말기에 로그인된 UID
+        userId = FirebaseAuth.getInstance().getCurrentUser().getEmail().substring(0, FirebaseAuth.getInstance().getCurrentUser().getEmail().indexOf("@"));
 
 //        chatRoomName = String.valueOf(post.getStartDay().getTime());
         chatRoomName = String.valueOf(post.getStartDay().getTime());
@@ -286,6 +288,7 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
 
     public void uploadComment(Chat.Comment comment) {
         Log.d("pic_comment", comment.message);
+        mEtInputMessage.setText("");
         FirebaseDatabase.getInstance().getReference().child("Post").child(chatRoomName).child("chatroom").child(chatRoomName).child("comment").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -438,6 +441,12 @@ public class MessageActivity extends AppCompatActivity implements OnImageRecycle
             super.onBackPressed();
             overridePendingTransition(R.anim.fromleft, R.anim.toright);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseDatabase.getInstance().getReference().child("User").child(userId).child("chatlist").child(chatRoomName).child("lastReadTime").setValue(new Date().getTime());
     }
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

@@ -8,6 +8,7 @@ public class Chat implements Serializable {
 
     public Map<String, Boolean> users = new HashMap<>(); // 채팅방의 유저들
     public Map<String, Comment> comments = new HashMap<>(); // 채팅방의 대화내용
+    public long lastReadTime;
 
     public static class Comment{
        public String uid;

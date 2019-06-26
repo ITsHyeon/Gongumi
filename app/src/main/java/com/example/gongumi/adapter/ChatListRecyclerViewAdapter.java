@@ -34,19 +34,19 @@ import java.util.TreeMap;
 public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRecyclerViewAdapter.ViewHolder> {
 
     Context context;
-    ArrayList<ChatList> chatList = new ArrayList<>();
+    ArrayList<ChatList> chatLists = new ArrayList<>();
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd hh:mm");
 
-    public ChatListRecyclerViewAdapter(Context context, ArrayList<ChatList> chatList) {
+    public ChatListRecyclerViewAdapter(Context context, ArrayList<ChatList> chatLists) {
         this.context = context;
-        this.chatList = chatList;
+        this.chatLists = chatLists;
 
 
         notifyDataSetChanged();
     }
 
     public void setChatList(ArrayList<ChatList> chatList) {
-        this.chatList = chatList;
+        this.chatLists = chatList;
 
         notifyDataSetChanged();
     }
@@ -60,45 +60,81 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Glide.with(context)
-                .load(FirebaseStorage.getInstance().getReference().child(chatList.get(position).getThumbnailUrl()))
+                .load(FirebaseStorage.getInstance().getReference().child(chatLists.get(position).getThumbnailUrl()))
                 .apply(new RequestOptions().error(R.drawable.profile_photo))
                 .apply(new RequestOptions().circleCrop())
                 .into(holder.image_thumbnail);
-        holder.text_chatroom.setText(chatList.get(position).getPost().getProduct());
+        holder.text_chatroom.setText(chatLists.get(position).getPost().getProduct());
 
         // 메세지를 내림차순으로 정렬 후 마지막 메세지의 키값을 가져옴옴
         Map<String, Chat.Comment> commentMap = new TreeMap<>(Collections.<String>reverseOrder());
-        commentMap.putAll(chatList.get(position).getChat().comments);
-        Log.d(chatList.get(position).getPost().getProduct() + "getChat", chatList.get(position).getChat().comments.size() +  "");
-        Log.d("getUser", chatList.get(position).getChat().users.size() + "");
+        commentMap.putAll(chatLists.get(position).getChat().comments);
+        Log.d(chatLists.get(position).getPost().getProduct() + "getChat", chatLists.get(position).getChat().comments.size() +  "");
+        Log.d("getUser", chatLists.get(position).getChat().users.size() + "");
         if(commentMap.size() > 0) {
             String lastMessageKey = (String) commentMap.keySet().toArray()[0];
-            if(chatList.get(position).getChat().comments.get(lastMessageKey).message.equals(chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
+            if(chatLists.get(position).getChat().comments.get(lastMessageKey).message.equals(chatLists.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
                 holder.text_lastMessage.setText("사진을 보냈습니다");
             }
-            else if(chatList.get(position).getChat().comments.get(lastMessageKey).message.length() >= (chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "").length() && chatList.get(position).getChat().comments.get(lastMessageKey).message.contains(chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
-                holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message.substring((chatList.get(position).getChat().comments.get(lastMessageKey).timestamp + "").length()));
+            else if(chatLists.get(position).getChat().comments.get(lastMessageKey).message.length() >= (chatLists.get(position).getChat().comments.get(lastMessageKey).timestamp + "").length() && chatLists.get(position).getChat().comments.get(lastMessageKey).message.contains(chatLists.get(position).getChat().comments.get(lastMessageKey).timestamp + "")) {
+                holder.text_lastMessage.setText(chatLists.get(position).getChat().comments.get(lastMessageKey).message.substring((chatLists.get(position).getChat().comments.get(lastMessageKey).timestamp + "").length()));
             }
             else {
-                holder.text_lastMessage.setText(chatList.get(position).getChat().comments.get(lastMessageKey).message);
+                holder.text_lastMessage.setText(chatLists.get(position).getChat().comments.get(lastMessageKey).message);
             }
 
             // 시간 포맷
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 
-            long unixTime = (long) chatList.get(position).getChat().comments.get(lastMessageKey).timestamp;
+            long unixTime = (long) chatLists.get(position).getChat().comments.get(lastMessageKey).timestamp;
 
             Date date = new Date(unixTime);
             holder.text_lastTime.setText(simpleDateFormat.format(date));
+
+            Log.d("chatlistsize", chatLists.size() + "");
+            if(chatLists.get(position).getChat().lastReadTime == 0) {
+                if(commentMap.size() > 50) {
+                    holder.text_lastreadTime.setText("50+");
+                }
+                else {
+                    holder.text_lastreadTime.setText(commentMap.size() + "");
+                }
+
+
+
+
+            } else {
+                int count = 0;
+                for(int i = 0; i < commentMap.size(); i++) {
+                    String key = (String) commentMap.keySet().toArray()[i];
+                    long time = chatLists.get(position).getChat().comments.get(key).timestamp;
+                    Log.d("chatlisttime", chatLists.get(position).getChat().lastReadTime + " " + time);
+                    if(chatLists.get(position).getChat().lastReadTime >= time) {
+                        if(commentMap.size() > 50) {
+                            holder.text_lastreadTime.setText("50+");
+                            holder.text_lastreadTime.setVisibility(View.VISIBLE);
+                        }
+                        else if(count > 0) {
+                            holder.text_lastreadTime.setText(count + "");
+                            holder.text_lastreadTime.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            holder.text_lastreadTime.setVisibility(View.GONE);
+                        }
+                        break;
+                    }
+                    count++;
+                }
+            }
         }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatList.get(position).getChat().comments = new HashMap<>();
+                chatLists.get(position).getChat().comments = new HashMap<>();
                 Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra("post", chatList.get(position).getPost());
-                intent.putExtra("chat", chatList.get(position).getChat());
+                intent.putExtra("post", chatLists.get(position).getPost());
+                intent.putExtra("chat", chatLists.get(position).getChat());
                 context.startActivity(intent);
                 ((Activity) context).overridePendingTransition(R.anim.fromright, R.anim.toleft);
             }
@@ -107,7 +143,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
 
     @Override
     public int getItemCount() {
-        return chatList.size();
+        return chatLists.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -116,6 +152,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         public TextView text_chatroom;
         public TextView text_lastTime;
         public TextView text_lastMessage;
+        public TextView text_lastreadTime;
 
         public ViewHolder(@NonNull View v) {
             super(v);
@@ -125,6 +162,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
             text_chatroom = v.findViewById(R.id.chatitem_textview);
             text_lastTime = v.findViewById(R.id.chatitem_textview_timestamp);
             text_lastMessage = v.findViewById(R.id.chatitem_textview_last_message);
+            text_lastreadTime = v.findViewById(R.id.chatitem_textview_lastreadtime);
         }
     }
 }
