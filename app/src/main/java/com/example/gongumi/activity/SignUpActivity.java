@@ -620,6 +620,9 @@ public class SignUpActivity extends AppCompatActivity {
             toastText += "을/를 입력해주세요";
             Toast.makeText(this, toastText, Toast.LENGTH_LONG).show();
         }
+        else if(pw.length() < 6) {
+            Toast.makeText(this, "비밀번호는 6자리 이상 입력해주세요", Toast.LENGTH_SHORT).show();
+        }
         else {
             createUser(email, pw, name, loc);
         }
